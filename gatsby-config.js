@@ -18,11 +18,11 @@ module.exports = {
         isSearchEnabled: true,
         repository: {
           baseUrl:
-            'https://ibm-garage-tsa.github.io/cp4i-demohub',
+            'https://wtistang.github.io/app-mod',
           subDirectory: '/',
         },
       },
     }
   ],
-  pathPrefix: "/cp4i-demohub/",
+  pathPrefix: "/app-mod/",
 };

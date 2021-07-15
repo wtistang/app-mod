@@ -1,0 +1,348 @@
+---
+title: App Modernization using WAS Base Container on OCP
+description: 
+---
+This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming and rehosting application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab AM0100), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor. In Part 2 of the Application Modernization Journey (Lab AM0200), you learn how to re-platform an existing WebSphere application the Liberty container and to deploy it to a Red Heat OpenShift Kubernetes Service (OCP) cluster in IBM Cloud. This lab showcases the rehost process. Rehost uses Lift and Shift approach to move an existing application to the same server environment in the cloud. In this lab, you learn how to move a selected candidate Java application from traditional WebSphere Application Server (tWAS) environment to a WAS container without any code change and to deploy it to a OCP environment.
+
+### 1. Business Scenario
+
+As illustrated below, your company has a web app called **Mod Resorts**, a WebSphere application showing the weather in various locations. Your company wants to move this application from on-premises (in VMs) to the cloud (in Containers) using IBM Cloud Pak for Applications.
+
+![](images/mod-resorts-app-home-page.png)
+
+This transition delivers improved operational efficiencies for the application by leveraging scalable cloud capabilities with IBM Cloud Pak for Applications that the enterprise currently enjoys with its cloud native applications.  
+ 
+As a tech lead, you have already analyzed the application using the Transformation Advisor tool in Part 1 of the lab series.  Based on the analysis you know that you can move this application from the traditional WebSphere Server environment to a containerized WAS Base server environment without any code change.  
+
+Now you are planning to package the application in WAS Base container and to deploy it to an OpenShift Kubernetes cluster environment. 
+
+In general, by moving an application from a traditional WAS ND cell to a WAS Base container in cloud, you can take advantage of cloud to support application high availability and scalability, minimize application migration effort, reduce on-prem infrastructure and operation cost while leveraging your team’s existing WebSphere admin skill. 
+
+### 2. Objective
+
+The objectives of this lab are to help you:
+
+* understand how to move a WebSphere app from an on-premises environment to the OpenShift cluster without any changes to the app code, while utilizing exiting WebSphere administration skills.
+*	learn the process to create a WAS docker container.
+*	get familiar with the WAS Base container on OpenShift deployment process.
+
+### 3.	Prerequisites
+
+The following prerequisites must be completed prior to beginning this lab:
+•	Familiarity with basic Linux commands
+•	Have internet access
+•	Have completed Lab SU0100 of this lab series and have the CP4Apps installed in IBM Red Hat OpenShift Kubernetes Service (OCP) cluster on IBM Cloud.
+
+### 4.	What is Already Completed
+
+The Workstation VM is pre-configured for you to access and work with the OCP cluster in this lab.
+
+The login credentials for the Workstation VM are provided in your Reservation Details page (**https://www.ibm.com/demos/my-reservations/**).
+
+The CLI commands used in this lab are listed in the Commands.txt file located at the **/home/ibmdemo/app-mod-labs/am0300** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+
+### 5.	Lab Tasks
+During this lab, you complete the following tasks:
+*	review the Mod Resorts app on local WAS server.
+*	build a WAS Base server container image.
+*	push the WAS Base server container image to OpenShift image repository.
+*	deploy the WAS Base server container to OpenShift cluster
+*	verify WAS server deployment.
+*	test and verify the Mod Resorts app on WAS container
+
+### 6.	Execute Lab Tasks
+#### 6.1 Log in to the Workstation VM and get started 
+1.  Launch the VM from your local workstation web browser with the VM URL.
+ 
+    ![](images/vm-url.png)
+
+2.	Click **Connect** to access the VM.
+ 
+    ![](images/vm-connect.png)
+
+3.	Enter the password you obtained from the Reservation Details page and click **Send Password**.
+
+    ![](images/vm-password.png)
+
+    The VM desktop is displayed.
+
+    ![](images/vm-desktop.png)
+
+    The Workstation Desktop is displayed. You execute all the lab tasks on this VM.
+
+#### 6.2 Review the on-premises WebSphere application 
+In this task, you take a look at **Mod Resorts** application deployed to the local WebSphere Application Server (WAS) environment. You are going to move this application to the cloud using Open Liberty Operator later.
+
+1.	Start WebSphere Application Server
+
+    In the workstation VM, you have a local WebSphere Application Server V9 which hosts the Mod Resorts application. 
+
+    To start the WAS server:
+
+    a.	Open a terminal window by clicking **Applications**>**Terminal**.
+ 
+    ![](images/vm-terminal-link.png)
+
+    b.	In the terminal window, issue the command below to start the WAS server (You can copy and paste the command from the Commands.txt file in the /home/ibmdemo/app-mod-labs/am0200 directory).
+
+    ```
+    /home/ibmdemo/app-mod-labs/shared/startWAS.sh
+    ```
+    
+    Within a few minutes the WAS server is ready.
+
+    c.	Access the WAS Admin Console to view the application deployed by clicking **Applications**>**Firefox** to open a browser window.
+ 
+    ![](images/vm-browser-link.png)
+
+    d.	From the web browser window and click WebSphere Integrated Solution Console bookmark to launch the WAS console.
+ 
+    ![](images/was-bookmark.png)
+
+    e.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**. 
+
+    f.	On the WAS Console page, click **Applications** -> **Application Types** -> **WebSphere enterprise applications** to view the apps deployed.
+ 
+    ![](images/was-enterprise-apps-link.png)
+
+    In the Enterprise Applications list, you can see all applications deployed. The Mod Resorts application is in the list, currently it is running.
+ 
+    ![](images/was-enterprise-apps.png)
+
+2.	View the Mod Resorts application
+
+    a. From the web browser window, click new Tab to open a new browser window. Type the Mod Resorts application URL: **http://localhost:9080/resorts/** and press **Enter**.
+    
+    The Mod Resorts application home page is displayed.
+
+    ![](images/mod-resorts-app-home-page.png)
+    
+    b. Click **WHERE TO?** dropdown menu to see the city list.
+
+    ![](images/mod-resorts-app-where-to.png)
+
+    c. Click **PARIS, FRANCE** from the list, it shows the weather of the city.
+
+    ![](images/mod-resorts-app-paris.png)
+
+    You have reviewed the application.  Next you learn how to re-platform the application in WAS container without any code change and to deploy it to an OpenShift cluster.
+
+    d. Stop the WAS server by issuing the following command in the Terminal window:
+
+    ```
+    /home/ibmdemo/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
+    ```   
+
+#### 6.3	Build a WAS Base Server Container Image.
+In this task, you are going to build a WAS Base server Docker container image with the Mod Resorts application installed. 
+
+Note: according to Docker's best practices you should create a new WAS Base image which adds a single application and the corresponding configuration. You should avoid configuring the image manually (after it started) via Admin Console or wsadmin unless it is for debugging purposes, because such changes won't be present if you spawn a new container from the image.
+
+There are five key files you needed to build your WAS Base server container image:
+*	Dockerfile – the file defines how the Docker image that has your application and configuration pre-loaded is built.
+*	App runtime – the ear or war file of your application.
+*	app-install.props – the file defines how to install your application in the WAS server.
+*	appConfig.py – the WAS admin script in Jython format configures the WAS server for your application.
+*	PASSWORD – the file contains the WAS server console password use in the WAS container.
+
+1.	Review Dockerfile, app-install.props file, and appConfig.py file.
+
+    a.	Click **Applications**>**Files** to open the File Manager.
+
+    ![](images/vm-files-link.png)
+  
+    b.	Navigate to **/home/ibmdemo/app-mod-labs/am0300** directory.
+ 
+    c.	Double click the **Dockerfile** to open it in Text editor for reviewing.
+ 
+    ![](images/ocp-twas-dockerfile.png)
+    As you can see, the Dockerfile file defines the following activities to create a WAS Base container image:
+    *	Get the base WAS image from Docker Hub
+    *	Add WAS admin console password to the WAS Base image
+    *	Add the WAS server configuration script to the WAS base image
+    *	Add the application installation script to the WAS base image
+    *	Add the application runtime file to the WAS base image
+    *	Run the configuration script to config the WAS server instance inside the container to configure the WAS server and to install the application
+    
+    d.	Go back to File Manager and double click **app-install.props** file to review it. This is the script file you use to install the Mod Resorts application to the WAS server instance. 
+    
+    ![](images/ocp-twas-app-install-props.png)
+    
+    e.	In the File Manager window, double click **appConfig.py** file to review its contents. This is a standard WAS admin script with Jython format for configuring the WAS to run the Mod Resorts application. This is the WAS admin script file you use to convert your application settings, include JDBC and JMS resources, from a WAS ND cell to a WAS Base container. 
+ 
+    ![](images/pco-twas-appconfig-py.png)
+
+2.	Build the WAS Base server container image.
+
+    a. Go back to the Terminal window and navigate to the **/home/ibmdemo/app-mod-labs/am0300** directory with command:
+    
+    ```
+    cd /home/ibmdemo/app-mod-labs/am0300 
+    ```
+    
+    b. Execute the following command to build the WAS Base docker container image with the Dockerfile you just reviewed:	
+
+    ```
+    docker build . -t modresorts-twas:latest
+    ```
+
+    This creates a WAS Base docker image called modresorts-twas:latest.
+
+    c. After the docker container image is created, you can issue the command below to check it:
+
+    ```
+    docker images |grep twas
+    ```
+    
+    You see the docker image is created.
+
+    d. To verify the docker image, you can create and run a local container called modresorts-twas with the command below:
+
+    ```
+    docker run --name modsorts-twas -p 9443:9443 -d modresorts-twas:latest
+    ```
+
+    e. once the container is created, you can test the Moderesorts application by launching it in a web browser window with the URL: **https://localhost:9443/resorts**.
+
+#### 6.4	Push the WAS Container Image to OCP Image Registry
+After the WAS container image is built, you need to push it to an image registry first. In this lab, you are using the OCP Image Registry to host your WAS container image.
+
+1.	From the browser window, click OCP cluster Web Console bookmark to open it with your IBM credentials.
+
+  ![](images/ocp-console-bookmarked.png) 
+2.	In the OpenShift Web Console page, click the **Action** icon next to your username and select **Copy Login** Command to get the OCP login command.
+
+  ![](images/ocp-copy-login-command.png) 
+3.	In the next page, click **Display Token** link.
+
+  ![](images/display-token.png) 
+4.	Copy the OCP login command to the clipboard.
+
+  ![](images/copy-token.png) 
+5.	Go back to the Terminal window, right-click to paste the OCP login command window press Enter to log in to the OCP cluster.
+ 
+  ![](images/run-oc-login-command.png) 
+6.	Create a new project (namespace) as **demo**.
+
+  ```
+  oc new-project demo
+  ```
+  You see the message to confirm that the demo project is created.
+
+7.	Get OCP internal image registry URL and cluster URL with commands:
+
+  ```
+  export INTERNAL_REG_HOST=`oc get route default-route --template='{{ .spec.host }}' -n openshift-image-registry`
+  export CLUSTER_URL=`echo $INTERNAL_REG_HOST | sed 's/default-route-openshift-image-registry.//g'`
+  ```
+8.	Log in to the OpenShift Docker registry with the command:
+    
+  ```
+  docker login -u $(oc whoami) -p $(oc whoami -t) $INTERNAL_REG_HOST
+  ```
+
+9. Execute the following command to push your docker image to OpenShift image repository.
+
+  ```
+  docker tag modresorts-twas:latest $INTERNAL_REG_HOST/`oc project -q`/modresorts-twas:latest
+
+  docker push $INTERNAL_REG_HOST/`oc project -q`/modresorts-twas:latest
+
+  ```
+
+  When it is done, your application docker image is pushed to the OCP image registry.
+
+10.	Verify the pushed Docker image in OCP cluster.
+
+    a.	From the browser window, click OCP cluster Web Console bookmark to open it with your IBM credentials.
+
+  ![](images/ocp-console-bookmarked.png) 
+  
+    b. In the OCP Web Console Home page, click **Builds**>**Images Streams**.
+  
+   ![](images/ocp-builds-is.png) 
+   
+    b.	Change project (namespace) from **default** to **demo**.
+   
+   ![](images/ocp-demos-project.png) 
+
+    c.	You can see the image you just pushed is listed. Click its link to view its details.
+ 
+   ![](images/ocp-demo-is.png) 
+
+    In the Image Stream Details Page Overview section, you see the public image repository you used to push the image.  Notice that the public image repository is mapped to an internal image repository which is used to deploy the application.  The internal image repository is: image-registry.openshift-image-registry.svc:5000/demo/modresorts.
+ 
+   ![](images/ocp-demo-is-details.png) 
+ 
+#### 6.5	Deploy the WAS Container to OCP cluster
+Once the WAS container image is pushed to the OCP cluster image registry, you can deploy the WAS container to the OCP cluster with OpenShift CLI.
+
+1.	View the deployment YAML files. In this lab you are going to use three YAML files to deploy the WAS container, these files are:
+    *	deploy.yaml – create a WAS container in the OpenShift cluster
+    *	service.yaml – create a service for the WAS container
+    *	route.yaml – create a route of the WAS container service
+
+    a.	From the File Manager window, navigate to **/home/ibmdemo/app-mod-labs/am0300/deploy** directory where these three YAML files are located.
+ 
+    b.	Double-click the **deploy.yaml** file to open it in the text editor. The file contains the basic requirements of the WAS container deployment. The container name is set as modresorts-app-twas and it is deployed to the demo namespace.
+ 
+    ![](images/ocp-twas-deploy-yaml.png)
+    
+    c.	 Double-click the service.yaml file to view its contents. The file exposes the Mod Resorts application ports 9080 and 9443.  The port type in the OpenShift cluster is set as CluerIP. 
+
+    ![](images/ocp-twas-service-yaml.png)
+
+    d.	Double-click the route.yaml file to open it. The file defined the OpenShift route used for the WAS container which enables users to access the Mod Resorts application on a public address.  You need to change the **host**/**name** from **modresorts-app-twas.apps.demo.ibmdte.net** to your OCP cluster host name and **Save** your change. 
+
+      Your OCP cluster hostname is stored in the **CLUSTER_URL** ariable and you can get it with commsnd:
+      
+      ```
+      echo $CLUSTER_URL
+      ```
+      
+    ![](images/ocp-twas-route-yaml.png)
+
+2.	Now you can deploy the WAS container to OCP cluster with these YAML files. From the Terminal window, change to the /home/ibmdemo/app-mod-labs/am0300 directory.
+
+    ```
+    cd /home/ibmdemo/app-mod-labs/am0300
+    ```
+3.	Issue OpenShift CLI command to deploy the WAS container to the OpenShift cluster:
+
+    ```
+    oc apply -f deploy -n demo
+    ``` 
+    this command deploys the three YAML files in the deploy directory and create WAS container pod, service and route in the demo namespace.
+#### 6.6	Verify the Deployment
+
+In this task, you access the OpenShift Web Console to verify the WAS container deployment.
+
+1.	Go back to the OCP Web Console, click **Workloads**>**Pods**, then select **demo** project from the project list.
+
+    ![](images/ocp-workloads-pods-demo.png)
+2.	You see that the WAS container is deployed and is in running status. You can click its name link to go to its overview page where you can see its memory and CPU usage and other detail information.
+
+    ![](images/ocp-twas-demo-pods.png)
+3.	Now from the OCP cluster Web Console navigation panel, click **Networking**>**Services**. You see the WAS container service. Click the service name to view its details.
+ 
+    In the Service Details page, you can see the service ports as you defined in the service.yaml file. 
+ 
+    ![](images/ocp-twas-demo-services.png)
+4.	Next navigate to **Networking**>**Route** to view the WAS container service route. Click the **Location** URL to launch the Mod Resort application.
+ 
+    ![](images/ocp-twas-demo-routes.png)
+5.	The **Mod Resort** application URL is launched in a new web browser window. Type the application context root **/resorts** in the end of the application URL and press **Enter**.
+  
+6.	Click **Advanced**>**Accept Risk and Continue**, the Mod Resorts application home page is displayed.
+
+7.	Click **WHERE TO?** to view city list.
+
+8.	Click **LAS VEGAS, USA** from the list, the weather of the city is displayed.
+
+### 7.	Summary
+
+In this lab, you learned the App Modernization rehosting process. You learned how to move an existing traditional WAS application to WAS Base container and how to deploy it to an OpenShift cluster without any code change. 
+IBM Cloud Pak for Applications, built on the Red Hat OpenShift Container Platform, provides a long-term solution to help you transition between public, private, and hybrid clouds, and to create new business applications. As a key component of IBM Cloud Pak for Applications, traditional WebSphere application Server can still run in containers, and reap the benefits of consistency and reliability that containers provide.
+
+**Congratulations! You have successfully completed App Modernization using WAS Base Container on OCP Lab!**
+

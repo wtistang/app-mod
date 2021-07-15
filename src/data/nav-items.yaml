@@ -1,22 +1,15 @@
-- title: Overview
+- title: Learning with Labs
   pages:
-    - path: /overview/
-- title: Environments
-  pages:
-    - title: ROKS
-      path: /cp4i-on-roks/
-- title: Demos
-  pages:
-    - title: Customer Interactions
-      path: /salesdemos/carrepair-new/overview
-- title: Labs
-  pages:
-    - title: CP4I Labs
-      path: /labs/cp4i
-    - title: APIC Labs
-      path: /APICDevJam
-    - title: Confluent Labs
-      path: /Confluent
+    - title: Overview
+      path: /labs/overview
+    - title: Basic Labs
+      path: /labs/basic-labs
+    - title: App Mod Labs
+      path: /labs/appmod-labs
+    - title: Cloud Native Labs
+      path: /labs/cloudnative-labs
+    - title: DevOps Labs
+      path: /labs/devops-labs
 - title: Resources
   pages:
     - path: /resources/
