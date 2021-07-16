@@ -47,7 +47,7 @@ The connector copies messages from a source MQ queue to a target Event Streams t
 
 **Note: If your using this tutorial in a multi-user ROKS setup, the environment is already prepared for you. Please login to the cluster using LDAP authentication and the credentials provided by your instructor and jump to [Configuring IBM MQ](#task-2-configuring-mq). Also, maske sure that you use a prefix provided by the instructor for queue, topic and server names.**
 
-Because this is a new deployment of the Cloud Pak for Integration that uses Red Hat OpenShift, you need to run some steps to prepare the environment. Initial setup steps are only needed for a fresh installation of the Cloud Pak. They do not need to be repeated.
+Because this is a new deployment of the App Mod Workshop that uses Red Hat OpenShift, you need to run some steps to prepare the environment. Initial setup steps are only needed for a fresh installation of the Cloud Pak. They do not need to be repeated.
 
 **Note: For this lab, we based on MAC workstation (MAC OSX)**
 
@@ -93,7 +93,7 @@ Requirements:
 1.	**Networking** .
 2.	**Routes** .
 3.	Drill down the Project to **cp4i** .
-4.	Click link to access Cloud Pak for Integration .
+4.	Click link to access App Mod Workshop .
 ```
 ![](images/ibm-cloud-acces-cp4i-1.png)
 
@@ -160,7 +160,7 @@ Connectors are available for copying data in both directions:
 
 ![](images/ibm-cloud-login-cp4i.png)
 
-10.In the **Welcome page of the IBM Cloud Pak for Integration**, click **Runtimes** and locate the **Queue Manager** in Instance Type and click **mq-demo**.
+10.In the **Welcome page of the IBM App Mod Workshop**, click **Runtimes** and locate the **Queue Manager** in Instance Type and click **mq-demo**.
 
 ![](images/lab4-cp4i-welcomepage.png)
 
@@ -483,7 +483,7 @@ You can find a file sample in **~/Downloads/es-mq/es-mq/kafka-connect-mq-source/
 
 Many organizations use both IBM MQ and Apache Kafka for their messaging needs. Although they’re generally used to solve different kinds of messaging problems, users often want to connect them together for various reasons. For example, IBM MQ can be integrated with systems of record while Apache Kafka is commonly used for streaming events from web applications. The ability to connect the two systems together enables scenarios in which these two environments intersect.
 
-1.Open a browser and go to IBM Cloud Pak for Integration. Select **Runtimes** and click **mq-demo**.
+1.Open a browser and go to IBM App Mod Workshop. Select **Runtimes** and click **mq-demo**.
 
 ![](images/lab4-cp4i-welcomepage.png)
 
@@ -511,7 +511,7 @@ Many organizations use both IBM MQ and Apache Kafka for their messaging needs. A
 
 ![](images/lab4-sending-messaging-to-es.png)
 
-8.Back to IBM Cloud Pak for Integration. Select **Runtimes** and click **es-demo**. In the **Welcome to IBM Event Streams**, click **Topics** on the left.
+8.Back to IBM App Mod Workshop. Select **Runtimes** and click **es-demo**. In the **Welcome to IBM Event Streams**, click **Topics** on the left.
 
 ![](images/lab4-eventstreams-menu-topics.png)
 
@@ -597,7 +597,7 @@ Many organizations use both IBM MQ and Apache Kafka for their messaging needs. A
 
 ![](images/lab4-monitoring-mqtoevent.png)
 
-29.	Open a browser and click IBM Cloud Pak for Integration. Select **Runtimes** and click mq-demo.
+29.	Open a browser and click IBM App Mod Workshop. Select **Runtimes** and click mq-demo.
 
 30.	Go to mq instance and In Welcome to IBM MQ page, click the menu on the left, selecting Manage.
 
@@ -615,9 +615,9 @@ Many organizations use both IBM MQ and Apache Kafka for their messaging needs. A
 
 ## Task 8 - Using Operations Dashboard (tracing)
 
-**Cloud Pak for Integration Operations Dashboard Add-on** is based on **Jaeger** open source project and the **OpenTracing** standard to monitor and troubleshoot microservices-based distributed systems. **Operations Dashboard** can distinguish call paths and latencies. **DevOps** personnel, developers, and performance specialists now have one tool to visualize throughput and latency across integration components that run on Cloud Pak for Integration.
+**App Mod Workshop Operations Dashboard Add-on** is based on **Jaeger** open source project and the **OpenTracing** standard to monitor and troubleshoot microservices-based distributed systems. **Operations Dashboard** can distinguish call paths and latencies. **DevOps** personnel, developers, and performance specialists now have one tool to visualize throughput and latency across integration components that run on App Mod Workshop.
 
-**Cloud Pak for Integration Operations Dashboard Add-on** is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
+**App Mod Workshop Operations Dashboard Add-on** is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
 
 1.Go to the IBM Cloud Pak Integration main page. In the **Capabilities** section, click capability type to access tracing namespace to open the Operations Dashboard instance.
 
@@ -649,4 +649,4 @@ You have successfully completed the tutorial. You were able to add a layer of se
 •	Start a test run of the flow and view the data
 •	Analyze MQ using Operations Dashboard
 
-To try out more labs, go to Cloud Pak for Integration Demos. For more information about the Cloud Pak for Integration, go to https://www.ibm.com/cloud/cloud-pak-for-integration.
+To try out more labs, go to App Mod Workshop Demos. For more information about the App Mod Workshop, go to https://www.ibm.com/cloud/cloud-pak-for-integration.

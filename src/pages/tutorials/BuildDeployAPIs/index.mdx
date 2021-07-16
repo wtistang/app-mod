@@ -31,7 +31,7 @@ import ArticleDetails from '../../../../src/gatsby-theme-carbon/components/Artic
 
 ## Lab Overview
 
-In this tutorial, you use the IBM Cloud Pak for Integration 2021.1.1 to deploy an App Integration flow on containers and expose it as a secure rate-limited API on RedHat OpenShift 4.6.
+In this tutorial, you use the IBM App Mod Workshop 2021.1.1 to deploy an App Integration flow on containers and expose it as a secure rate-limited API on RedHat OpenShift 4.6.
 
 Extend your back-end integrations securely to partners and developers.
 Extending access via APIs to your back-end integrations empower your partners and developer community to create new business value, technical value, and customer experiences for your products and offerings. Spur innovations where a number of technologies are combined to create something new, for example, extending the ability apply for loan pre-approvals that can be used within apps that search for cars or real estate. To do this, you must first create the back-end integrations, which combine data from existing core systems, disparate assets, or SaaS services with the ability to send critical data between systems reliably. Second, you need to provide APIs to your back-end integrations that secure access and apply rate limits.
@@ -71,8 +71,8 @@ Implement enterprise grade messaging that is secure and reliable for any applica
 
 ### Task 1 - Configure Message Queue (MQ) to Authorize and Accept Data.
 
-As this is a brand-new deployment of the Cloud Pak for Integration, all instances of integrations, message queues, and event streams are deployed as microservices. We need to authorize the Message Queue service to accept incoming data from the integration running on a separate server.
-Cloud Pak for Integration provides a single solution for all of your enterprise integration needs. The platform provides a comprehensive set of industry-leading capabilities. Use any of them on their own or together through a single interface. Create, manage, and monitor all of your integrations across SaaS applications, messaging, streams, APIs, high-speed transfer, and more.
+As this is a brand-new deployment of the App Mod Workshop, all instances of integrations, message queues, and event streams are deployed as microservices. We need to authorize the Message Queue service to accept incoming data from the integration running on a separate server.
+App Mod Workshop provides a single solution for all of your enterprise integration needs. The platform provides a comprehensive set of industry-leading capabilities. Use any of them on their own or together through a single interface. Create, manage, and monitor all of your integrations across SaaS applications, messaging, streams, APIs, high-speed transfer, and more.
 Unlock the power of your data and support the scale required for all of your integration and digital transformation initiatives.
 
 
@@ -98,7 +98,7 @@ Unlock the power of your data and support the scale required for all of your int
 
   ![](images/lab1-task2.5.png)
 
-7.Open a browser and go to your **Cloud Pak for Integration Platform Navigation**. On the **Message** box, click to open your **MQ Queue Manager Runtime**.
+7.Open a browser and go to your **App Mod Workshop Platform Navigation**. On the **Message** box, click to open your **MQ Queue Manager Runtime**.
 
   ![](images/view-capabilities.png)
 
@@ -128,7 +128,7 @@ Unlock the power of your data and support the scale required for all of your int
 
 ### Task 2 – Configuring the integration flow using App Connect Enterprise Toolkit
 
-This task covers opening and examining an application integration flow in the IBM App Connect Enterprise Toolkit. With the Toolkit you can build powerful and complex integration applications, services, and APIs quickly and easily using a visual designer. Your integration solutions can be directly deployed to the Cloud Pak for Integration on IBM Cloud Pak running on-premise, in any cloud, or combinations of both.
+This task covers opening and examining an application integration flow in the IBM App Connect Enterprise Toolkit. With the Toolkit you can build powerful and complex integration applications, services, and APIs quickly and easily using a visual designer. Your integration solutions can be directly deployed to the App Mod Workshop on IBM Cloud Pak running on-premise, in any cloud, or combinations of both.
 
 1.Open a terminal window. If you are using MAC click App Connect Enterprise Toolkit icon and go to the Step 3.
 
@@ -384,7 +384,7 @@ x-ibm-configuration:
 
 Now that you've built, secured, published, and tested your API, the last step is to add it to the Asset Repository. With the Asset Repository, your organization can store, manage, and share all of your integration assets in one central location. Sharing assets in this way increases collaboration between teams, avoids unnecessary duplication and boosts productivity.
 
-1.To push our new API to **Asset Repository** you will use the API Manager. Back to the Cloud Pak for Integration Navigator Platform browser tab. Open the **Menu** and on **Run** section, select **APIs**.
+1.To push our new API to **Asset Repository** you will use the API Manager. Back to the App Mod Workshop Navigator Platform browser tab. Open the **Menu** and on **Run** section, select **APIs**.
 
   ![](images/open-apimanager.png)
 
@@ -433,7 +433,7 @@ Great! Here you learned how developers can leverage the Automation Assets reposi
 ### Task 6 – Using Operations Dashboard (tracing)
 
 
-Cloud Pak for Integration - Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on Cloud Pak for Integration. Cloud Pak for Integration - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
+App Mod Workshop - Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on App Mod Workshop. App Mod Workshop - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
 
 1.Let's explore the Operations Dashboard. Open again the **Menu**, and on the **Administration** section, open **Integration capabilities**.
 
@@ -473,4 +473,4 @@ You have successfully completed this lab. In this lab you learned how to:
  - Secure access to the back-end integration by creating a secure, governed API using the OpenAPI definition of the integration.
  - Use Operations Dashboard to tracing  MQ, APIC and APPC
 
-Now that you’ve made your back-end integrations ready for external distribution, your developer community is able to access the APIs via a developer portal. The developer portal is included in the platform and provides a full-featured experience to onboard and nurture your API consumers.  For more information about Cloud Pak for Integration, access [here](https://www.ibm.com/cloud/cloud-pak-for-integration).
+Now that you’ve made your back-end integrations ready for external distribution, your developer community is able to access the APIs via a developer portal. The developer portal is included in the platform and provides a full-featured experience to onboard and nurture your API consumers.  For more information about App Mod Workshop, access [here](https://www.ibm.com/cloud/cloud-pak-for-integration).

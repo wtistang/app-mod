@@ -31,7 +31,7 @@ import ArticleDetails from '../../../../src/gatsby-theme-carbon/components/Artic
 
 ## Lab Overview
 
-In this tutorial, you use the Cloud Pak for Integration 2021.1.1 to create an App Integration flow (IBM App Connect Enterprise) that sends messages to a queue (IBM MQ) on OpenShift 4.6.
+In this tutorial, you use the App Mod Workshop 2021.1.1 to create an App Integration flow (IBM App Connect Enterprise) that sends messages to a queue (IBM MQ) on OpenShift 4.6.
 
 
 ### Takeaways
@@ -57,7 +57,7 @@ In this tutorial, you use the Cloud Pak for Integration 2021.1.1 to create an Ap
 
 ### Task 1 - Configure Message Queue (IBM MQ) to Authorize and Accept Data
 
-As this is a brand-new deployment of the Cloud Pak for Integration, all instances of integrations, message queues, and APIs are deployed as microservices. You need to authorize the Message Queue service to accept incoming data from the integration running on a separate server.
+As this is a brand-new deployment of the App Mod Workshop, all instances of integrations, message queues, and APIs are deployed as microservices. You need to authorize the Message Queue service to accept incoming data from the integration running on a separate server.
 
 1.Let's configure the MQ security. Open a browser and go to [https://github.com/ibm-cloudintegration/dte-labs/tree/master/Lab2-AccessBackendSystems/resources](https://github.com/ibm-cloudintegration/dte-labs/tree/master/Lab2-AccessBackendSystems/resources).
 
@@ -79,7 +79,7 @@ As this is a brand-new deployment of the Cloud Pak for Integration, all instance
 
 ![](images/ace-mq-download-ace-mq.png)
 
-6.Open a browser and go to your **Cloud Pak for Integration Platform Navigation**. From here, you are able to navigate to all the integration runtimes and capabilities available in the platform. Capabilities include: API Connect, App Connect Dashboard, App Connect Designer , Asset Repository and Operations Dashboard. Let's explore the Message Runtime. IBM MQ for Cloud Pak for Integration has a web GUI, which the Integration Developer, with security authorization, is able to manage the different MQ objects (queues, channels, topics and so on). On the *Cloud Pak for Integration Home*, scroll down to see the **Message** box, and click to open your **MQ Queue Manager Runtime**.
+6.Open a browser and go to your **App Mod Workshop Platform Navigation**. From here, you are able to navigate to all the integration runtimes and capabilities available in the platform. Capabilities include: API Connect, App Connect Dashboard, App Connect Designer , Asset Repository and Operations Dashboard. Let's explore the Message Runtime. IBM MQ for App Mod Workshop has a web GUI, which the Integration Developer, with security authorization, is able to manage the different MQ objects (queues, channels, topics and so on). On the *App Mod Workshop Home*, scroll down to see the **Message** box, and click to open your **MQ Queue Manager Runtime**.
 
 ![](images/mq-runtime-home.png)
 
@@ -157,7 +157,7 @@ In this task, take an existing integration flow in ACE and modify it to send onl
 
 ![](images/ace-mq-save-bar-file.png)
 
-Congratulations! You have the BAR file. Next section you will deploy the file as container in Cloud Pak for Integration. Now, you are welcome to **close** the Toolkit.
+Congratulations! You have the BAR file. Next section you will deploy the file as container in App Mod Workshop. Now, you are welcome to **close** the Toolkit.
 
 ***
 
@@ -166,7 +166,7 @@ Congratulations! You have the BAR file. Next section you will deploy the file as
 ### Task 3 - Deploy Integration BAR file as containers
 
 
-In this task, deploy the integration flow as App Connect Enterprise containers running in Kubernetes on the Cloud Pak for Integration. You then test the integration API by calling the API to create a new order and confirm the response payload and data in the queue.
+In this task, deploy the integration flow as App Connect Enterprise containers running in Kubernetes on the App Mod Workshop. You then test the integration API by calling the API to create a new order and confirm the response payload and data in the queue.
 
 1.Back to the **Cloud Pak Platform Navigator** in the browser. Open the **Menu** and on the **Run** section, open the **Integrations** dashboard.
 
@@ -235,7 +235,7 @@ curl -G -k  http://neworder-http-cp4i.mycluster-dal12-c3c-32x-4e85092308b6e4e8c2
 
 ## Using Operational Dashboard
 
-Cloud Pak for Integration - Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on Cloud Pak for Integration. Cloud Pak for Integration - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
+App Mod Workshop - Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on App Mod Workshop. App Mod Workshop - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
 
 1.Let's explore the Operations Dashboard. Open again the **Menu**, and on the **Administration** section, open **Integration capabilities**.
 

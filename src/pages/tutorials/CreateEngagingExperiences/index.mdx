@@ -33,9 +33,9 @@ import ArticleDetails from '../../../../src/gatsby-theme-carbon/components/Artic
 
 ## Lab Overview
 
-In this tutorial, you use the Cloud Pak for Integration 2021.1.1 to create a topic in Kafka, modify an integration flow to call an API, emit an event onto the topic, and use the tracing tool to verify the message from App Connect Enterprise to Event Streams.
+In this tutorial, you use the App Mod Workshop 2021.1.1 to create a topic in Kafka, modify an integration flow to call an API, emit an event onto the topic, and use the tracing tool to verify the message from App Connect Enterprise to Event Streams.
 
-The most interesting and impactful new applications in an enterprise are those that provide interactive experiences by reacting to existing systems carrying out a business function. In this tutorial, we take a look at an example from the retail industry. Starting with an existing API orchestrating the business function to "place an order". Let's say that when a customer places an order, we want to provide a real-time response. We want to reward the customer with points in a customer loyalty app or gamification experience or sign them up for a certain email nurture program. To do that, we need each order to emit an event. The Cloud Pak for Integration combines integration capabilities with Kafka based event streaming to make the data available for cloud-native applications to subscribe to a Kafka topic and use it for various business purposes.
+The most interesting and impactful new applications in an enterprise are those that provide interactive experiences by reacting to existing systems carrying out a business function. In this tutorial, we take a look at an example from the retail industry. Starting with an existing API orchestrating the business function to "place an order". Let's say that when a customer places an order, we want to provide a real-time response. We want to reward the customer with points in a customer loyalty app or gamification experience or sign them up for a certain email nurture program. To do that, we need each order to emit an event. The App Mod Workshop combines integration capabilities with Kafka based event streaming to make the data available for cloud-native applications to subscribe to a Kafka topic and use it for various business purposes.
 
 ### Takeaways
 
@@ -122,7 +122,7 @@ Creating an Event Streams topic in the existing Event Streams instance.
 
 ![](images/lab3-task2.3-unzip-eslab.png)
 
-4.Open a browser and go to your **Cloud Pak for Integration Platform Navigation**. From here, you are able to navigate to all the integration runtimes and capabilities available in the platform. Capabilities include: EventStreams, API Connect, App Connect Dashboard, App Connect Designer , Asset Repository and Operations Dashboard. Let's explore the Event streaming runtimes. On the *Cloud Pak for Integration Home*, scroll down to see the **Event streaming** box, and click to open your **es-dev** instance.
+4.Open a browser and go to your **App Mod Workshop Platform Navigation**. From here, you are able to navigate to all the integration runtimes and capabilities available in the platform. Capabilities include: EventStreams, API Connect, App Connect Dashboard, App Connect Designer , Asset Repository and Operations Dashboard. Let's explore the Event streaming runtimes. On the *App Mod Workshop Home*, scroll down to see the **Event streaming** box, and click to open your **es-dev** instance.
 
 ![](images/cp4i-home-es-dev.png)
 
@@ -408,7 +408,7 @@ curl -G -k http://customerinfo-http-cp4i.mycluster-wdc06-c3c-32x64-4e85092308b6e
 
 ![](images/lab3-task5.4-curl-api-customerinfo.png)
 
-5.A message was sent from App Connect (Integration Server) to IBM EventStreams. Let's check it! Back to Cloud Pak for Integration home page, open the **Menu** again, and on **Run** section, now click **Kafka clusters**.
+5.A message was sent from App Connect (Integration Server) to IBM EventStreams. Let's check it! Back to App Mod Workshop home page, open the **Menu** again, and on **Run** section, now click **Kafka clusters**.
 
 ![](images/kafka-clusters.png)
 
@@ -448,9 +448,9 @@ curl -G -k http://customerinfo-http-cp4i.mycluster-wdc06-c3c-32x64-4e85092308b6e
 
 The Operations Dashboard collects data from all the registered capabilities (such as MQ) in real time. By default, and for this lab, 10 percent of traffic is sampled.
 
-IBM Cloud Pak for Integration Operations Dashboard has adopted OpenTracing API specification for collecting tracing data. OpenTracing is comprised of an API specification for distributed tracing, frameworks and libraries that have implemented the specification and documentation.
+IBM App Mod Workshop Operations Dashboard has adopted OpenTracing API specification for collecting tracing data. OpenTracing is comprised of an API specification for distributed tracing, frameworks and libraries that have implemented the specification and documentation.
 
-o	Trace: The description of a transaction as it moves through IBM Cloud Pak for Integration platform.
+o	Trace: The description of a transaction as it moves through IBM App Mod Workshop platform.
 o	Span: A named, timed operation representing a piece of the workflow (e.g. calling an API, invoking a message flow or placing a message in a queue or a topic).
 o	Span context: Trace information that accompanies the distributed transaction, including when it passes the service to service over the network or through a message bus.
 
@@ -462,7 +462,7 @@ o	Span context: Trace information that accompanies the distributed transaction, 
 
   ![](images/tracing-demo.png)
 
-3.In the Tracing page, check the Overview page. You see all the products that you can use this tool: **APIC (including DataPower), APP Connect and MQ**. You see all the tracing of MQ, App Connect and APIC (You see how to configure tracing in APIC lab). Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on Cloud Pak for Integration. Cloud Pak for Integration - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
+3.In the Tracing page, check the Overview page. You see all the products that you can use this tool: **APIC (including DataPower), APP Connect and MQ**. You see all the tracing of MQ, App Connect and APIC (You see how to configure tracing in APIC lab). Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on App Mod Workshop. App Mod Workshop - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
 
 ![](images/lab3-task6.2-tracing-overview.png)
 
@@ -489,4 +489,4 @@ You have successfully completed this lab. In this lab you learned how to:
 •	Deploy the new integration as containers in Kubernetes.
 •	Use Operations Dashboard tool
 
-Now that you’ve created a topic in Kafka (Event Streams), applications are able to subscribe and received data. To try out more labs, go to Cloud Pak for Integration Demos. For more information about the Cloud Pak for Integration, go to https://www.ibm.com/cloud/cloud-pak-for-integration.
+Now that you’ve created a topic in Kafka (Event Streams), applications are able to subscribe and received data. To try out more labs, go to App Mod Workshop Demos. For more information about the App Mod Workshop, go to https://www.ibm.com/cloud/cloud-pak-for-integration.

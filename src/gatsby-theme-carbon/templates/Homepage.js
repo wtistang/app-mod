@@ -5,7 +5,7 @@ import { calloutLink } from './Homepage.module.scss';
 
 import Carbon from '../../images/cloud-data.jpg';
 
-const FirstLeftText = () => <p>What is IBM Cloud Pak for Integration?</p>;
+const FirstLeftText = () => <p>What is IBM App Mod Workshop?</p>;
 
 const FirstRightText = () => (
   <p>
@@ -33,7 +33,7 @@ const SecondRightText = () => (
   </p>
 );
 
-const BannerText = () => <h1>IBM Cloud Pak for Integration</h1>;
+const BannerText = () => <h1>IBM App Mod Workshop</h1>;
 
 const customProps = {
   Banner: <HomepageBanner renderText={BannerText} image={Carbon} />,

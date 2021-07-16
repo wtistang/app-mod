@@ -35,7 +35,7 @@ Need support? Contact **Rafael Osorio**
 
 ## Lab Overview
 
-In this tutorial, you use the IBM Cloud Pak for Integration 2021.1.1 to define GraphQL APIs that proxy to a backend GraphQL server. GraphQL is a query language for APIs that gives an application client greater control over what data it retrieves in an API request when compared with a REST API request.
+In this tutorial, you use the IBM App Mod Workshop 2021.1.1 to define GraphQL APIs that proxy to a backend GraphQL server. GraphQL is a query language for APIs that gives an application client greater control over what data it retrieves in an API request when compared with a REST API request.
 
 API Connect GraphQL support also allows rate limiting and other controls using API Gateway.
 
@@ -63,13 +63,13 @@ GraphQL provides the following particular advantages over REST APIs:
 
 However, this flexibility presents rate limiting challenges, because two seemingly very similar requests might return vastly different amounts of data, and what might have required multiple REST API requests, each counting towards the rate limit, might require only a single GraphQL API request. It is important therefore that rate limiting controls are imposed that reflect the amount of data that is retrieved. 
 
-Cloud Pak for Integration API Connect enables you to create a GraphQL API proxy definition that proxies a backend GraphQL server.  API Connect extends the GraphQL standard by providing, in a GraphQL API definition, the ability to configure a range of settings that are used to calculate the complexity of a GraphQL request and an associated cost that counts towards the rate limit.
+App Mod Workshop API Connect enables you to create a GraphQL API proxy definition that proxies a backend GraphQL server.  API Connect extends the GraphQL standard by providing, in a GraphQL API definition, the ability to configure a range of settings that are used to calculate the complexity of a GraphQL request and an associated cost that counts towards the rate limit.
 
 ***
 
 ## Create a GraphQL Proxy API
 
-1.Open a browser and go to your **Cloud Pak for Integration Platform Navigation**. On the **API Lifecycle management** box, click to open your **API Connect** Runtime.
+1.Open a browser and go to your **App Mod Workshop Platform Navigation**. On the **API Lifecycle management** box, click to open your **API Connect** Runtime.
 
   ![](images/graphql-cp4i-home.png)
 
@@ -334,4 +334,4 @@ Now that we’ve published our API, we need to make sure that our API consumers 
 
 Congratulations! You have successfully created a GraphQL Proxy API, published the API as part of a Product, applied controls and rate limits, and tested using Developer Portal.
 
-To learn more about Cloud Pak for Integration and API Life Cycle Management, visit <https://www.ibm.com/cloud/cloud-pak-for-integration>
+To learn more about App Mod Workshop and API Life Cycle Management, visit <https://www.ibm.com/cloud/cloud-pak-for-integration>

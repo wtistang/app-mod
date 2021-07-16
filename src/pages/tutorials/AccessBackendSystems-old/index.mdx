@@ -6,7 +6,7 @@ import ArticleDetails from '../../../../src/gatsby-theme-carbon/components/Artic
 
 <ArticleDetails name="Carlos Hirata, Ravi Katikala" lastUpdated="January 2021" readTimeMinutes="45" />
 
-In this tutorial, you use the Cloud Pak for Integration 2020.4.1 to create an App Integration flow (IBM App Connect Enterprise) that sends messages to a queue (IBM MQ) on OpenShift 4.6.
+In this tutorial, you use the App Mod Workshop 2020.4.1 to create an App Integration flow (IBM App Connect Enterprise) that sends messages to a queue (IBM MQ) on OpenShift 4.6.
 
 <AnchorLinks>
   <AnchorLink>Introduction</AnchorLink>
@@ -30,7 +30,7 @@ In this tutorial, you use the Cloud Pak for Integration 2020.4.1 to create an Ap
 
 ### Task 1 - Configure Message Queue (IBM MQ) to Authorize and Accept Data
 
-As this is a brand-new deployment of the Cloud Pak for Integration, all instances of integrations, message queues, and APIs are deployed as microservices. You need to authorize the Message Queue service to accept incoming data from the integration running on a separate server.
+As this is a brand-new deployment of the App Mod Workshop, all instances of integrations, message queues, and APIs are deployed as microservices. You need to authorize the Message Queue service to accept incoming data from the integration running on a separate server.
 
 1.Open a browser and enter https://github.com/ibm-cloudintegration/dte-labs/tree/master/Lab2-AccessBackendSystems/resources.You need to configure the MQ security.
 
@@ -52,7 +52,7 @@ As this is a brand-new deployment of the Cloud Pak for Integration, all instance
 
 ![](images/ace-mq-download-ace-mq.png)
 
-6.Open a browser and select on the Bookmark Bar (IBM Cloud Pak for Integration). From here, you are able to navigate to all the integration and development technology contained within the platform. Today, this technology Capabilities and Runtimes instances. Capabilities include: API Connect, App Connect Dashboard, App Connect Designer , Asset Repository and Operations Dashboard. To access IBM MQ click the Runtimes link. This task covers administering and creating a new queue in IBM MQ. IBM MQ for Cloud Pak for Integration has a web GUI, which the Integration Developer, with security authorization, is able to manage the different IBM MQ objects (queues, channels, topics and so on).
+6.Open a browser and select on the Bookmark Bar (IBM App Mod Workshop). From here, you are able to navigate to all the integration and development technology contained within the platform. Today, this technology Capabilities and Runtimes instances. Capabilities include: API Connect, App Connect Dashboard, App Connect Designer , Asset Repository and Operations Dashboard. To access IBM MQ click the Runtimes link. This task covers administering and creating a new queue in IBM MQ. IBM MQ for App Mod Workshop has a web GUI, which the Integration Developer, with security authorization, is able to manage the different IBM MQ objects (queues, channels, topics and so on).
 
 ![](images/lab2-task1.6.png))
 
@@ -158,9 +158,9 @@ App Connect Enterprise Toolkit saves and compile message flows, sub flows into a
 ### Task 3 - Deploy Integration BAR file as containers
 
 
-In this task, deploy the integration flow as App Connect Enterprise containers running in Kubernetes on the Cloud Pak for Integration. You then test the integration API by calling the API to create a new order and confirm the response payload and data in the queue.
+In this task, deploy the integration flow as App Connect Enterprise containers running in Kubernetes on the App Mod Workshop. You then test the integration API by calling the API to create a new order and confirm the response payload and data in the queue.
 
-1.In your browser, return to the IBM Cloud Pak for Integration.Under **Capabilities**, select the **App Connect Dashboard** line and click the instance.
+1.In your browser, return to the IBM App Mod Workshop.Under **Capabilities**, select the **App Connect Dashboard** line and click the instance.
 
 ![](images/lab2-task3.1.png)
 
@@ -230,9 +230,9 @@ In this page, you can download a swagger file (you can import this file in API C
 ## Using Operations Dashboard (tracing)
 
 
-Cloud Pak for Integration - Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance specialists now have one tool to visualize throughput and latency across integration components that run on Cloud Pak for Integration. Cloud Pak for Integration - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
+App Mod Workshop - Operations Dashboard Add-on is based on Jaeger open source project and the OpenTracing standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance specialists now have one tool to visualize throughput and latency across integration components that run on App Mod Workshop. App Mod Workshop - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
 
-1.Back to the browser with Operations Dashboard opened. Click the Overview option and you see all the tracing of **MQ, App Connect and APIC** (You see how to configure tracing in APIC lab). Operations Dashboard Add-on is based on Jaeger open source project and the **OpenTracing** standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on Cloud Pak for Integration. Cloud Pak for Integration - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
+1.Back to the browser with Operations Dashboard opened. Click the Overview option and you see all the tracing of **MQ, App Connect and APIC** (You see how to configure tracing in APIC lab). Operations Dashboard Add-on is based on Jaeger open source project and the **OpenTracing** standard to monitor and troubleshoot microservices-based distributed systems. Operations Dashboard can distinguish call paths and latencies. DevOps personnel, developers, and performance engineers now have one tool to visualize throughput and latency across integration components that run on App Mod Workshop. App Mod Workshop - Operations Dashboard Add-on is designed to help organizations that need to meet and ensure maximum service availability and react quickly to any variations in their systems.
 
 ![](images/ace-mq-tracing-overview.png)
 
