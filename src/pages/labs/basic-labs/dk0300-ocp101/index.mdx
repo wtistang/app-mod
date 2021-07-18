@@ -58,7 +58,41 @@ During this lab, you complete the following tasks:
   The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
 3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/dk0300st** directory and double-click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-dk0300st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+ 
 #### 6.2 Work with OCP cluster through OCP Web Console
 
 ##### 6.2.1 Access OCP cluster Web Console
@@ -517,11 +551,7 @@ The command line tools may be used to:
 
 #### 6.3.1  Login to OCP cluster from Command Line
 
-1. Open a terminal window by clicing its icon from the Desktop toolbar.
-
-  ![](images/terminal-icon.png)
-
-2. Change directory to:  **/home/ibmdemo/app-mod-labs/dk0300st**
+1. In the terminal window change directory to:  **/home/ibmdemo/app-mod-labs/dk0300st**
 
   ```
   cd /home/ibmdemo/app-mod-labs/dk0300st
@@ -533,7 +563,7 @@ The command line tools may be used to:
   oc login https://api.demo.ibmdte.net:6443
   ```
 
-  when promted, enter the login credientials as: **ibmadmin**/**engageibm**.
+  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
   
   ```
   Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
@@ -555,7 +585,8 @@ The command line tools may be used to:
   ```
 
   Note that resources in Openshift have a group, version, and kind. Some resources are global (not in a namespace), while others are scoped to a namespace. Many resources also have short names to save typing when using the command line tool. For example, you may use **cm** instead of ConfigMap as a command line parameter when the parameter is for a **KIND**.
-  Example output:
+  
+  Sample output:
 
   ```
   NAME                                  SHORTNAMES       APIGROUP                              NAMESPACED   KIND
@@ -592,7 +623,7 @@ The command line tools may be used to:
   ```
   oc get pods --all-namespaces
   ```
-  Example output:
+  Sample output:
   ```
   NAMESPACE                                          NAME                                                              READY   STATUS      RESTARTS   AGE
   default                                            ibm-toolkit-h9z8n                                                 0/1     Completed   0          3d6h
@@ -624,16 +655,16 @@ The command line tools may be used to:
   oc get projects
   ```
 
-    ```
-    NAME                                                    DISPLAY NAME   STATUS
-    default                                                                Active
-    ibm-cert-store                                                         Active
-    ibm-system                                                             Active
-    kube-node-lease  
-    ....                                                      Active
-    ```
+  ```
+  NAME                                                    DISPLAY NAME   STATUS
+  default                                                                Active
+  ibm-cert-store                                                         Active
+  ibm-system                                                             Active
+  kube-node-lease  
+  ....                                                      Active
+  ```
 
-6. Get a specific project **dk0300st** from the **default** project. 
+6. Switch to a specific project **dk0300st** from the **default** project. 
 
   ```
   oc project dk0300st
@@ -905,7 +936,7 @@ The command line tools may be used to:
 
 #### 6.3.5 Deploy new applications
 
-You can also using **oc** commands to deploy applications to OCP cluster, the deplyment process is simliar to the Kubernetes deployment introduced in the **[DK0200 - Kubernetes Introduction](/labs/basic-labs/dk0200-kubernetes101/)** Lab, you just need to replace the **kubectl** with **oc** in the commands.  If you are intrested, please learn from the  **[DK0200 - Kubernetes Introduction](/labs/basic-labs/dk0200-kubernetes101/)** Lab.
+You can also using **oc** commands to deploy applications to OCP cluster, the deployment process is simliar to the Kubernetes deployment introduced in the **[DK0200 - Kubernetes Introduction](/labs/basic-labs/dk0200-kubernetes101/)** Lab, you just need to replace the **kubectl** with **oc** in the commands.  If you are intrested, please learn from the  **[DK0200 - Kubernetes Introduction](/labs/basic-labs/dk0200-kubernetes101/)** Lab.
 
 
 ### 7.	Summary

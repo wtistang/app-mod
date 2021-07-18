@@ -9,13 +9,8 @@ const FirstLeftText = () => <p>What is IBM App Mod Workshop?</p>;
 
 const FirstRightText = () => (
   <p>
-    A complete set of integration capabilities to efficiently connect your applications and data wherever they live.
-    <a
-      className={calloutLink}
-      href="https://www.ibm.com/cloud/cloud-pak-for-integration"
-    >
-      Overview →
-    </a>
+     IBM App Mod Workshop focuses on the solutions for app modernization and move to cloud journey. This lab series walk you through different end-to-end app modernization and DevOps solutions and show how to create native cloud app or move the existing WebSphere workload to cloud, using technologies including Docker, Kubernetes, OpenShift, Liberty, Transformation Advisor, and Cloud Native Toolkit.
+
   </p>
 );
 

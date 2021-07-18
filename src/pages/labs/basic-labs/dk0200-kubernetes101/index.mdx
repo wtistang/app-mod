@@ -13,7 +13,7 @@ The kubectl is a command line tool to communicate with the Kubernetes master nod
 
 The objectives of this lab are to help you:
 
-* get familar with the kubectl commands
+* get familiar with the kubectl commands
 *	learn how to push a Docker image to a Kubernetes cluster internal image registry
 * learn how to deploy an application to Kubernetes cluster
 
@@ -58,27 +58,57 @@ During this lab, you complete the following tasks:
   The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
 3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo/passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/dk0200st** directory and double-click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-dk0200st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+ 
 #### 6.2 Access the OCP Cluster
 
 The Kubernetes command-line tool, **kubectl**, has been installed in the workstation.  It allows you to run commands against Kubernetes clusters, to deploy applications, to inspect, to manage cluster resources, and to view logs. kubectl must be configured for the environment that it can be running against. In this lab you are using the OpenShift Container Platform (OCP) cluster as the Kubernetes cluster. So you need to login into the OCP cluster with the OCP command line tool **oc** which can provide the required configuration
 
-1. Open a terminal window by clicking its icon on the Desktop tool bar.
- 
-    ![](images/terminal-icon.png)
-
-2.	In the terminal window, issue the following command to navigate to the **/home/ibmdemo/app-mod-labs/dk0200st** directory.
+1. In the terminal window, issue the following command to navigate to the **/home/ibmdemo/app-mod-labs/dk0200st** directory.
 
   ```
   cd /home/ibmdemo/app-mod-labs/dk0200st
   ```
-3. Issue the **oc login** command to login to the OCP cluster:
+2. Issue the **oc login** command to login to the OCP cluster:
 
   ```
   oc login https://api.demo.ibmdte.net:6443
   ```
 
-  when promted, enter the login credientials as: **ibmadmin**/**engageibm**.
+  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
   
   ```
   Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
@@ -95,12 +125,13 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
 
   The kubectl command line interface is now configured to communicate with the OCP cluster.
 
-4. Test to verify the **kubectl** is installed.
+3. Test to verify the **kubectl** is installed.
 
   ```
   kubectl version --client
   ```
-  The output is link this:
+  
+  Sample output:
   ```
   Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.0+724e12f93f", GitCommit:"4ac9078476ffe9a96e78a24d1b8083ae0283ec27", GitTreeState:"clean", BuildDate:"2019-12-04T06:58:28Z", GoVersion:"go1.12.12", Compiler:"gc", Platform:"linux/amd64"}
   ```
@@ -112,6 +143,8 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   kubectl get nodes
   ```
+  
+  Sample output:
   ```
   NAME      STATUS   ROLES           AGE    VERSION
   master1   Ready    master,worker   379d   v1.19.0+43983cd
@@ -123,11 +156,13 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
     *	Master node(s) – runs four main components of Kubernetes. 1. API Server. 2. Scheduler, 3. Controller Manager and 4. etcd.
     *	Worker node(s) – run application workloads. 
 
-2.	You can also use kubectl describe node  command to get more information about a specific node. In this sample below, the master1 node is used.
+2.	You can also use **kubectl describe node** command to get more information about a specific node. In this sample below, the master1 node is used.
 
   ```
   kubectl describe node master1
   ```
+  
+  Sample output:
   ```
   Name:               master1
   Roles:              master,worker
@@ -264,6 +299,8 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   kubectl get pods -n default
   ```
+  
+  Sample output:
   ```
   NAME                READY   STATUS      RESTARTS   AGE
   ibm-toolkit-h9z8n   0/1     Completed   0          3d
@@ -302,6 +339,8 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   kubectl get pods --all-namespaces | grep -i etcd
   ```
+  
+  Sample output:
   ```
   openshift-etcd-operator                            etcd-operator-7bb5c44558-vl2pc                                    1/1     Running     0          7d19h
   openshift-etcd                                     etcd-master1                                                      3/3     Running     0          218d
@@ -329,13 +368,13 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   docker build . -t simpleapp
   ```
-  Note: the “.” in the command indicates that a Docker image is built using the Dockerfile in the current directory.             
+  Note: the **.** in the command indicates that a Docker image is built using the Dockerfile in the current directory.             
 2.	Create an Kubernetes namespace named **dk0200st** with command:
 
   ```
   kubectl create namespace dk0200st
   ```
-  The output is like this:
+  Sample output:
   ```
   namespace/dk0200st created
   ```
@@ -360,7 +399,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   docker login -u $(oc whoami) -p $(oc whoami -t) $INTERNAL_REG_HOST
   ```
-  The output is like this:
+  Sample output:
   ```
   WARNING! Using --password via the CLI is insecure. Use --password-stdin.
   WARNING! Your password will be stored unencrypted in /home/ibmdemo/.docker/config.json.
@@ -393,6 +432,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   ls -l
   ```
+  Sample output:
   ```
   total 16
   -rw-rw-r-- 1 ibmdemo ibmdemo 946 Jul  7 14:50 Commands.txt
@@ -408,7 +448,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   cat deployment.yaml
   ```
  
-  This is a basic YAML file to create a Pod which uses Docker image simpleapp and names the Pod simpleapp. 
+   Sample output:
   ```
   # A simple yaml file to create a ghost pod
   apiVersion: v1
@@ -425,6 +465,8 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
         - containerPort: 9080
           protocol: TCP
   ```
+  This is a basic YAML file to create a Pod which uses Docker image simpleapp and names the Pod simpleapp. 
+ 
   A basic understanding of the organization of the manifest file is needed to create resources in Kubernetes. Notice that the kube01.yaml manifest file has the following structure:
     *	Define which Kubernetes API is to be used. The name is **apiVersion**.
     *	The possible values of **apiVersion** are v1, apps/v1, v1beta1, v1beta2, batch/v1, extension/v1beta1 and several others. Refer to API documentation at http://kubernetes.io.
@@ -438,17 +480,20 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   kubectl apply -f deployment.yaml
   ```
 
-  The pod is created.
-
+  Sample output:
   ```
   pod/simpleapp created
   ```
+  
+  The pod is created.
 
   e.	Run **kubectl get pods** to check the status of the pod.
  
   ```
   kubectl get pods
   ```
+  
+  Sample output:
   ```
   NAME        READY   STATUS    RESTARTS   AGE
   simpleapp   1/1     Running   0          8m47s
@@ -458,7 +503,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   kubectl get pods -o wide
   ```
-
+  Sample output:
   ```
   NAME        READY   STATUS    RESTARTS   AGE   IP            NODE      NOMINATED NODE   READINESS GATES
   simpleapp   1/1     Running   0          11m   10.129.0.38   master2   <none>           <none>
@@ -476,7 +521,7 @@ The service should be able to find the pod where application is running. It does
   ```
   cat service.yaml
   ```
-
+  Sample output:
   ```
   # A simple yaml file to create a service
   apiVersion: v1
@@ -494,7 +539,7 @@ The service should be able to find the pod where application is running. It does
   ```
   Note that the service simpleapp is assigned through a label to app: **simpleapp** and port 9080 is automatically assigned on the host using type: **NodePort**.
 
-2.	Create the service using **kubectl apply -f service.yaml** then check the service viausing **kubectl get svc** (svc is shorthand for service) command.
+2.	Create the service using **kubectl apply -f service.yaml** then check the service using **kubectl get svc** (svc is shorthand for service) command.
 
   ```
   kubectl apply -f service.yaml
@@ -502,7 +547,7 @@ The service should be able to find the pod where application is running. It does
   ```
   kubectl get svc
   ```
-  
+  Sample output:
   ```
   NAME        TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
   simpleapp   NodePort   172.30.169.2   <none>        9080:30650/TCP   12s
@@ -518,13 +563,13 @@ The service should be able to find the pod where application is running. It does
  
   The application page is displayed.
   
-  ![](images/kubectl-nodeport-url.png)
+  ![](images/kubernetes-nodeport-url.png)
 
   Since you have an environment with multiple nodes, the proxy server would be running on all nodes, so you just use any of the hosts, in this case **master1** node, to reach to the proper host pod. 
  	
 ### 6.8	Create a Route
 
-The serveice you created exposes the application with a unique IP address and port, allows internal communication to expose the application. There was no connection between outside world and the application residing in the pod.
+The service you created exposes the application with a unique IP address and port, allows internal communication to expose the application. There was no connection between outside world and the application residing in the pod.
 
 Next, you create a route to make the service reachable from outside the cluster. Kubernetes routers provide external host name mapping and load balancing to services in the Kunernetes cluster, it is isolated in the IP address assigned to a pod on a host.
 
@@ -533,7 +578,7 @@ Next, you create a route to make the service reachable from outside the cluster.
   ```
   cat route.yaml
   ```
-
+  Sample output:
   ```
   # A simple yaml file to create a route
   kind: Route
@@ -565,7 +610,7 @@ Next, you create a route to make the service reachable from outside the cluster.
   ```
   kubectl get route
   ```
-  
+  Sample output:
   ```
   # A simple yaml file to create a route
   kind: Route
@@ -592,7 +637,7 @@ Next, you create a route to make the service reachable from outside the cluster.
 
   Your application is displayed.
   
-  ![](images/kubectl-route-url.png)
+  ![](images/kubernetes-route-url.png)
 
 
 

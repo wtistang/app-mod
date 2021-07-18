@@ -57,28 +57,55 @@ During this lab, you complete the following tasks:
   The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
 3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/dk0100st** directory and double-click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-dk0100st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+ 
 #### 6.2 Review the files used in the Docker image build
 
-1.	Open a terminal window by clicking its icon on the Desktop tool bar.
- 
-    ![](images/terminal-icon.png)
-
-2.	In the terminal window, issue the following command to navigate to the **/home/ibmdemo/app-mod-labs/dk0100st** directory.
+1.	In the terminal window, issue the following command to navigate to the **/home/ibmdemo/app-mod-labs/dk0100st** directory.
 
   ```
   cd /home/ibmdemo/app-mod-labs/dk0100st
   ```
-  The output of the command is like this:
-  ```
-  ibmdemo@workstation:~/app-mod-labs/dk0100st$ 
-  ```
+  
 3. Review the lab contents in this directory using command:
 
   ```
   ls -l
   ```
-  The output of the command is like this:
+  Sample output:
   ```
   total 20
   -rw-rw-r-- 1 ibmdemo ibmdemo  459 Jul  7 14:45 Commands.txt
@@ -97,7 +124,7 @@ During this lab, you complete the following tasks:
   ```
   docker version
   ````
-  The output of the command is like this:
+  Sample output:
   ```
   Client:
     Version:           18.09.6
@@ -125,7 +152,7 @@ During this lab, you complete the following tasks:
   cat Dockerfile 
   ```  
 
-  The output of the command is like this:
+  Sample output:
   ```
   # (C) Copyright IBM Corporation 2015,2018.
   #
@@ -160,7 +187,7 @@ During this lab, you complete the following tasks:
   cat server.xml 
   ```
 
-  The output of the command is like this:
+  Sample output:
   ```
   <server description="default servlet engine">
 
@@ -191,7 +218,7 @@ During this lab, you complete the following tasks:
 
   Note: the “.” in the command indicates that a Docker image is built using the Dockerfile in the current directory.             
 
-  The output of the command is like this:
+  Sample output:
   ```
   Sending build context to Docker daemon   12.8kB
   Step 1/4 : FROM websphere-liberty:webProfile7
@@ -220,8 +247,6 @@ During this lab, you complete the following tasks:
   docker images
   ```
   The list of Docker images on the Workstation is displayed.
-
-
   
 3.	You can use the **grep** command to filter the images listed by running command:
 
@@ -229,7 +254,7 @@ During this lab, you complete the following tasks:
   docker images | grep simpleapp  
   ```
 
-  The output of the command is like this:
+  Sample output:
   ```
   simpleapp                       latest                    468df215e750        2 minutes ago       419MB                                                                  latest                    468df215e750        2 minutes ago       419MB
 
@@ -242,10 +267,11 @@ During this lab, you complete the following tasks:
   docker run --name=simpleC1 --hostname=localhost -d -p 8081:9080 simpleapp  
   ```
 
-  The **simpleapp** container instance is created.
+  Sample output:
   ```
   dc6da4239b4fed3f56e9e498a1eba48b3effdc898675efc54740650658596031
   ```
+  The **simpleapp** container instance is created.
 
   This starts a container named **simpleC1** and map the port **9080** in the container to port **8081** on the localhost using the image **simpleapp** which you just created.
 2.	You can obtain a list of all running containers using the **docker ps** command and see the container you just created.
@@ -253,7 +279,7 @@ During this lab, you complete the following tasks:
   ```
   docker ps
   ```
-  The output of the command is like this:
+  Sample output:
   ```
   CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                    PORTS                                                          NAMES
   dc6da4239b4f        simpleapp                 "/opt/ibm/helpers/ru…"   2 minutes ago       Up 2 minutes              9443/tcp, 0.0.0.0:8081->9080/tcp                               simpleC1
@@ -298,20 +324,7 @@ During this lab, you complete the following tasks:
         "HostsPath": "/var/lib/docker/containers/dc6da4239b4fed3f56e9e498a1eba48b3effdc898675efc54740650658596031/hosts",
         "LogPath": "/var/lib/docker/containers/dc6da4239b4fed3f56e9e498a1eba48b3effdc898675efc54740650658596031/dc6da4239b4fed3f56e9e498a1eba48b3effdc898675efc54740650658596031-json.log",
         "Name": "/simpleC1",
-        "RestartCount": 0,
-        "Driver": "overlay2",
-        "Platform": "linux",
-        "MountLabel": "",
-        "ProcessLabel": "",
-        "AppArmorProfile": "docker-default",
-        "ExecIDs": null,
-        "HostConfig": {
-            "Binds": null,
-            "ContainerIDFile": "",
-            "LogConfig": {
-                "Type": "json-file",
-                "Config": {}
-            },
+        .....
             "NetworkMode": "default",
             "PortBindings": {
                 "9080/tcp": [
@@ -325,94 +338,7 @@ During this lab, you complete the following tasks:
                 "Name": "no",
                 "MaximumRetryCount": 0
             },
-            "AutoRemove": false,
-            "VolumeDriver": "",
-            "VolumesFrom": null,
-            "CapAdd": null,
-            "CapDrop": null,
-            "Dns": [],
-            "DnsOptions": [],
-            "DnsSearch": [],
-            "ExtraHosts": null,
-            "GroupAdd": null,
-            "IpcMode": "shareable",
-            "Cgroup": "",
-            "Links": null,
-            "OomScoreAdj": 0,
-            "PidMode": "",
-            "Privileged": false,
-            "PublishAllPorts": false,
-            "ReadonlyRootfs": false,
-            "SecurityOpt": null,
-            "UTSMode": "",
-            "UsernsMode": "",
-            "ShmSize": 67108864,
-            "Runtime": "runc",
-            "ConsoleSize": [
-                0,
-                0
-            ],
-            "Isolation": "",
-            "CpuShares": 0,
-            "Memory": 0,
-            "NanoCpus": 0,
-            "CgroupParent": "",
-            "BlkioWeight": 0,
-            "BlkioWeightDevice": [],
-            "BlkioDeviceReadBps": null,
-            "BlkioDeviceWriteBps": null,
-            "BlkioDeviceReadIOps": null,
-            "BlkioDeviceWriteIOps": null,
-            "CpuPeriod": 0,
-            "CpuQuota": 0,
-            "CpuRealtimePeriod": 0,
-            "CpuRealtimeRuntime": 0,
-            "CpusetCpus": "",
-            "CpusetMems": "",
-            "Devices": [],
-            "DeviceCgroupRules": null,
-            "DiskQuota": 0,
-            "KernelMemory": 0,
-            "MemoryReservation": 0,
-            "MemorySwap": 0,
-            "MemorySwappiness": null,
-            "OomKillDisable": false,
-            "PidsLimit": 0,
-            "Ulimits": null,
-            "CpuCount": 0,
-            "CpuPercent": 0,
-            "IOMaximumIOps": 0,
-            "IOMaximumBandwidth": 0,
-            "MaskedPaths": [
-                "/proc/asound",
-                "/proc/acpi",
-                "/proc/kcore",
-                "/proc/keys",
-                "/proc/latency_stats",
-                "/proc/timer_list",
-                "/proc/timer_stats",
-                "/proc/sched_debug",
-                "/proc/scsi",
-                "/sys/firmware"
-            ],
-            "ReadonlyPaths": [
-                "/proc/bus",
-                "/proc/fs",
-                "/proc/irq",
-                "/proc/sys",
-                "/proc/sysrq-trigger"
-            ]
-        },
-        "GraphDriver": {
-            "Data": {
-                "LowerDir": "/var/lib/docker/overlay2/02ef0917238240791da4ae09802d486ad71e4bad5792985d617cb70d9cbd5dfe-init/diff:/var/lib/docker/overlay2/9d1c5add0ab689743ec358de91476b3a5ab256f546a0694f4290b9230c1d5bbe/diff:/var/lib/docker/overlay2/71ba4acbc7845049cc1b05874764d83443281e96b10fc49954063f1fb602f6e5/diff:/var/lib/docker/overlay2/c4c68cc0e6c08292c0e1bd90c381e7fd3d118c6f1264aea45fe3d8681324266f/diff:/var/lib/docker/overlay2/00d09f50ce874e02143658a5be141e7403739ac8c0dbeecbd4644d9024a61904/diff:/var/lib/docker/overlay2/a4dc1dbe6ac5e2c3c718a50f109ff776a96033d981dd5083ab66583ed6508323/diff:/var/lib/docker/overlay2/4007227543e98f5610d351665ff478a97dddeee92847fb926c52efae9f23b933/diff:/var/lib/docker/overlay2/6fab3e33ad1798833b4ec3b7879042b38773df4430eb8d74a4b6aa1f0dc05e36/diff:/var/lib/docker/overlay2/bc17f56e215df505a414014c15da8f560e04fce3b967d6d201c27f0012f6fb6b/diff:/var/lib/docker/overlay2/fe422fc02010e858a5b089fb647a743b49c32dfa00d046c92488ef71c8f936af/diff:/var/lib/docker/overlay2/7d9999e1d7dc8f44702f970e1334f4e799ec19593182af706fafb12e9a41960f/diff:/var/lib/docker/overlay2/101c9a2e2cad291416ca575c13b81325b51d360b1808576f1a9364d634a52d3a/diff:/var/lib/docker/overlay2/74e21212bcf657f0d8100fc073ca6e2c4910b136fde7fed5dc92f4305fec5afa/diff:/var/lib/docker/overlay2/adf15b61fcc0b2ac3047444933bbdede3eafa97728698efe021d6d7146061c6d/diff:/var/lib/docker/overlay2/3c44971e33c6938281563c8198869f0f3e89cc7642deaef015e39bb04196931f/diff:/var/lib/docker/overlay2/fbc500ce863ea7b7d83c6f8d92822c3cf9752430abfa4f74d534a47fcbe413b3/diff:/var/lib/docker/overlay2/42b9a4d42c35ebeaf95263a267265199f8a22c46e3a91c81a88f2e2fca9352d2/diff:/var/lib/docker/overlay2/6127420e2b63e2adffb528926d08c0c98c9e9f6ffc91060ca2c6f638332ec1e8/diff",
-                "MergedDir": "/var/lib/docker/overlay2/02ef0917238240791da4ae09802d486ad71e4bad5792985d617cb70d9cbd5dfe/merged",
-                "UpperDir": "/var/lib/docker/overlay2/02ef0917238240791da4ae09802d486ad71e4bad5792985d617cb70d9cbd5dfe/diff",
-                "WorkDir": "/var/lib/docker/overlay2/02ef0917238240791da4ae09802d486ad71e4bad5792985d617cb70d9cbd5dfe/work"
-            },
-            "Name": "overlay2"
-        },
-        "Mounts": [],
+          ....
         "Config": {
             "Hostname": "localhost",
             "Domainname": "",
@@ -486,31 +412,14 @@ During this lab, you complete the following tasks:
             "GlobalIPv6Address": "",
             "GlobalIPv6PrefixLen": 0,
             "IPAddress": "172.17.0.3",
-            "IPPrefixLen": 16,
-            "IPv6Gateway": "",
-            "MacAddress": "02:42:ac:11:00:03",
-            "Networks": {
-                "bridge": {
-                    "IPAMConfig": null,
-                    "Links": null,
-                    "Aliases": null,
-                    "NetworkID": "5e52bd4a0e3726501e16f47325bc2f190f5b2752eade4ac323834d35c659f5a1",
-                    "EndpointID": "252d731f797d958563af719b00d6328ae3a8e8cf658a2e2577b8ae2ea2d3327a",
-                    "Gateway": "172.17.0.1",
-                    "IPAddress": "172.17.0.3",
-                    "IPPrefixLen": 16,
-                    "IPv6Gateway": "",
-                    "GlobalIPv6Address": "",
-                    "GlobalIPv6PrefixLen": 0,
-                    "MacAddress": "02:42:ac:11:00:03",
-                    "DriverOpts": null
+            ....
                 }
             }
         }
     }
   ]
   ```
-4. Next access the containerized appliction from the web browser. Launch the Firefox browser by clicking its icon on the Desktop tool bar.
+4. Next access the containerized application from the web browser. Launch the Firefox browser by clicking its icon on the Desktop tool bar.
  
   ![](images/firefox-icon.png)
 
@@ -538,7 +447,7 @@ During this lab, you complete the following tasks:
   ![](images/simpleapp-8082.png) 
 
     The **simpleapp** page is displayed.
-10.	Change the address bar to: **http://localhost:8082/Snoop** to launch the deafult **Snoop** application.  
+10.	Change the address bar to: **http://localhost:8082/Snoop** to launch the default **Snoop** application.  
 
   ![](images/snoop-8082.png) 
 11.	Again, scroll down to the Request Information and note the addresses and ports which reflect the container environment, noted that while the Liberty is using port 9080 to serve the requests in each container, each container has different a different local address and remote port  

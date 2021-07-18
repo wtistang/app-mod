@@ -4,12 +4,14 @@
       path: /labs/overview
     - title: Basic Labs
       path: /labs/basic-labs
-    - title: App Mod Labs
+    - title: App Mod Use Case Labs
       path: /labs/appmod-labs
-    - title: Cloud Native Labs
+    - title: Cloud Native Use CAse Labs
       path: /labs/cloudnative-labs
-    - title: DevOps Labs
+    - title: DevOps Use Case Labs
       path: /labs/devops-labs
+    - title: Day 2 Operation Use Case Labs
+      path: /labs/day2operation-labs
 - title: Resources
   pages:
     - path: /resources/
