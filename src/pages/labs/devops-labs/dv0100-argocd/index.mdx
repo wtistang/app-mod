@@ -4,8 +4,8 @@ description:
 ---
 The goal of this session is to provide a hands-on experience with ArgoCD.
 
-### 1. Argocd Introduction
-Continuous Integration, Delivery, and Deployment are important devOps practices. These processes are valuable and ensures that the software is up to date timely.
+### 1. ArgoCD Introduction
+Continuous Integration, Delivery, and Deployment are important DevOps practices. These processes are valuable and ensures that the software is up to date timely.
 * Continuous Integration is an automation process which allows developers to integrate their work into a repository. When a developer pushes his work into the source code repository, it ensures that the software continues to work properly. It helps to enable collaborative development across the teams and also helps to identify the integration bugs sooner.
 * Continuous Delivery comes after Continuous Integration. It prepares the code for release. It automates the steps that are needed to deploy a build.
 * Continuous Deployment is the final step which succeeds Continuous Delivery. It automatically deploys the code whenever a code change is done. Entire process of deployment is automated.
@@ -68,9 +68,43 @@ During this lab, you complete the following tasks:
   The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
 3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/dv0100st** directory and double-click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-dv0100st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+ 
 #### 6.2 Push app code to a GitHub repo
-Assuming that your devleopment team has the application code ready.  You need to first push it to your GitHub repo in order to deploy it to the OCP cluster.
+Assuming that your development team has the application code ready.  You need to first push it to your GitHub repo in order to deploy it to the OCP cluster.
 
 1. Open a Firefox web browser window by clicking its icon on the Desktop toolbar.
 
@@ -78,8 +112,8 @@ Assuming that your devleopment team has the application code ready.  You need to
 2. From the browser window, click the **GitHub** bookmark to open it.
 
   ![](images/github-bookmark.png) 
-3. Login with your GihHub credientials.
-4. Cick **New** to crate a new GitHub repo.
+3. Login with your GihHub credentials.
+4. Click **New** to create a new GitHub repo.
 
   ![](images/github-new-repo.png)
 5. Enter the new repo name as: **cloudnative_sample_app_deploy** and click **Create Repository**.
@@ -89,20 +123,17 @@ Assuming that your devleopment team has the application code ready.  You need to
 
   ![](images/github-myrepo.png)
   You will use some of the commands highlighted above to push your application code to the repo.
-6. Open a terminal window by clicing its icon from the Desktop toolbar.
-
-  ![](images/terminal-icon.png)
-
-2. Navigate to the application code direcotry.
+6. In the terminal window navigate to the application code directory.
 
   ```
   cd /home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy
   ```
-3. View the contents in this directory.
+7. View the contents in this directory.
 
   ```
   ls -l
   ```
+  Sample output:
   ```
   total 16
   drwx------ 3 ibmdemo ibmdemo 4096 Aug 21  2020 chart
@@ -110,12 +141,12 @@ Assuming that your devleopment team has the application code ready.  You need to
   drwx------ 2 ibmdemo ibmdemo 4096 Jul 14 10:33 openshift
   -rw-rw-r-- 1 ibmdemo ibmdemo   83 Aug 21  2020 README.md
   ```
-4.  The deployment artifacts for OCP cluster in under the **openshift** directory.  View its contents.
+8.  The deployment artifacts for OCP cluster in under the **openshift** directory.  View its contents.
 
   ```
   ls -l openshift/
   ```
-
+  Sample output:
   ```
   total 12
   -rw-rw-r-- 1 ibmdemo ibmdemo 915 Aug 21  2020 deployment.yaml
@@ -124,7 +155,7 @@ Assuming that your devleopment team has the application code ready.  You need to
   ```
 
   As you can see, there are YAML files representing the deployment, service and route configurations.
-6. Run the git commands to push the application code to your GitHub repo. Note that you have to use your own GitHub repo URL in the command below.
+9. Run the git commands to push the application code to your GitHub repo. Note that you have to use your own GitHub repo URL in the command below.
 
   ```
   git init
@@ -134,6 +165,8 @@ Assuming that your devleopment team has the application code ready.  You need to
   git remote add origin https://github.com/wtistang/cloudnative_sample_app_deploy.git
   git push -u origin main
   ```
+  
+  Sample output:
   ```
   [master (root-commit) 6fd8905] first commit
   14 files changed, 297 insertions(+)
@@ -154,6 +187,7 @@ Assuming that your devleopment team has the application code ready.  You need to
   ```
   When prompted, enter your GitHub credentials.
 
+  Sample output:
   ```
   Username for 'https://github.com': wtistang
   Password for 'https://wtistang@github.com': 
@@ -167,7 +201,7 @@ Assuming that your devleopment team has the application code ready.  You need to
   ...
   Branch 'main' set up to track remote branch 'main' from 'origin'.
   ```
-4. When it is done, refresh your GitHub page, you will see something like this:
+10. When it is done, refresh your GitHub page, you will see something like this:
 
   ![](images/github-myrepo-uploaded.png)
   
@@ -176,16 +210,17 @@ Assuming that your devleopment team has the application code ready.  You need to
 #### 6.3 Deploy application in ArgoCD UI
 
 ##### 6.3.1 Create a new project in OCP Cluster
-You are going to create a new proejct in OCP Cluster so you can deploy the application to the project.
+You are going to create a new project in OCP Cluster so you can deploy the application to the project.
 
-1. From the termical window, issue the **oc login** command to login to the OCP cluster:
+1. From the termncal window, issue the **oc login** command to login to the OCP cluster:
 
   ```
   oc login https://api.demo.ibmdte.net:6443
   ```
 
-  when promted, enter the login credientials as: **ibmadmin**/**engageibm**.
+  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
   
+  Sample output:
   ```
   Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
   Username: ibmadmin
@@ -202,11 +237,11 @@ You are going to create a new proejct in OCP Cluster so you can deploy the appli
   oc new-project dv0100st
   ```
 ##### 6.3.2 Get ArgoCD login information from the OCP cluster
-ArgoCD can be install to the OpenShift Container Platform (OCP) clsuter with ArgoCD operator or from the command line.  
+ArgoCD can be install to the OpenShift Container Platform (OCP) cluster with ArgoCD operator or from the command line.  
 
-In this lab environment, the ArgoCD is installled to the OCP cluster using IBM Cloud Native Toolkit. The Cloud-Native Toolkit is an open-source collection of assets that enable application development and support teams to deliver business value quickly using Red Hat OpenShift or IBM Cloud-managed Kubernetes. This guide provides information to help Developers, Administrators, and Site Reliability Engineers use the Toolkit to support delivering business applications through the entire Software Development Life Cycle (SDLC). Click the link to learn more about the [Cloud Native Toolkit](https://cloudnativetoolkit.dev).
+In this lab environment, the ArgoCD is installed to the OCP cluster using IBM Cloud Native Toolkit. The Cloud-Native Toolkit is an open-source collection of assets that enable application development and support teams to deliver business value quickly using Red Hat OpenShift or IBM Cloud-managed Kubernetes. This guide provides information to help Developers, Administrators, and Site Reliability Engineers use the Toolkit to support delivering business applications through the entire Software Development Life Cycle (SDLC). Click the link to learn more about the [Cloud Native Toolkit](https://cloudnativetoolkit.dev).
 
-To access the ArgoCD, you need to get its server and login credientals information from the OCP Clsuter.
+To access the ArgoCD, you need to get its server and login credentials information from the OCP Cluster.
 
 1. Get ArgoCD username info:
 
@@ -232,18 +267,15 @@ To access the ArgoCD, you need to get its server and login credientals informati
 
 The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd resource which is a parent of the Argocd application. The default ArgiCD project is **default**. In this lab, you are going to create to new ArgoCD project **dk0100st** to host the ArgoCD application.
 
-1. Open a Firefox web browser window by clicking its icon on the Desktop toolbar.
-
-  ![](images/firefox-icon.png) 
-2. From the browser window, click the Could Native Toolkit **Developer Dashboard** bookmark to open it.
+1. From the browser window, click the Could Native Toolkit **Developer Dashboard** bookmark to open it.
 
   ![](images/toolkit-bookmark.png) 
   
-3. Click **Open with OpenShift** to cotinue.
+2. Click **Open with OpenShift** to continue.
 
   ![](images/login-with-ocp.png)
 
-4. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+3. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
  
   ![](images/ocp-console-login-1.png) 
 
@@ -257,7 +289,7 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-link.png) 
 
-  The ArgoCD page is dispalyed.
+  The ArgoCD page is displayed.
 
   ![](images/argocd-ui-page.png)
 
@@ -317,7 +349,7 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-create.png)
 
-  The distination namesapce is the OCP cluster project you created before.
+  The destination namespace is the OCP cluster project you created before.
 
   You will now see the available apps. Initially, the app will be out of sync. It is yet to be deployed. You need to sync it for deploying.
 
@@ -347,6 +379,8 @@ Access the app to verify if it is correctly deployed.
   ```
   oc get route -n dv0100st
   ```
+  
+  Sample output:
   ```
   No resources found in dv0100st namespace.
   ```
@@ -359,7 +393,7 @@ Access the app to verify if it is correctly deployed.
   ![](images/route-yaml-asis.png)
 
   As you can see from the YAML file, it is hard-coded to use namespace **default**, that is why no route was created in the **dv0100st** project. This can be fixed.
-3. Delete the line **namespace: default** in the file and clikc **Save** to save the change.
+3. Delete the line **namespace: default** in the file and click **Save** to save the change.
 
   ![](images/route-yaml-updated.png)
 4. Next you need to push the change to your GitHub repo with commands:
@@ -369,7 +403,7 @@ Access the app to verify if it is correctly deployed.
   git commit -m "change commit"
   git push -u origin main
   ```
-5. Go to to your ArgoCD **simple** application and click **SYNC** > **SYNCHRONIZE**.
+5. Go to your ArgoCD **simple** application and click **SYNC** > **SYNCHRONIZE**.
 
   ![](images/argocd-sync-2.png)
   
@@ -399,13 +433,13 @@ Access the app to verify if it is correctly deployed.
   http://cloudnative-sample-default.apps.demo.ibmdte.net
   ```
   
-8. Access the app url using curl:
+8. Access the app URL using curl:
 
   ```
   curl "$APP_URL/greeting?name=Carlos"
   ```
   
-  The output is:
+  Sample output:
   
   ```
   {"id":2,"content":"Welcome to Cloudnative bootcamp !!! Hello, Carlos :)"}
@@ -431,7 +465,7 @@ Access the app to verify if it is correctly deployed.
   argocd app list
   ```
   
-  The output is like this:
+  Sample output:
   ```
   NAME    CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                                     PATH   TARGET
   sample  https://kubernetes.default.svc  dv0100st    dv0100st  Synced  Healthy  <none>      <none>      https://github.com/wtistang/cloudnative_sample_app_deploy.git  openshift  HEAD
@@ -442,7 +476,7 @@ Access the app to verify if it is correctly deployed.
   argocd app get sample
   ```
   
-  The output is like this:
+  Sample output:
   ```
   Name:               sample
   Project:            dv0100st
@@ -461,7 +495,7 @@ Access the app to verify if it is correctly deployed.
   argocd app history sample
   ```
   
-  The output is like this:
+  Sample output:
   ```
   ID  DATE                           REVISION
   0   2021-02-12 21:10:32 -0500 EST  HEAD (9684037)

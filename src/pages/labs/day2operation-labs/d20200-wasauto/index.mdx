@@ -19,31 +19,23 @@ IBM WebSphere Automation makes business efficiency and resiliency standard. It h
 IBM WebSphere Automation is a complete solution to help administrators and operators quickly unlock value with increased security, resiliency and performance.
 
 **Secure operations to reduce risk and meet compliance**
-  – Automatically recognize and recommend relevant CVEs for specific server deployments.
-  – Deliver security patches more efficiently to targeted environments.
-  – Maintain the notification system for all the security response team members from a central location.
+  * Automatically recognize and recommend relevant CVEs for specific server deployments.
+  * Deliver security patches more efficiently to targeted environments.
+  * Maintain the notification system for all the security response team members from a central location.
 
 **Build operational resiliency**
-  – Sense and respond to security vulnerabilities faster to avoid disruptions for WebSphere apps.
+  * Sense and respond to security vulnerabilities faster to avoid disruptions for WebSphere apps.
 
 **Optimize runtimes and applications for operational performance**
-  – Access consolidated information for a streamlined operational experience.
-  – Reduce tedious tasks and achieve cost and time savings through optimal resource utilization, capacity provisioning and implementation of best practices across environments.
+  * Access consolidated information for a streamlined operational experience.
+  * Reduce tedious tasks and achieve cost and time savings through optimal resource utilization, capacity provisioning and implementation of best practices across environments.
 
 **Start small, scale and standardize on IBM Automation**
-  – Build automation capabilities on top of the IBM Automation foundation for enterprise-level hybrid application management, observability, governance and compliance.
+  * Build automation capabilities on top of the IBM Automation foundation for enterprise-level hybrid application management, observability, governance and compliance.
 
 IBM WebSphere Automation is available as a stand-alone offering or as an addition to IBM Cloud Pak® for Watson AIOps. As part of IBM Automation platform, IBM WebSphere Automation includes containerized components and common software services on top of a common automation layer, to manage WebSphere’s incidents, hybrid applications, and cost with complete observability, governance and compliance. Deploy virtually anywhere through containers supported by Red Hat® OpenShift® software, on IBM Cloud®, on essentially any existing infrastructure on-premises, or through private and public clouds. Use only the capabilities you need with a fully modular approach that’s designed to be easy to consume.
 
-***
-
-## Prerequisites
-
-  - You need to have the WebSphere Automation Skytap Image. [Request here](/)
-
-***
-
-## Business Context
+### 2. Objective
 
 You are a WebSphere Administrator part of a WebSphere Operations Team. Today, you subscribe and receive IBM Security Bulletins to be aware about vulnerabilities, its potential impact, severity and recommended solutions. Based on that you check if this CVE applies to your managed inventory. Now, your inventory is a spreadsheet, with all the information about your servers, which versions, which operational system, which iFixes were applied, etc. It is very manual process and you are trying to automate it.
 
@@ -57,56 +49,100 @@ In this tutorial, you use the IBM WebSphere Automation to secure operatios to re
 
 At the end of this lab, you will be able to connect teams with the most relevant information through a single dashboard to discover, analyze and remediate common vulnerabilities and exposures across instances.
 
-***
 
-## Accessing and starting the environment
+### 3.	Prerequisites
 
-1.When the demo environment is provisioned you should receive the email with link and access password. Open the link and provide the password. You should see the following screen:
+The following prerequisites must be completed prior to beginning this lab:
+*	Familiarity with basic Linux commands
+*	Have internet access
+*	Have a SkyTap App Mod Lab environment ready
 
-  ![](images/skytap-1.png)
+### 4.	What is Already Completed
 
-  WebSphere Automation is pre-installed in the OCP cluster hosted on the VMs.
+A six Linux VMs App Mod Lab environment has been provided for this lab. 
+ 
+  ![](images/lab-vms.png)
 
-2.Start the environment with the Play button in the top-right corner. It takes about 10-15 minutes for the environment to start and stabilize.
+*	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
+*	The Workstation VM is the one you will use to access and work with OCP cluster in this lab.
+  The login credentials for the Workstation VM are:
+  User ID: **ibmdemo**
+  Password: **passw0rd**
+  Note: Use the Password above in the Workstation VM Terminal for sudo in the Lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/dv0100st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
-  ![](images/skytap-2.png)
+### 5.	Lab Tasks
 
-3.You will be working on the Student VM only. This VM is installed with OCP client (oc) and all thee scripts and files you need for the lab.
+During this lab, you complete the following tasks:
+*	Install Red Hat OpenShift Service Mesh
+* Deploy the BookInfo application on Service Mesh
+* Expose the app with the Istio Ingress Gateway and Route
+* Observe service telemetry: metrics and tracing
+* Perform traffic management
+* Secure your services
+* Enable SSL for traffic coming in to your cluster (HTTPS)
 
-  All the WebSphere images and iFixes required for the lab are pre-installed:
-  - /opt/IBM/WebSphere/Liberty200012/
-  - /opt/IBM/WebSphere/Liberty20009/
-  - /opt/IBM/WebSphere/AppServer9057/
-  - /opt/IBM/WebSphere/AppServer9056/
+### 6.	Execute Lab Tasks
 
-  Click the screen representing the **STUDENT** VM.
+#### 6.1 Log in to the Workstation VM and get started 
+1.  If the VMs are not already started, start them by clicking the play button for the whole group.
 
-  ![](images/student-vm.png)
+  ![](images/start-vms.png)
 
-4.Once you log in to the Student VM you will see the Desktop, which contains all the programs that you will be using (browsers, terminal, etc.)
 
-  ![](images/student-vm-screen.png)
+2.	After the VMs are started, click the Workstation VM icon to access it. 
 
-5.You can resize the virtual desktop with the Fit to window button.
+  ![](images/access-workstation.png)
 
-  ![](images/fit-to-window.png)
+  The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
-***
+3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
-## Receiving vulnerability notifications
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
 
-### Accessing the WebSphere Automation UI
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/d20200st** directory and click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-d20200st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+
+#### 6.2 Receiving vulnerability notifications
+
+##### 6.2.1 Accessing the WebSphere Automation UI
 
 A WebSphere administrator sets up WebSphere Automation by registering and configuring WebSphere Application Server and WebSphere Application Server Liberty servers for vulnerability tracking and by configuring email notifications. WebSphere administrators can also view the results of vulnerability assessment in WebSphere Automation to plan their response for the WebSphere Application Server and WebSphere Application Server Liberty servers that they manage.
 
 For this tutorial, WebSphere Automation is pre-installed on an OCP cluster. You have your individual WebSphere Automation installation. Let's access your environment.
 
-1.On the *Student VM*, open a browser and enter the following URL:
-```
-https://cpd-websphere-automation.apps.ocp.ibm.edu
-```
+1.From the browser window, click the **WAS Automation** bookmark to launch the **WebSphere Automation** UI.
 
-  ![](images/opening-browser.png)
+  ![](images/was-auto-bokkmark.png)
 
   If necessary, accept all the warnings and certificates. Depending on your browser, you might have to scroll down to permit access.
 
