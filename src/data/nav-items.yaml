@@ -3,7 +3,7 @@
     - title: Overview
       path: /labs/overview
     - title: Reserve Lab Environment
-      path: /labs/lab-env-reservation
+      path: /labs/env-reservation
     - title: Basic Labs
       path: /labs/basic-labs
     - title: App Mod Use Case Labs
