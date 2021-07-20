@@ -2,9 +2,9 @@
 title: Modernize a Java Application for Container and OpenShift with TA
 description: 
 ---
-This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming and re-hosting application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab AM0100), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor.  This lab showcases the re-platform process. Re-platform uses Lift, Modify and Shift approach to move an existing application the cloud. In this lab, you learn how to package a selected candidate Java application to Liberty container without any application code change and to deploy it to an IBM Red Hat OpenShift Kubernetes Service (OCP) cluster in IBM Cloud using the Transformation Advisor Migration Bundle tool. 
+This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming and re-hosting application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab **am0100st**), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor.  This lab showcases the re-platform process. Re-platform uses Lift, Modify and Shift approach to move an existing application the cloud. In this lab, you learn how to package a selected candidate Java application to Liberty container without any application code change and to deploy it to a Red Hat OpenShift Container Platform (OCP) cluster using the Transformation Advisor Migration Bundle tool. 
 
-IBM Cloud Transformation Advisor (Transformation Advisor) is one of the tools included in the Cloud Pak for Applications (CP4Apps), a developer tool helps you quickly evaluate on-premises Java EE applications and to prepare the apps for a rapid cloud deployment. The tool identifies the Java EE programming models in the application, help determine its complexity by listing a high-level inventory of the content and structure of the application, highlight Java EE programming models and WebSphere API differences between the WebSphere profile type and show any Java EE specification implementation differences that could affect the app. You can use this tool in your move in the cloud journey to quickly analyze on-premise WebSphere apps without accessing source code and to prepare the apps for a rapid cloud deployment.
+IBM Cloud Transformation Advisor (**Transformation Advisor**) is one of the tools included in the IBM Cloud Paks.  It is a developer tool helping you quickly evaluate on-premises Java EE applications and to prepare the apps for a rapid cloud deployment. The tool identifies the Java EE programming models in the application, help determine its complexity by listing a high-level inventory of the content and structure of the application, highlight Java EE programming models and WebSphere API differences between the WebSphere profile type and show any Java EE specification implementation differences that could affect the app. You can use this tool in your move in the cloud journey to quickly analyze on-premise WebSphere apps without accessing source code and to prepare the apps for a rapid cloud deployment.
 
 ### 1.	Business Scenario
 
@@ -12,7 +12,7 @@ As shown in the image below, your company has a web application called Mod Resor
 
 ![](images/mod-resorts-app-home-page.png)
 
-As a tech lead, you have already analyzed the application using the Transformation Advisor tool in Part 1 of the lab series.  Based on the analysis you know that you can move this application from the traditional WebSphere Server environment to a light-weighted Liberty server environment without any code change.  Now you are planning to use the Transformation Advisor migration plan to create the migration bundle, to containerize the application, and to deploy the Docker container to an OpenShift Kubernetes cluster environment.
+As a tech lead, you have already analyzed the application using the Transformation Advisor tool in Part 1 of the lab series.  Based on the analysis you know that you can move this application from the traditional WebSphere Server environment to a light-weighted Liberty server environment without any code change.  Now you are planning to use the Transformation Advisor migration plan to create the migration bundle, to containerize the application, and to deploy the Docker container to an OCP cluster environment.
 
 ### 2.	Objective
 
@@ -24,19 +24,23 @@ The objectives of this lab are to:
 ### 3.	Prerequisites
 
 The following prerequisites must be completed prior to beginning this lab:
-
-* Familiarity with basic Linux commands
-* Have internet access
-* Have completed Lab SU0100 of this lab series and have the CP4Apps installed in IBM Red Hat OpenShift Kubernetes Service (OCP) cluster on IBM Cloud.
+*	Familiarity with basic Linux commands
+*	Have internet access
+*	Have a SkyTap App Mod Lab environment ready
 
 ### 4.	What is Already Completed
 
-The Workstation VM is pre-configured for you to access and work with the OCP cluster in this lab.
+A six Linux VMs App Mod Lab environment has been provided for this lab. 
+ 
+  ![](images/lab-vms.png)
 
-The login credentials for the Workstation VM are provided in your Reservation Details page (https://www.ibm.com/demos/my-reservations/).
-
-The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/cp4a-OCP-OCP-labs/am0200** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during this lab.
-
+*	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
+*	The Workstation VM is the one you will use to access and work with OCP cluster in this lab.
+  The login credentials for the Workstation VM are:
+  User ID: **ibmdemo**
+  Password: **passw0rd**
+  Note: Use the Password above in the Workstation VM Terminal for sudo in the Lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/dv0100st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 
@@ -52,24 +56,55 @@ During this lab, you complete the following tasks:
 
 ### 6.	Execute Lab Tasks
 
-#### 6.1 Log in to the Workstation VM and get started (skip this step if you are using your own workstation)
-1.  Launch the VM from your local workstation web browser with the VM URL.
- 
-    ![](images/vm-url.png)
+### 6.	Execute Lab Tasks
 
-2.	Click **Connect** to access the VM.
- 
-    ![](images/vm-connect.png)
+#### 6.1 Log in to the Workstation VM and get started 
+1.  If the VMs are not already started, start them by clicking the play button for the whole group.
 
-3.	Enter the password you obtained from the Reservation Details page and click **Send Password**.
+  ![](images/start-vms.png)
 
-    ![](images/vm-password.png)
 
-    The VM desktop is displayed.
+2.	After the VMs are started, click the Workstation VM icon to access it. 
 
-    ![](images/vm-desktop.png)
+  ![](images/access-workstation.png)
 
-    The Workstation Desktop is displayed. You execute all the lab tasks on this VM.
+  The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
+
+3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
+
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/am0200st** directory and click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-am0200st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
 
 #### 6.2 Review the on-premises WebSphere application (skip this step if you are using your own workstation)
 
@@ -81,34 +116,31 @@ In this task, you take a look at Mod Resorts application deployed to the local W
 
     To start the WAS server:
 
-    a.	Open a terminal window by clicking **Applications**>**Terminal**.
- 
-    ![](images/vm-terminal-link.png)
-
-    b.	In the terminal window, issue the command below to start the WAS server (You can copy and paste the command from the Commands.txt file in the /home/ibmdemo/app-mod-labs/am0200 directory).
-
+    a.	In the terminal window, issue the command below to start the WAS server.
+    
     ```
     /home/ibmdemo/app-mod-labs/shared/startWAS.sh
     ```
     Within a few minutes the WAS server is ready.
 
-    c.	Access the WAS Admin Console to view the application deployed by clicking **Applications**>**Firefox** to open a browser window.
+    b.	Access the WAS Admin Console to view the application deployed by clicking the web browser icon on the Desktop toolbar to open a browser window.
  
-    ![](images/vm-browser-link.png)
+    ![](images/firefox-icon.png)
 
-    d.	From the web browser window and click WebSphere Integrated Solution Console bookmark to launch the WAS console.
+    c.	From the web browser window and click WebSphere Integrated Solution Console bookmark to launch the WAS console.
  
     ![](images/was-bookmark.png)
 
-    e.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**. 
+    d.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**. 
 
-    f.	On the WAS Console page, click **Applications** -> **Application Types** -> **WebSphere enterprise applications** to view the apps deployed.
+    e.	On the WAS Console page, click **Applications** -> **Application Types** -> **WebSphere enterprise applications** to view the apps deployed.
  
      ![](images/was-enterprise-apps-link.png)
 
     In the Enterprise Applications list, you can see all applications deployed. The Mod Resorts application is in the list, currently it is running.
  
     ![](images/was-enterprise-apps.png)
+
 2.	View the Mod Resorts application
 
     a. From the web browser window, click new Tab to open a new browser window. Type the Mod Resorts application URL: **http://localhost:9080/resorts/** and press **Enter**.
@@ -129,13 +161,12 @@ In this task, you take a look at Mod Resorts application deployed to the local W
 
 #### 6.3	Access Transformation Advisor
 
-The Transformation Advisor is installed on OCP in IBM Cloud.  In this lab, you use the following steps to access it.
-
-This task requires to have IBM Cloud Pak for Applications installed on OCP cluster in IBM Cloud. If you have completed the lab0 of this lab series, you can continue, otherwise you need to complete lab0 first.
+The Transformation Advisor is installed on the OCP cluster.  In this lab, you use the following steps to access it.
 
 1. From web browser window, click the IBM Cloud Transformation Advisor bookmark and log in to your IBM Cloud account with your credentials.
  	
-    ![](images/ta-bookmarked.png) 
+    ![](images/ta-bookmark.png) 
+
     The Transformation Advisor home page is displayed.
 
     ![](images/ta-home-page.png)
@@ -144,7 +175,7 @@ This task requires to have IBM Cloud Pak for Applications installed on OCP clust
 
 The Transformation Advisor can evaluate any Java based applications and help to package the good candidate application to move to cloud. In AM0100 of this lab series, you have demonstrated how to use the tool to evaluate the on-premises WebSphere application, Mod Resorts, and have determined that it is suitable to move this application to cloud without any code change. Now you need to move forward to create the application migration bundle with the Transformation Advisor. 
 
-If you have completed Lab AM0100 with this lab environment, you already have the application data loaded to the Transformation Advisor, you can skip this task and move to the next one. Otherwise continue to execute the procedures below to load the application data to Transformation Advisor first.
+If you have completed Lab **am0100st** with this lab environment, you already have the application data loaded to the Transformation Advisor, you can skip this task and move to the next one. Otherwise continue to execute the procedures below to load the application data to Transformation Advisor first.
 
 1. In the Transformation Advisor page, you first create a new workspace by entering the workspace name as **Evaluation** and then clicking **Next**.
  
@@ -184,12 +215,13 @@ If you have completed Lab AM0100 with this lab environment, you already have the
 
   The Recommendations page also shows the summary analysis results for all the applications in the AppSrv01 environment to be moved to a Compatible Liberty Runtime environment. For each application, you can see these results:
     * Name
-    * Complexity level
+    * Mifgration Target
+    * Complexity
     * Dependencies
     * Issues
     * Estimated development cost in days
 
-  For example, if you want to move the **modresorts-1_0_war.ear** application to Liberty on OpenShift, the complexity level is Simple which indicates that the application code does not need to be changed before it can be moved to cloud. The application has no dependency, has one minor level issue and the estimated development effort is 0 day with no code change.
+  For example, if you want to move the **modresorts-1_0_war.ear** application to Liberty on OpenShift, the complexity level is Simple which indicates that the application code does not need to be changed before it can be moved to cloud. The application has no dependency, has two minor level issues and the estimated development effort is 0 day with no code change.
 
 #### 6.5 Create Migration Bundle
 
@@ -344,30 +376,45 @@ In this task, you containerize the application. You first create a Liberty Docke
 In this step you deploy the docker image you have created to Red Hat OpenShift and create an instance of it. Before you begin, you need push the image to the OpenShift image registry.
 Note: The migration artifacts generated by Transformation Advisor (specifically the operator/application/application-cr.yaml file) assume that the default Docker Registry is being used. If you choose to use a different registry, remember to update the image property in the YAML file appropriately.
 
-1.	From the browser window, click OCP cluster Web Console bookmark to open it with your IBM credentials.
+1.	From the terminal window, issue the **oc login** command to login to the OCP cluster:
 
-  ![](images/ocp-console-bookmarked.png) 
-2.	In the OpenShift Web Console page, click the **Action** icon next to your username and select **Copy Login** Command to get the OCP login command.
+  ```
+  oc login https://api.demo.ibmdte.net:6443
+  ```
 
-  ![](images/ocp-copy-login-command.png) 
-3.	In the next page, click **Display Token** link.
+  when promted, enter the login credientials as: **ibmadmin**/**engageibm**.
+  
+  Sample output:
+  ```
+  Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
+  Username: ibmadmin
+  Password: 
+  Login successful.
 
-  ![](images/display-token.png) 
-4.	Copy the OCP login command to the clipboard.
+  You have access to 66 projects, the list has been suppressed. You can list all projects with ' projects'
 
-  ![](images/copy-token.png) 
-5.	Go back to the Terminal window, right-click to paste the OCP login command window press Enter to log in to the OCP cluster.
- 
-  ![](images/run-oc-login-command.png) 
+  Using project "default".
+  ``` 
+  ```
 6.	Create a new project (namespace) as **modresorts10war**.
 
   ```
   oc new-project modresorts10war
   ```
-  ![](images/oc-new-project.png)
-  You see the message to confirm that the modresorts10war project is created.
+  
+  Sample output:
+  ```
+  Now using project "modresorts10war" on server "https://api.demo.ibmdte.net:6443".
 
+  You can add applications to this project with the 'new-app' command. For example, try:
 
+    oc new-app rails-postgresql-example
+
+  to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+
+  ```
 7.	Get OCP internal image registry URL and cluster URL with commands:
 
   ```
@@ -382,7 +429,7 @@ Note: The migration artifacts generated by Transformation Advisor (specifically 
     ```
 
  
-9. Execute the following command to push your docker image to OpenShift image repository.
+9. Execute the following command to tag and push your docker image to OpenShift image repository.
 
     ```
     docker tag modresorts10war:latest $INTERNAL_REG_HOST/`oc project -q`/modresorts10war:latest
