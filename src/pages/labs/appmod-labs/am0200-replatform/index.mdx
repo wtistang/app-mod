@@ -2,7 +2,7 @@
 title: Modernize a Java Application for Container and OpenShift with TA
 description: 
 ---
-This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming and re-hosting application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab **am0100st**), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor.  This lab showcases the re-platform process. Re-platform uses Lift, Modify and Shift approach to move an existing application the cloud. In this lab, you learn how to package a selected candidate Java application to Liberty container without any application code change and to deploy it to a Red Hat OpenShift Container Platform (OCP) cluster using the Transformation Advisor Migration Bundle tool. 
+This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming and re-hosting application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab **AM0100**), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor.  This lab showcases the re-platform process. Re-platform uses Lift, Modify and Shift approach to move an existing application the cloud. In this lab, you learn how to package a selected candidate Java application to Liberty container without any application code change and to deploy it to a Red Hat OpenShift Container Platform (OCP) cluster using the Transformation Advisor Migration Bundle tool. 
 
 IBM Cloud Transformation Advisor (**Transformation Advisor**) is one of the tools included in the IBM Cloud Paks.  It is a developer tool helping you quickly evaluate on-premises Java EE applications and to prepare the apps for a rapid cloud deployment. The tool identifies the Java EE programming models in the application, help determine its complexity by listing a high-level inventory of the content and structure of the application, highlight Java EE programming models and WebSphere API differences between the WebSphere profile type and show any Java EE specification implementation differences that could affect the app. You can use this tool in your move in the cloud journey to quickly analyze on-premise WebSphere apps without accessing source code and to prepare the apps for a rapid cloud deployment.
 
@@ -37,10 +37,11 @@ A six Linux VMs App Mod Lab environment has been provided for this lab.
 *	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
 *	The Workstation VM is the one you will use to access and work with OCP cluster in this lab.
   The login credentials for the Workstation VM are:
-  User ID: **ibmdemo**
-  Password: **passw0rd**
-  Note: Use the Password above in the Workstation VM Terminal for sudo in the Lab.
-*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/dv0100st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+  * User ID: **ibmdemo**
+  * Password: **passw0rd**
+  
+  Note: Use the Password above in the workstation VM terminal for sudo in the Lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/am0200st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 
@@ -53,8 +54,6 @@ During this lab, you complete the following tasks:
 * Testing the Migration Bundle Locally (Optional)
 * Containerize Liberty Application
 * Deploy the Application to OpenShift
-
-### 6.	Execute Lab Tasks
 
 ### 6.	Execute Lab Tasks
 
@@ -167,6 +166,12 @@ The Transformation Advisor is installed on the OCP cluster.  In this lab, you us
  	
     ![](images/ta-bookmark.png) 
 
+2. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+ 
+    ![](images/ocp-console-login-1.png) 
+
+    ![](images/ocp-console-login-2.png) 
+
     The Transformation Advisor home page is displayed.
 
     ![](images/ta-home-page.png)
@@ -175,7 +180,7 @@ The Transformation Advisor is installed on the OCP cluster.  In this lab, you us
 
 The Transformation Advisor can evaluate any Java based applications and help to package the good candidate application to move to cloud. In AM0100 of this lab series, you have demonstrated how to use the tool to evaluate the on-premises WebSphere application, Mod Resorts, and have determined that it is suitable to move this application to cloud without any code change. Now you need to move forward to create the application migration bundle with the Transformation Advisor. 
 
-If you have completed Lab **am0100st** with this lab environment, you already have the application data loaded to the Transformation Advisor, you can skip this task and move to the next one. Otherwise continue to execute the procedures below to load the application data to Transformation Advisor first.
+If you have completed Lab **AM0100** with this lab environment, you already have the application data loaded to the Transformation Advisor, you can skip this task and move to the next one. Otherwise continue to execute the procedures below to load the application data to Transformation Advisor first.
 
 1. In the Transformation Advisor page, you first create a new workspace by entering the workspace name as **Evaluation** and then clicking **Next**.
  
@@ -215,7 +220,7 @@ If you have completed Lab **am0100st** with this lab environment, you already ha
 
   The Recommendations page also shows the summary analysis results for all the applications in the AppSrv01 environment to be moved to a Compatible Liberty Runtime environment. For each application, you can see these results:
     * Name
-    * Mifgration Target
+    * Migration Target
     * Complexity
     * Dependencies
     * Issues
@@ -255,30 +260,22 @@ After the migration bundle is created, you need to do one additional update.
 
   ![](images/ta-download-bundle.png) 
 
-    Your migration bundle is downloaded to **/home/ibmdemo/Downloads** directory.
+2. Select **Save File** and click **OK**.
 
-2. After the migration bundle is downloaded, click **Applications**>**Files**.
+  ![](images/save-download.png) 
 
-  ![](images/vm-files-link.png)
+  Your migration bundle is downloaded to **/home/ibmdemo/Downloads** directory.
 
-3. Navigate to the **/home/ibmdemo/Downloads** directory.
+3. After the migration bundle is downloaded, Open **File Manager** and navigate to the **/home/ibmdemo/Downloads** directory.
 
   ![](images/downloads-folder.png) 
-4. Check the bundle zip file. The right file size is around **8.6** MB.  If you see your zip file size is much smaller than that, you need to delete it and re-download the bundle.
-5. Right click the migration bundle zip file and select **Open With Archive Manager**.
+5.  Right click the migration bundle zip file and select **Extract Here**
 
   ![](images/extract-bundle.png) 
-6. Click **Extract**.
 
-  ![](images/extract-bundle-2.png) 
-7. In the next page, select **Downloads** directory, click the **New Folder** icon to create a new folder named **modresorts10war_migrationBundle** and click **Create**.
-
-  ![](images/extract-bundle-3.png) 
-8. Click **Extract** to unzip the bundle pack in the **/home/ibmdemo/Downloads/modresorts10war_migrationBundle** directory
-
-  ![](images/extract-bundle-4.png) 
-  
-9.  Close the **Archive Manager**. Navigate to the **modresorts10war_migrationBundle** directory, you see the all files in the migration bundle package. 
+  The bundle pack is extracted to the **/home/ibmdemo/Downloads/modresorts10war_migrationBundle** directory.
+ 
+6.  Navigate to the **modresorts10war_migrationBundle** directory, you see the all files in the migration bundle package. 
 
   ![](images/migration-bundle-folder.png) 
 
@@ -287,10 +284,10 @@ After the migration bundle is created, you need to do one additional update.
     * Dockerfile - this multi-stage file first downloads the application binary and dependencies (if specified), and then builds a docker image which includes your application configured in Liberty.
     * pom.xml – the file contains information about the project and configuration details used by Maven to build the project. In the case of a binary project generated by Transformation Advisor, it may contain coordinates for application binaries and dependencies.
     * target/application runtime – the ear or war file of your application.
-    * Operator resources - deploy and manage your migrated application in Cloud Pak for Applications running on OpenShift Container Platform.
+    * Operator resources - deploy and manage your migrated application on OpenShift Container Platform.
 
-10. Navigate to the **modresorts10war_migrationBundle/src/main/liberty/config** directory, open the Liberty **server.xml** file to the file editor by double-clikcing it.
-11. Comment out the **webApplication** element and click **Save** to save the changes.
+11. Navigate to the **modresorts10war_migrationBundle/src/main/liberty/config** directory, open the Liberty **server.xml** file to the file editor by double-clicking it.
+12. Comment out the **webApplication** element and click **Save** to save the changes.
 
   ![](images/edit-server-xml.png)
  
@@ -301,9 +298,9 @@ Now you have the Mod Resorts application migration package. In general, before d
 1. Go back to the terminal window and issue the command below to stop the WAS server.
 
   ```
-  /home/ibmdemo/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
+  sudo /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
   ```
-  When prompted, enter the WAS username and password as: **wsadmin**/**passw0rd**.
+  When prompted, enter the sudo password as: **passw0rd** and enter the WAS username and password as: **wsadmin**/**passw0rd**.
 2. Create a Liberty server named **server1** in the Liberty installation directory to test the application:
 
   ```
@@ -355,13 +352,6 @@ In this task, you containerize the application. You first create a Liberty Docke
   ```
   The base Liberty image is pulled down and used to create the image that includes your migrated application.
 
-  Note:  if you get an error like this: **Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?**, issue the command below to restart Docker and run the Docker build command again:
-
-  ```
-  service docker restart
-  ```
-
-  When prompted, enter your login password to continue.
 3. Once the Docker image is built, create a container instance from the image and confirm that it is working correctly:
 
   ```
@@ -382,7 +372,7 @@ Note: The migration artifacts generated by Transformation Advisor (specifically 
   oc login https://api.demo.ibmdte.net:6443
   ```
 
-  when promted, enter the login credientials as: **ibmadmin**/**engageibm**.
+  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
   
   Sample output:
   ```
@@ -470,9 +460,8 @@ Note: The migration artifacts generated by Transformation Advisor (specifically 
 
   ![](images/ocp-open-url.png)
 
-  The **Open Liberty** home page is displayed in a new browser window.
+  The **Open Liberty** home page is displayed in a new browser window. If you get a **Page cannot be found** error, just wait for a few more minutes for the app pod to be ready and refresh the page.
 
-  ![](images/ocp-welcome-to-liberty.png)
 16.	Type the application context root **/resorts** to the end of the URL and press **Enter**.
 
   ![](images/ocp-add-context-root.png)
@@ -483,6 +472,6 @@ Note: The migration artifacts generated by Transformation Advisor (specifically 
 
 ### 7.	Summary
 
-In this lab, you have learned how to use Transformation Advisor to prepare a migration bundle for your application and to deploy it to cloud. As a part of IBM Application Modernization solutions in IBM Cloud Pak for Applications, the Transformation Advisor accelerates application migrating to cloud process, minimize errors and risks and reduce time to market. To learn more about IBM Application Modernization solutions, please visit [Cloud Pak for Applications](https://www.ibm.com/cloud/cloud-pak-for-applications).
+In this lab, you have learned how to use Transformation Advisor to prepare a migration bundle for your application and to deploy it to cloud. As a part of IBM Application Modernization solutions in IBM Cloud Paks, the Transformation Advisor accelerates application migrating to cloud process, minimize errors and risks and reduce time to market. To learn more about IBM App Mod, DevOps and Day 2 Operation solutions, please continue with the rest of the lab series.
 
 **Congratulations! You have successfully completed the lab “Modernize Java Application for Container and OpenShift with Transformation Advisor”.**

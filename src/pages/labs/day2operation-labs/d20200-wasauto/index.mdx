@@ -221,7 +221,7 @@ echo https://$(oc get route cpd -n websphere-automation -o jsonpath='{.spec.host
 
 6.Let's get the api-key and save it in a file too.
 ```
-oc -n websphere-automation get secret automation-secure-metering-apis-encrypted-tokens -o jsonpath='{.data.automation-secure-metering-apis-sa}' | base64 -d > /opt/IBM/WebSphere/api-key.txt; echo >> /opt/IBM/WebSphere/api-key.txt
+oc -n websphere-automation get secret wsa-secure-metering-apis-encrypted-tokens -o jsonpath='{.data.wsa-secure-metering-apis-sa}' | base64 -d > /opt/IBM/WebSphere/api-key.txt; echo >> /opt/IBM/WebSphere/api-key.txt
 ```
 
 7.Finally, let's get the Server certificate and save it in a file.
