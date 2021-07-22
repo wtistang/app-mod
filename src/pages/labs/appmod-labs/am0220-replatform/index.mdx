@@ -3,7 +3,7 @@ title: Deploy a Java App to OCP using the Open Liberty Operator
 description: 
 ---
 
-One of the solutions included in the **Cloud Pak for Applications** is the Open Liberty runtime, a highly composable, fast to start, dynamic application server runtime environment for cloud-native Java microservices.
+One of the solutions included in the IBM **Cloud Paks** is the Open Liberty runtime, a highly composable, fast to start, dynamic application server runtime environment for cloud-native Java microservices.
 
 This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming and re-hosting application modernization approaches and other application modernization related solutions. In this lab, you learn another re-platform option - deploying an existing Java application to an Open Liberty container running on an IBM Red Hat OpenShift Kubernetes Service (OCP) cluster in IBM Cloud using the Open Liberty Operator. 
 
@@ -27,17 +27,24 @@ The objectives of this lab are to:
 ### 3.	Prerequisites
 
 The following prerequisites must be completed prior to beginning this lab:
-*	Familiarity with basic Linux commands 
+*	Familiarity with basic Linux commands
 *	Have internet access
-*	Have completed SU0010 of this lab series and have the CP4Apps installed in IBM Red Hat OpenShift Kubernetes Service (OCP) cluster on IBM Cloud.
+*	Have a SkyTap App Mod Lab environment ready
 
 ### 4.	What is Already Completed
 
-The Workstation VM is pre-configured for you to access and work with the OCP cluster in this lab.
+A six Linux VMs App Mod Lab environment has been provided for this lab. 
+ 
+  ![](images/lab-vms.png)
 
-The login credentials for the Workstation VM are provided in your Reservation Details page (https://www.ibm.com/demos/my-reservations/).
-
-The CLI commands used in this lab are listed in the Commands.txt file located at the **/home/ibmdemo/app-mod-labs/am2100** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+*	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
+*	The Workstation VM is the one you will use to access and work with OCP cluster in this lab.
+  The login credentials for the Workstation VM are:
+  * User ID: **ibmdemo**
+  * Password: **passw0rd**
+  
+  Note: Use the Password above in the workstation VM terminal for sudo in the Lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/am0200st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 
@@ -52,24 +59,53 @@ During this lab, you complete the following tasks:
 
 ### 6.	Execute Lab Tasks
 
-#### 6.1 Log in to the Workstation VM and get started (skip this step if you are using your own workstation)
-1.  Launch the VM from your local workstation web browser with the VM URL.
- 
-    ![](images/vm-url.png)
+#### 6.1 Log in to the Workstation VM and get started 
+1.  If the VMs are not already started, start them by clicking the play button for the whole group.
 
-2.	Click **Connect** to access the VM.
- 
-    ![](images/vm-connect.png)
+  ![](images/start-vms.png)
 
-3.	Enter the password you obtained from the Reservation Details page and click **Send Password**.
 
-    ![](images/vm-password.png)
+2.	After the VMs are started, click the Workstation VM icon to access it. 
 
-    The VM desktop is displayed.
+  ![](images/access-workstation.png)
 
-    ![](images/vm-desktop.png)
+  The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
-    The Workstation Desktop is displayed. You execute all the lab tasks on this VM.
+3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
+
+  ![](images/terminal-icon.png)
+5. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/am0220st** directory and click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-am0220st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
 
 #### 6.2 Review the on-premises WebSphere application (skip this step if you are using your own workstation)
 
@@ -77,39 +113,37 @@ In this task, you take a look at Mod Resorts application deployed to the local W
 
 1.	Start WebSphere Application Server
 
-    In the workstation VM, you have a local WebSphere Application Server V9 which hosts the Mod Resorts application. 
-
+    In the Workstation VM, you have a local WebSphere Application Server which hosts several sample applications. 
     To start the WAS server:
-
-    a.	Open a terminal window by clicking **Applications**>**Terminal**.
- 
-    ![](images/vm-terminal-link.png)
-
-    b.	In the terminal window, issue the command below to start the WAS server (You can copy and paste the command from the Commands.txt file in the **/home/ibmdemo/app-mod-labs/am0210** directory).
-
+    
+    a. In the terminal window, issue the command below to start the WAS server.
+    
     ```
     /home/ibmdemo/app-mod-labs/shared/startWAS.sh
+    ```
 
-    ``` 
+    If prompted for **sudo** password, enter the password as: **passw0rd**.
+    
     Within a few minutes the WAS server is ready.
 
-    c.	Access the WAS Admin Console to view the application deployed by clicking **Applications**>**Firefox** to open a browser window.
+    b.	Access the WAS Admin Console to view the application deployed by clicking the Firefox icon on the Desktop toolbar.
+    
+    ![](images/firefox-icon.png)
  
-    ![](images/vm-browser-link.png)
+    c.	From the web browser window and click WebSphere Integrated Solution Console bookmark to launch the WAS console.
 
-    d.	From the web browser window and click WebSphere Integrated Solution Console bookmark to launch the WAS console.
- 
     ![](images/was-bookmark.png)
-
-    e.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**. 
+ 
+    d.  If you see the **Warning: Potential Security Risk Ahead** message, click **Advanced**>**Accept the Risk and continue**.
+    
+    e.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**.
 
     f.	On the WAS Console page, click **Applications** -> **Application Types** -> **WebSphere enterprise applications** to view the apps deployed.
- 
-     ![](images/was-enterprise-apps-link.png)
 
-    In the Enterprise Applications list, you can see all applications deployed. The Mod Resorts application is in the list, currently it is running.
- 
     ![](images/was-enterprise-apps.png)
+ 
+    In the Enterprise Applications list, you can see all applications deployed. Next, you use Transformation Advisor to analyze these applications to identify a good candidate to be moved to the cloud.
+
 2.	View the Mod Resorts application
 
     a. From the web browser window, click new Tab to open a new browser window. Type the Mod Resorts application URL: **http://localhost:9080/resorts/** and press **Enter**.
@@ -126,13 +160,14 @@ In this task, you take a look at Mod Resorts application deployed to the local W
 
     ![](images/mod-resorts-app-paris.png)    
  
-    Now that you have reviewed the application, next you learn how the solution included in IBM Cloud Pak for Applications helps to move this application to the cloud.
+    Now that you have reviewed the application, next you learn how the solution included in IBM Cloud Paks helps to move this application to the cloud.
 
-    d. Go back to the Terminal window and issue the command below to stop the WAS server.
+    d. Go back to the terminal window and issue the command below to stop the WAS server.
 
     ```
-    /home/ibmdemo/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
+    sudo /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
     ````
+    If prompted, enter the sudo password as; **passw0rd** and WAS admin credentials as: **wsadmin**/**passw0rd**.
 
 ### 6.3	Install the Open Liberty Operator
 
@@ -152,25 +187,32 @@ The architecture of the Open Liberty Operator follows the basic controller patte
 
 In this lab, you use the following steps to install the Open Liberty Operator from the OCP Operator Hub.
 
-1.	From the browser window, click the OCP cluster Web Console bookmark to open it with your IBM credentials.
+1.	From the browser window, click the OCP web console bookmark to open it.
  
-    ![](images/ocp-console-bookmarked.png)
-2.	In the OpenShift Web Console page, click **Operators**>**OperatorHub**.
+    ![](images/ocp-console-bookmark.png)
+
+2. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+ 
+    ![](images/ocp-console-login-1.png) 
+
+    ![](images/ocp-console-login-2.png) 
+    
+3.	In the OpenShift Web Console page, click **Operators**>**OperatorHub**.
 
     ![](images/ocp-operators-operatorhub.png) 
-3.	The OperatorHub page is displayed, change Project to openshift-operator.
+4.	The OperatorHub page is displayed, change Project to openshift-operator.
 
     ![](images/openshift-operator-project.png) 
-4.	Enter liberty in the Filter field.
+5.	Enter liberty in the Filter field.
 
     ![](images/operatorhub-page.png) 
-5.	Click **Open Liberty Operator** icon to install it.
+6.	Click **Open Liberty Operator** icon to install it.
 
     ![](images/search-for-open-liberty.png) 
-6.	Click **Install** to start the process.
+7.	Click **Install** to start the process.
 
     ![](images/open-liberty-operator-install.png) 
-7.	In the next page, click **Subscribe**.
+8.	In the next page, click **Subscribe**.
 
     ![](images/open-liberty-operator-subscribe.png) 
 
@@ -182,35 +224,36 @@ In this lab, you use the following steps to install the Open Liberty Operator fr
 
 #### 6.4	Build an Open Liberty Docker Image.
 
-The IBM Cloud Pak for Applications has a tool called Transformation Advisor, which can be used to analyze your existing java applications and evaluate the efforts to move them to cloud. The analysis of the Mod Resorts application is covered in lab AM0100 of this lab series. The analysis report shows that the Mod Resorts application can be directly moved the Open Liberty server in a Docker container without any code change. In this task, you are going to build an Open Liberty Docker image containing the Mod Resorts application. 
+The IBM Cloud Paks has a tool called Transformation Advisor, which can be used to analyze your existing java applications and evaluate the efforts to move them to cloud. The analysis of the Mod Resorts application is covered in lab **AM0100** of this lab series. The analysis report shows that the Mod Resorts application can be directly moved the Open Liberty server in a Docker container without any code change. In this task, you are going to build an Open Liberty Docker image containing the Mod Resorts application. 
 The Dockerfile is the key file you needed to build your Docker image. It defines how the Docker image that has the Mod Resorts application and configuration pre-loaded is built.
 
 1.	Review the Dockerfile file.
 
-    a. From the Desktop toolbar, click the File Manager icon to open it.
-    
-    
-    ![](images/vm-files-link.png)
-    b. Navigate to **/home/ibmdemo/app-mod-labs/am0210/appmod-resorts/** directory.
+    a. From the **File Manager** window nvigate to **/home/ibmdemo/app-mod-labs/am0220st/appmod-resorts/** directory.
 
-    ![](images/docker-file.png)
-    c. Double click the dockerfile to open it in the Text editor for reviewing.
+    ![](images/am0220-appmod-resorts-folder.png)
+    c. Double click the **dockerfile** to open it in the Text editor for reviewing.
     
-    ![](images/docker-file-content.png)
-    
+    Sample output:
+    ```
+    FROM openliberty/open-liberty:javaee8-ubi-min
+    COPY --chown=1001:0 data/examples/modresorts-1.0.war /config/dropins
+    COPY --chown=1001:0 server.xml /config/
+    ```
+        
     As you can see, the file defines the following activities to create the Open Liberty Docker image:
     *	Pulls the Open Liberty Java EE 8 image from Docker Hub
     *	Adds the application binary file to the base image
     *	Adds the Open Liberty server.xml file to the base image
 
-    Note: the server.xml file is the Open Liberty server configuration file. In this lab, a sample server.xml is used, it contains the default Open Liberty server settings meet all the Mod Resorts application needs.
+    Note: the **server.xml** file is the Open Liberty server configuration file. In this lab, a sample server.xml is used, it contains the default Open Liberty server settings meet all the Mod Resorts application needs.
  
 2.	Build the Docker image.
 
-    a. To build the Docker image, execute the following commands in the Terminal window:
+    a. To build the Docker image, execute the following commands in the terminal window:
 
     ```
-    cd /home/ibmdemo/app-mod-labs/am0210/appmod-resorts/
+    cd /home/ibmdemo/app-mod-labs/am0220st/appmod-resorts/
     docker build . -t app-modernization:v1.0.0
     ```
     
@@ -218,10 +261,27 @@ The Dockerfile is the key file you needed to build your Docker image. It defines
     *	Building the Docker image
     *	Tagging the image with a name that is consistent with OCP cluster registry requirements
 
+    Sample output:
+    ```
+    Sending build context to Docker daemon  18.15MB
+    Step 1/3 : FROM openliberty/open-liberty:javaee8-ubi-min
+    ---> e8f8cc10305e
+    Step 2/3 : COPY --chown=1001:0 data/examples/modresorts-1.0.war /config/dropins
+    ---> 5e1ece57533c
+    Step 3/3 : COPY --chown=1001:0 server.xml /config/
+    ---> d94c64534e78
+    Successfully built d94c64534e78
+    Successfully tagged app-modernization:v1.0.0
+    ```
+
     b. After the docker container image is created, you can issue the command below to check it:
     
     ```
     docker images | grep app-modernization
+    ```
+    Sample output:
+    ```
+    app-modernization                                                                             v1.0.0                    d94c64534e78        2 minutes ago       452MB
     ```
     c. To verify the docker image, you can create and run a local container called **modresorts-loc** with the command below:
     
@@ -229,43 +289,65 @@ The Dockerfile is the key file you needed to build your Docker image. It defines
     docker run --name modsorts-loc -p 9443:9443 -d app-modernization:v1.0.0
     ```
 
-    d. Once the container is created, you can test the Mod Resorts application by launching it in a web browser window with the URL: https://localhost:9443/resorts.
+    d. Once the container is created, you can test the **Mod Resorts** application by launching it in a web browser window with the URL: **https:<span></span>//localhost:9443/resorts**.
 
 #### 6.5	Push the Open Liberty Docker Image to OCP cluster Image Registry
 
 After the Open Liberty Docker image is built, you need to push it to the OpenShift cluster image registry, so you can use it to deploy the Open Liberty container to OCP cluster.
 
-1.  From the browser window, go back to the OCP cluster Web Console page.
+1. From the terminal window, issue the **oc login** command to login to the OCP cluster:
 
-2.	In the OpenShift Web Console page, click the **Action** icon next to your username and select **Copy Login** Command to get the OCP login command.
+  ```
+  oc login https://api.demo.ibmdte.net:6443
+  ```
 
-  ![](images/ocp-copy-login-command.png) 
-3.	In the next page, click **Display Token** link.
+  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
+  
+  Sample output:
+  ```
+  Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
+  Username: ibmadmin
+  Password: 
+  Login successful.
 
-  ![](images/display-token.png) 
-4.	Copy the OCP login command to the clipboard.
+  You have access to 66 projects, the list has been suppressed. You can list all projects with ' projects'
 
-  ![](images/copy-token.png) 
-5.	Go back to the Terminal window, right-click to paste the OCP login command window press Enter to log in to the OCP cluster.
- 
-  ![](images/run-oc-login-command.png) 
-6. Create new OpenShift project (namespace) called **demo** to host your applications.
+  Using project "default".
+  ``` 
+  ```
+6.	Create a new project (namespace) as **modresorts10war**.
 
-    ```
-    oc new-project demo
-    ```
+  ```
+  oc new-project demo
+  ```
+  
+  Sample output:
+  ```
+  Now using project "demo" on server "https://api.demo.ibmdte.net:6443".
+
+  You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+  to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+
+  ```
 7.	Get OCP internal image registry URL and cluster URL with commands:
 
   ```
   export INTERNAL_REG_HOST=`oc get route default-route --template='{{ .spec.host }}' -n openshift-image-registry`
   export CLUSTER_URL=`echo $INTERNAL_REG_HOST | sed 's/default-route-openshift-image-registry.//g'`
   ```
-8.	Log in to the OpenShift Docker registry with the command in the Terminal window:
+
+8.	Log in to the OpenShift Docker registry with the command:
     
     ```
     docker login -u $(oc whoami) -p $(oc whoami -t) $INTERNAL_REG_HOST
     ```
-8. Execute the following command to push your docker image to OpenShift image repository.
+ 
+9. Execute the following command to push your docker image to OpenShift image repository.
 
     ```
     docker tag app-modernization:v1.0.0 $INTERNAL_REG_HOST/`oc project -q`/app-modernization:v1.0.0
@@ -296,9 +378,18 @@ After the Open Liberty Docker image is built, you need to push it to the OpenShi
 
 In this task, you are going to deploy the Open Liberty container to the OCP cluster using the Open Liberty operator CR. The operator provides an easy way to quickly provision an Open Liberty container in an OpenShift Kubernetes cluster environment.
 
-1.	Review the Open Liberty operator CR YAML file. From the File Manager navigate to **/home/ibmdemo/app-mod-labs/am02100/appmod-resorts/deploy/apps/appmod/v1.0.0/**  directory. Double click the **app-mod_cr.yaml** to open it in Text editor for reviewing.
+1.	Review the Open Liberty operator CR YAML file. From the File Manager navigate to **/home/ibmdemo/app-mod-labs/am0220st/appmod-resorts/deploy/apps/appmod/v1.0.0/**  directory. Double click the **app-mod_cr.yaml** to open it in Text editor for reviewing.
 
-    ![](images/app-mod-cr.png)
+    Sample output:
+    ```
+    apiVersion: openliberty.io/v1beta1
+    kind: OpenLibertyApplication
+    metadata:
+    name: appmod
+    spec:
+    stack: java-microprofile
+    applicationImage: image-registry.openshift-image-registry.svc:5000/demo/app-modernization:v1.0.0
+    ```
 
     This CR file contains the minimum required spec entries for application deployment. The CR file specifies that it is using the Open Liberty Operator CRD (OpenLibertyApplication) with an application image URL.
 
@@ -309,10 +400,13 @@ In this task, you are going to deploy the Open Liberty container to the OCP clus
     Use the following OpenShift CLI commands to deploy the Open Liberty container:
 
     ```
-    cd /home/ibmdemo/app-mod-labs/am0210/appmod-resorts/
+    cd /home/ibmdemo/app-mod-labs/am0220st/appmod-resorts/
     oc apply -f deploy/apps/appmod/v1.0.0/app-mod_cr.yaml -n demo
     ```
-
+    Sample output:
+    ```
+    openlibertyapplication.openliberty.io/appmod created
+    ```
     The Open Liberty container is deployed to OpenShift Kubernetes cluster demo namespace by the Open Liberty Operator.
 
     As you can see in the verification section next, although you just have the application image URL specified in the CR file, the Open Liberty Operator takes care of application deployment process and creates the Kubernetes service for the application automatically.
@@ -344,17 +438,12 @@ After the Open Liberty container is deployed, you can go to the OCP console to t
 
     **Target** = 9080
 
-    **Hostname** = appmod.&ltCLUSTER_URL&gt
-    
-    Where  &ltCLUSTER_URL&gt is the **CLUSTER_URL** variable you created before, you can get its value with command:
-    
-    ```
-    echo $CLUSTER_URL
-    ```
+
+
 
     ![](images/ocp-create-route-details.png)
 
-5.	The route is created, click the **Location* URL to launch the application from a new browser window.
+5.	The route is created, click the **Location** URL to launch the application from a new browser window.
 
     ![](images/ocp-new-route-url.png)
  
@@ -364,6 +453,6 @@ After the Open Liberty container is deployed, you can go to the OCP console to t
  
 ### 7.	Summary
 
-In this lab, you learned how to use Open Liberty Operator to deploy your JEE applications to cloud. As a part of IBM Application Modernization solutions in IBM Cloud Pak for Applications, the Open Liberty Operator helps users effectively deploying and managing applications running on Open Liberty containers to a Kubernetes cluster. To learn more about IBM App Modernization solutions, please visit [Cloud Pak for Applications](https://www.ibm.com/cloud/cloud-pak-for-applications).
+In this lab, you learned how to use Open Liberty Operator to deploy your JEE applications to cloud. As a part of IBM Application Modernization solutions in IBM Cloud Paks, the Open Liberty Operator helps users effectively deploying and managing applications running on Open Liberty containers to a Kubernetes cluster. To learn more about Application Modernization solutions, please continue with the rest of the lab series.
 
 Congratulations! You have successfully completed the lab “Deploy a Java App to OCP using the Open Liberty Operator”
