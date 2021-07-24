@@ -1,0 +1,478 @@
+---
+title: Modernize a Java Application using IBM TA and CP4Apps Pipeline
+description: 
+---
+
+IBM Cloud Transformation Advisor, also called **Transformation Advisor** (**TA**), bridges the gap between existing development activities and cloud-native development together.  TA will accelerate the development process by creating the configuration and deployment artifacts for an application, then facilitate the developer’s use of the enhanced developer productivity tools in IBM Cloud paks.  
+
+Transformation Advisor will simplify the modernization scenario, creating one development experience for both cloud-native and application modernization. This lowers the on-ramp to cloud development, test, deployment for Java EE developers.
+
+### 1.	Business Scenario
+
+As shown in the image below, your company has a web application called Mod Resorts, a WebSphere application showing the weather in various locations. Your company wants to move this application from on-premises to the cloud.
+ 
+![](images/mod-resorts-app-home-page.png)
+
+As a tech lead, you have already analyzed the application using the Transformation Advisor tool. 
+
+Based on the analysis you know that you can move this application from the traditional WebSphere Server environment to a light-weighted Liberty server environment without any code change.  
+
+Now you are planning to use the Transformation Advisor migration plan to create the migration bundle, to containerize the application, and to deploy the Docker container to an OpenShift Kubernetes cluster environment.
+ 
+### 2.	Objective
+
+The objective of this lab is to learn how to use Transformation Advisor to accelerate the development activities required during the modernization of a Java EE application currently deployed to IBM WebSphere Application Server, Oracle WebLogic, Apache Tomcat or Red Hat JBoss Application Server.  The application will be deployed through a continuous integration and continuous delivery (CI/CD) pipeline to the Open Liberty server in the OpenShift Container Platform (OCP) cluster.
+
+The sample application used in this lab does not require any modification to the source code in its modernization.  This enables the completion of the lab in a pre-determined amount of time.  The modernization of applications that need modifications will be described, but not required for completion of the lab.
+
+### 3.	Prerequisites
+The following prerequisites must be completed prior to beginning this lab:
+*	Familiarity with basic Linux commands
+*	Have internet access
+*	Have completed Lab SU0100 of this lab series and have the CP4Apps installed in IBM Red Hat OpenShift Kubernetes Service (OCP) cluster on IBM Cloud.
+*	Basic Java app development knowledge
+*	GitHub account - you can sign up for a free account at: https://github.com
+
+### 4.	What is Already Completed
+
+The Workstation VM is pre-configured for you to access and work with the OCP cluster in this lab.
+
+The login credentials for the Workstation VM are provided in your Reservation Details page (**https://www.ibm.com/demos/my-reservations/**).
+
+The CLI commands used in this lab are listed in the Commands.txt file located at the **/home/ibmdemo/app-mod-labs/dv0200** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+
+### 5.	Lab Tasks
+During this lab, you will complete the following tasks:
+*	Login to the Workstation VM and open Transformation Advisor
+*	View the Transformation Advisor insights for a collection of applications and queue managers
+*	Load a data collection for the Mod Resorts application currently deployed on-premise in WebSphere Application Server v9
+*	View the migration bundle contents for the Mod Resorts application
+*	Push the migration bundle into GitHub 
+*	Clone the GitHub repository on the local workstation and import the source for the application
+*	Build and package the application in a Liberty container in Codewind using Application Stacks
+*	Commit and push the application to the GitHub repository
+*	Setu the Tekton Pipeline webhook for the application’s build and deployment
+*	Deploy the application to OpenShift via the Tekton pipeline
+
+
+### 6.	Execute Lab Tasks
+#### 6.1 Log in to the Workstation VM and get started (skip this step if you are using your own workstation)
+1.  Launch the VM from your local workstation web browser with the VM URL.
+ 
+    ![](images/vm-url.png)
+
+2.	Click **Connect** to access the VM.
+ 
+    ![](images/vm-connect.png)
+
+3.	Enter the password you obtained from the Reservation Details page and click **Send Password**.
+
+    ![](images/vm-password.png)
+
+    The VM desktop is displayed.
+
+    ![](images/vm-desktop.png)
+
+    The Workstation Desktop is displayed. You execute all the lab tasks on this VM.
+ 
+#### 6.2	Launch Transformation Advisor 
+In this lab, you are going to use Transformation Advisor’s capabilities designed to accelerate the development process by creating the configuration and deployment artifacts for an application.
+Using these artifacts, and Accelerators for Teams, you will learn how to facilitate the use of the enhanced developer productivity tools in IBM Cloud Pak for Applications as the application is deployed to RedHat OpenShift, using the Tekton pipelines.  
+
+The Transformation Advisor used in the lab is installed as part of IBM Cloud Pak for Applications version 4.1. IBM Transformation Advisor is also available stand-alone (Beta), run locally in Docker on your workstation. Learn more about the stand-alone version of Transformation Advisor: http://ibm.biz/cloudta
+
+The Transformation Advisor is installed on OCP in IBM Cloud.  In this lab, you use the following steps to access it.
+
+This task requires to have IBM Cloud Pak for Applications installed on OCP cluster in IBM Cloud. If you have completed the lab0 of this lab series, you can continue, otherwise you need to complete lab0 first.
+
+1. From web browser window, click the IBM Cloud Transformation Advisor bookmark and log in to your IBM Cloud account with your credentials.
+ 	
+    ![](images/ta-bookmarked.png) 
+
+    The Transformation Advisor home page is displayed.
+
+    ![](images/ta-home-page.png)
+ 
+#### 6.4	Upload Application Data into Transformation Advisor
+
+The Transformation Advisor can evaluate any Java based applications and help to package the good candidate application to move to cloud. In Lab AM0100 of this lab series, you have demonstrated how to use the tool to evaluate the on-premises WebSphere application, Mod Resorts, and have determined that it is suitable to move this application to cloud without any code change. Now you need to move forward to create the application migration bundle with the Transformation Advisor. 
+
+1. In the Transformation Advisor page, you first create a new workspace by entering the workspace name as **Evaluation** and then clicking **Next**.
+ 
+   ![](images/ta-new-workspace.png)
+
+    Note: A workspace is a designated area that houses the migration recommendations provided by Transformation Advisor against your application server environment. You can name and organize these however you want, whether it’s by business application, location or teams. 
+
+2. Enter the collection name as **ModResorts** and click **Let’s go**.
+ 
+    ![](images/ta-new-collection.png)
+
+    Note: Each workspace can be divided into collections for more focused assessment and planning. Like workspaces, collections can be named and organized in whatever way you want.
+
+3. Once the Workspace and Collection are created, you get the data collection options page.  You can either download the Data Collector utility and run it against your application server, or upload an existing data file. In this lab, you are going to use the upload option. Click **Upload data** to go to the upload page.
+
+    ![](images/ta-upload-data.png) 
+
+4. Click Drop or Add File.
+
+  ![](images/drop-or-add-file.png)
+ 
+5. Navigate to **/home/ibmdemo/app-mod-labs/dv0200/DataCollections** directory, select **NewDeafaultAppSrv03.zip** file and click **Open**.
+
+  ![](images/ta-new-default-app-zip.png) 
+
+6. Click **Upload**.
+
+    ![](images/ta-new-data-upload.png)
+
+    Transformation Advisor will show its recommendations page with details about modernizing the application to Liberty in IBM Cloud Pak for Applications.
+
+    Note: The modresorts-1.0.war application used in this lab does not require any modification to the source code in its modernization.  This enables the completion of the lab in a pre-determined amount of time.  The modernization of applications that need modifications will be described, but not required for completion of the lab. 
+
+    ![](images/ta-recommendation-modresorts-app.png)
+    
+    The Transformation Advisor provides all migration recommendations for all applications deployed to the WAS server based on the specified source and target environments. 
+    
+    On the Recommendations page, the identified migration source environment is shown in the Profile section, and the target environment is shown in the Preferred migration section. The data collector tool detects that the source environment is your WebSphere Application Server ND **NewDefaultAppSrv03** Profile. The target environment is Liberty on OpenShift, which is the default target environment.
+
+    The Recommendations page also shows the summary analysis results for all the appllications in the **NewDefaultAppSrv03** environment to be moved to a Liberty on OpenShift environment. 
+    
+    For each app, you can see these results:
+    *   Complexity level
+    *   Technology match
+    *   Dependencies
+    *   Issues
+    *   Estimated development cost in days
+
+    For example, if you want to move the modresorts-1_0_war application to Liberty on Private Cloud, the complexity level is Simple and the Tech match is 100 percent. 
+
+    A Simple complexity score indicates that the application code does not need to be changed before it can be moved to cloud. The application has no dependency, has 1 minor level issue and the estimated development effort is 0 day.
+
+    ![](images/ta-modresorts-simple.png)
+
+#### 6.4	View the Migration Bundle
+
+In this section, you view the migration bundle contents for the Mod Resorts application.  The migration bundle is created by the Transformation Advisor for a quick deployment to cloud while minimizing the migration error.
+
+1.	Click on the menu with the “hamburger icon” next to the **Mod Resorts** application analysis to display the menu choices and choose **View migration plan**.
+
+    ![](images/ta-view-migration-plan.png)
+    
+    Transformation Advisor will display details about the migration bundle that it generated to accelerate the modernization of this application into Liberty on OpenShift. The migration bundle includes diverse artifacts, depending on the needs of the application.
+
+    The user can choose to create a migration bundle for either of the options below: 
+    *	a binary project of an application (uploading a WAR/EAR file and its dependent libraries), or 
+    *	a source project of an application, so that the application source files can be modernized and maintained.  
+
+    The user can also choose to create a migration bundle that will either:
+    *	allow the project to integrate with the Accelerator for Teams, making the modernization developer experience align with the developer experience for cloud-native applications
+    *	deploy into Red Hat OpenShift cluster via an Operator
+
+    The default selection is for a source project that will integrate with the Accelerator for Teams (derived from the open source project Kabanero.io).
+
+2.	View the migration bundle settings and functions.
+
+    The artifacts change, depending on the user’s modernization choices for the application.  The default selection for an application that uses only EE7 features and above will be to deploy as a source application project, and to use the Accelerator for Teams.  The project will be a source project, with the directory structure set up with a starter application and the Liberty configuration for the application.  
+
+    To accelerate the application modernization, the artifacts produced by Transformation Advisor include the configuration for the Liberty server, the build file for the application and the Accelerator for Teams configuration files (which can used with the Application Stacks).
+
+    Users are able to choose to download the artifacts as a migration bundle or push the bundle contents into a GitHub repository.
+
+    ![](images/ta-migration-bundle-options.png)
+
+    a.	Move the slider for Use Accelerator for Teams Collection to **Don’t use**. 
+
+    ![](images/ta-use-aft-options.png)
+    
+    This change means the Mod Resorts migration bundle will not use the Accelerator for Teams, but will build an image with Docker and deploy via an Operator into a Red Hat OpenShift cluster.
+
+    The project will still be a source project, with the directory structure set up with a starter application and the Liberty configuration for the application.  
+
+    When not using the Accelerator for Teams, the artifacts produced by Transformation Advisor include the configuration for the Liberty server, the build file for the application, the Dockerfile to produce the deployed application image, and the Operator to deploy the applications into a Red Hat OpenShift cluster.
+
+    b.	Click **Binary** to change the **Mod Resorts** migration bundle to build from a binary application project.  
+
+    ![](images/ta-build-type-options.png)
+    
+    Changing the selection for any application to deploy as a binary project will not only change the artifacts created, but the application cannot use Accelerator for Teams, as there is not yet an CP4Apps Application Stack that will build and deploy a binary project from Transformation Advisor.
+
+    The user can choose to upload the binary application and its dependencies for the project or provide Maven coordinates to identify the location of the binary application and its dependencies.
+
+    Once the user has uploaded the binaries or provided the Maven coordinates, the user can choose to download the artifacts as a migration bundle.
+
+#### 6.5	Push the migration bundle into GitHub
+
+This step requires that you have a public GitHub account. If you do not have a GitHub account, create a free account at: https://github.com 
+
+1.  Create a GitHub personal access token.  
+
+    a. In a new tab in the browser, click the **GitHub** bookmark to launch it.
+
+    ![](images/vm-github-bookmark.png)
+ 
+    b. Log in to your existing GitHub account using your userid and password.  
+    
+    ![](images/github-signin.png)
+
+    c. Once you have logged into your GitHub account, click on your user image in the top right corner and choose **Settings**.
+
+    ![](images/github-settings.png)
+
+    d. On the bottom left of the next screen, click on **Developer settings**.
+
+    ![](images/github-developer-settings.png)
+
+    e. On the next screen, click on **Personal access tokens**.
+ 
+    ![](images/github-personal-access-token.png)
+
+    f. On the next screen, click on **Generate new token**.
+ 
+    ![](images/github-new-token.png)
+
+    g. Enter the token Name as: **my-new-token** with these three scopes 
+    *	repo
+    *	admin:org
+    *	admin:repo_hook
+ 
+    ![](images/github-token-settings-1.png)
+
+    ![](images/github-token-settings-2.png)
+
+    g.	At the bottom of the screen, click **Generate token**.
+
+    ![](images/github-token-settings-3.png)
+
+    h.	 Be sure to save your access token.  It is valid for all repositories for your account. You save it in the **Commands.txt** file located at **/home/ibmdemo/app-mod-labs/dv0200** directory.
+    
+2.	Create a public GitHub repo for the application.
+
+    a.	At the top right corner of the GitHub page, click **Add** and select New repository to create a new repository:
+
+    ![](images/github-add-new-repo.png)
+
+    b.	Specify the Repository name as “my-repo”, and create the new repository as a Public repository with a README.
+ 
+    ![](images/github-repo-settings.png)
+
+    The URL for your new repository is in the address bar: **<snap>https://</snap>github.com/&lt;your GitHub ID &gt;/my-repo**
+ 
+    Now you have the three values required to push your migration bundle into GitHub: your repository URL, your GitHub ID and your GitHub personal access token.  
+
+3.	Go back to Transformation Advisor page, click on the **ModResorts** COllection link in the breadcrumb.
+
+    ![](images/ta-modresorts-collection-link.png)
+4.	Click on the menu with the “hamburger icon” next to the **Mod Resorts** application analysis and choose **View migration plan**.
+5.  Click on Send to Git to prepare to send the migration bundle for Mod Resorts application to Git.
+
+    ![](images/ta-send-to-git.png)
+6.	Specify the GitHub repository URL, your GitHub ID and your GitHub personal access token: Then Scroll down and click **Send to Git**.
+
+    ![](images/ta-send-to-git-2.png)
+5.	Once the application artifacts are sent to GitHub, you can now view the contents of the migration bundle in GitHub by refreshing the home page for the repository URL.
+
+    ![](images/github-my-repo.png)
+#### 6.6	Clone the GitHub Repository 
+
+In this section, you clone your GitHub repository on the local workstation and import the source for the application. 
+
+1.	Open a Terminal window by clicking **Applications**>**Terminal**.
+
+    ![](images/vm-terminal-link.png)
+2.	From the Terminal window, clone the GitHub repository using the following commands:
+
+    ```
+    cd /home/ibmdemo
+    git clone https://github.com/<your GitHub ID>/my-repo
+    ```
+
+    Where &gt;your GitHub IDE&lt; is your GitHub user id.
+
+3.	Change to the my-repo directory that you just cloned with command:
+
+    ```
+    cd my-repo
+    ```
+4.	From the Terminal window, extract the source code (saved in the /home/ibmdemo/app-mod-labs/dv0200/modresorts_src.zip file) into the local repository source directories using the following command:
+
+    ```
+    unzip /home/ibmdemo/app-mod-labs/dv0200/modresorts_src.zip
+    ```
+
+    Note:  answer A when prompted to replace the index.html file.
+
+#### 6.7	Build and Package the Application  
+
+The source code development activities might not be executed by the same person as the previous steps.  The solutions architect might use Transformation Advisor’s insights to make decisions about the modernization of the application estate and send projects to GitHub for the developer.
+
+The developer will begin working on the modernization of the application, including any needed source code changes, building and testing using the Accelerator for Teams.
+
+This lab uses Visual Studio Code (VS Code) with the Codewind extension installed; there are no code changes required for the Mod Resorts application modernization.
+
+Applications which require code changes, due to required Java EE and/or Java SE differences in the modern development environment, would benefit from the combination of the Eclipse Codewind and WebSphere Application Migration Toolkit (WAMT) plugins in the Eclipse Integrated Development Environment (IDE).  
+See more about the WebSphere Application Migration Toolkit (WAMT) plugin here: http://ibm.biz/WAMT4Eclipse.
+
+
+1.	Go to the Terminal window and launch VS Code using the following commands: 
+
+    ```
+    cd /home/ibmdemo/my-repo 
+    code .
+    ```
+
+    The VS Code IDE is displayed.
+
+2.	If the local Codewind extension in VS Code is not started, you will need to start it now:
+
+    a.	Click on Local (Stopped) to start Local Codewind.
+
+    ![](images/vscode-start-codewind.png)
+
+    The Codewind extension will then be started:
+
+3.	Add the ModResorts project to Codewind.
+
+    a.	Click on the icon to Add Existing Project.
+
+    ![](images/vscode-add-project.png)
+
+    b.	Select the **/home/ibmdemo/my-repo** directory and click **Add to Local Codewind**.
+
+    ![](images/vscode-add-to-codewind.png)
+
+    c.	Click **Yes** when Codewind detects that the project is for the Java Application Stack.
+
+   ![](images/vscode-java.png)
+
+    Codewind will detect that the application project is already in the VS Code workspace. Therefore, Codewind builds and starts the application automatically.
+
+    The application state should automatically change to “Running” once the app is built and started. 
+
+    ![](images/vscode-my-repo-running.png)
+
+    d.	If it seems that the application is not starting, you can view the logs by right-clicking the project name and selecting **Show all logs**.
+
+    ![](images/vscode-show-all-logs.png)
+4.	Open the application when it is running.
+
+    a.	When the status of your application changes from Starting to Running, right-click on the application. Then select **Open Application** from the menu. 
+
+    ![](images/vscode-open-application.png)
+
+    Opening the application will load the application (running in a container) in the browser.  The Mod Resorts application home page is displayed.
+
+    ![](images/mod-resorts-app-home-page.png)
+
+    b. Click **WHERE TO?** dropdown menu to see the city list.
+
+    ![](images/mod-resorts-app-where-to.png)
+ 
+    c. Click **PARIS, FRANCE** from the list, it shows the weather of the city.
+
+    ![](images/mod-resorts-app-paris.png)    
+ 
+    c.	When you are satisfied that the application is ready to deploy outside of the local development and test environment, you commit the inclusion of the application source code and any changes made and push the code (using the Github personal access token) into the Git repository using the following commands in the Terminal window:
+
+    ```
+    cd /home/ibmdemo/my-repo
+    git config --global user.email "you@example.com"
+    git config --global user.name "Your Name"
+    git add .
+    git commit -m "added ModResorts source code"
+    git push 
+    ```
+    Note:  If prompted for a user id, specify your public GitHub user id. If prompted for a password by git push, you must specify your Git personal access token in place of the password if your Git account uses two-phase authentication.
+
+### 6.8	Setup the Tekton Pipeline webhook
+
+Transformation Advisor and the Accelerator for Teams can set up webhooks from the user’s GitHub repository into the Tekton pipelines and trigger the Tekton pipelines when there is a commit to the repository.  
+
+In this task you configure the Pipeline webhook from Tekton Dashboard.
+
+1.	From the web browser window click the **Tekton Dashboard** bookmark.
+    
+    ![](images/vm-tekton-dashboard-bookmark.png)
+
+2.	The Tekton Dashboard is displayed. Click **Webhooks** to go to the pipeline webhooks page.
+
+    ![](images/tekton-webhooks-link.png)
+
+3. In the Create Webhook page, enter **Name** as **my-webhook**, enter **Repository URL** as your **my-repo** GitHub URL and click Add **Access Token** icon.
+
+    ![](images/tekton-create-webhook-1.png)
+
+4. Enter **Access Token** name as **my-new-token**,  copy and paste your GitHub Access Token value to the **Access Token** field and click **Create**.
+
+    ![](images/tekton-create-new-token.png)
+
+5. Select **my-new-token** from the Access Token dropdown list, enter the following values and click **Create**.
+    
+    * **NameSpace** = kabanero
+    * **Pipeline** = java-microprofile-build-deploy-pl
+    * **Service Account** = kabanero-operator
+    * **Docker Registry** = image-registry.openshift-image-registry.svc:5000/kabanero  
+
+    ![](images/tekton-create-webhook-2.png)
+
+    Your Tekton pipeline webhook is created.
+
+    ![](images/tekton-webhook-created.png)
+#### 6.9	Deploy the application to OpenShift via the Tekton pipeline
+After the Tekton pipeline webhook is created, any Git commit will not trigger the pipeline automatically.
+
+In this task, you make a change to the application code and commit the change to your GitHub repo, this will activate the Tekton pipeline to deploy your application to the OCP cluster.
+
+1.	Go back to the VS Code environment and open **my-repo/src/main/webapp/index.html** for editing.
+
+    ![](images/vscode-open-index-html.png)
+2.  In line 49, change the city name from **Miami** to **Chicago** and save the change.
+
+    ![](images/vscode-change-city.png)
+
+3.  Execute the commands below to push the code into the Git repository:
+
+    ```
+    cd /home/ibmdemo/my-repo
+    git add .
+    git commit -m "update ModResorts source code"
+    git push 
+    ```
+    Note:  If prompted for a user id, specify your public GitHub user id. If prompted for a password by git push, you must specify your Git personal access token in place of the password if your Git account uses two-phase authentication.
+    
+4.	Now go to the Tekton Dashboard window and click **Pipelineruns**, you see your pipeine is activated.
+
+    ![](images/tekton-pipelineruns-link.png)
+ 
+5.	Click on the name of the new pipeline to view the live status of the run.
+
+   ![](images/tekton-pipelinerun-link.png)
+ 
+6.	Wait for the PipelineRun to complete. The Tekton pipeline will take several minutes to complete. As the Pipeline run, you can view its logs to see the details. 
+
+   ![](images/tekton-pipelinerun-logs.png)
+7.	When the run has completed successfully, view the running application.
+
+    a.	Go back to the OCP cluster Web Console page.
+ 
+    c.	Expand the **Networking** menu, select **Routes** and change project to **kabanero** project.
+
+    ![](images/ocp-networking-routes-kabanero.png)
+ 
+    e.	Click on your Mod Resorts application URL
+
+    ![](images/modresorts-app-route.png)
+    
+    f.	View your application running in OCP cluster, you can see that the new city name your changed in the **index.html** is displayed.
+
+    ![](images/modresorts-app-updated.png)
+
+ 
+### 7.	Summary
+
+In this lab, you have learned how to modernize a Java application that is running in an on-premise application server environment using Transformation Advisor’s integration with Accelerator for Teams in IBM Cloud Pak for Applications, then deploy it to OpenShift with Application Stacks and Integrated Dev/Ops Toolchain and Pipelines.
+ 
+As a part of IBM Application Modernization solutions in IBM Cloud Pak for Applications, Transformation Advisor and the Accelerator for Teams (with Application Stacks and Integrated Dev/Ops Toolchain and Pipelines) helps users effectively to develop, package, deploy and manage modernized applications on a Kubernetes cluster. 
+
+To learn more about IBM Application Modernization solutions, please visit [Cloud Pak for Applications](https://www.ibm.com/cloud/cloud-pak-for-applications).
+
+Congratulations! You have successfully completed the lab “Modernize Java Apps using IBM Transformation Advisor and Cloud Pak for App”.

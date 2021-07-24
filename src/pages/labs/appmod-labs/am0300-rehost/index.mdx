@@ -75,7 +75,9 @@ During this lab, you complete the following tasks:
 4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
   ![](images/terminal-icon.png)
-5. In the terminal window, run the following command to get the lab materials.
+5. If this is your first time to run the lab series in this lab environment, do the following, otherwise if you have already downloaded the lab materials in other labs, you can skip this step.
+  
+  a. In the terminal window, run the following command to get the lab materials.
 
   ```
   /home/ibmdemo/get-lab-materials.sh
@@ -373,7 +375,7 @@ After the WAS container image is built, you need to push it to an image registry
  
     ![](images/ocp-am0300-is.png) 
 
-    In the Image Stream Details Page Overview section, you see the public image repository you used to push the image.  Notice that the public image repository is mapped to an internal image repository which is used to deploy the application.  The internal image repository is: image-registry.openshift-image-registry.svc:5000/demo/modresorts.
+    In the Image Stream Details Page Overview section, you see the public image repository you used to push the image.  Notice that the public image repository is mapped to an internal image repository which is used to deploy the application.  The internal image repository is: **image-registry.openshift-image-registry.svc:5000/am0300/modresorts**.
  
     ![](images/ocp-am0300-is-details.png) 
  
@@ -387,7 +389,7 @@ Once the WAS container image is pushed to the OCP cluster image registry, you ca
 
     a.	From the File Manager window, navigate to **/home/ibmdemo/app-mod-labs/am0300st/deploy** directory where these three YAML files are located.
  
-    b.	Double-click the **deploy.yaml** file to open it in the text editor. The file contains the basic requirements of the WAS container deployment. The container name is set as modresorts-app-twas and it is deployed to the demo namespace.
+    b.	Double-click the **deploy.yaml** file to open it in the text editor. The file contains the basic requirements of the WAS container deployment. The container name is set as **modresorts-app-twas**.
  
     Sample output:
     ```
@@ -473,7 +475,7 @@ Once the WAS container image is pushed to the OCP cluster image registry, you ca
       loadBalancer: {}
     ```
 
-    d.	Double-click the **route.yaml** file to open it. The file defined the OpenShift route used for the WAS container which enables users to access the Mod Resorts application on a public address.  You need to change the **host**/**name** from **modresorts-app-twas.apps.demo.ibmdte.net** to your OCP cluster host name and **Save** your change. 
+    d.	Double-click the **route.yaml** file to open it. The file defined the OpenShift route used for the WAS container which enables users to access the Mod Resorts application on a public address.  
 
     Sample output:
     ```

@@ -61,7 +61,9 @@ During this lab, you complete the following tasks:
 4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
   ![](images/terminal-icon.png)
-5. In the terminal window, run the following command to get the lab materials.
+5. If this is your first time to run the lab series in this lab environment, do the following, otherwise if you have already downloaded the lab materials in other labs, you can skip this step.
+  
+  a. In the terminal window, run the following command to get the lab materials.
 
   ```
   /home/ibmdemo/get-lab-materials.sh
@@ -649,22 +651,7 @@ The command line tools may be used to:
   master3   Ready    master,worker   380d   v1.19.0+43983cd
   ```
 
-5. List all projects with command:
-
-  ```
-  oc get projects
-  ```
-
-  ```
-  NAME                                                    DISPLAY NAME   STATUS
-  default                                                                Active
-  ibm-cert-store                                                         Active
-  ibm-system                                                             Active
-  kube-node-lease  
-  ....                                                      Active
-  ```
-
-6. Switch to a specific project **dk0300st** from the **default** project. 
+5. Switch to a specific project **dk0300st** from the **default** project. 
 
   ```
   oc project dk0300st
@@ -901,14 +888,19 @@ The command line tools may be used to:
 3. List pods again with command **oc get pods** and note that a new instance of the pod has been created as expected. The deployment specified 1 instance, so the controller tries to maintain 1 instance.
 
   ```
+  oc get pods
+  ```
+  
+  Sample output:
+  ```
   NAME                      READY   STATUS    RESTARTS   AGE
-  example-5fb6876865-qkj4r   1/1     Running   0          13s    example-75778c488-rhjrx   1/1     Running   0          28s
+  example-5fb6876865-qkj4r   1/1     Running   0          13s
   ```
 
-4. To increse the number of pod instances, we can patch the resource in one of two ways:
+4. To increse the number of pod instances, you can patch the resource in one of two ways:
    - Scripted patch using the **patch** option of the command line:
       ```
-      oc patch deployment example -p '{ "spec": { "replicas": 1 } }'
+      oc patch deployment example -p '{ "spec": { "replicas": 2 } }'
       ```
    - Interactive patch using the **edit** option of the command line through **vi** editor:
       ```
@@ -925,14 +917,19 @@ The command line tools may be used to:
 
       Note: The above edits the copy that is stored in Openshift.
 
-  Once the change is made, it will be applied to the pod automatically.
-5. List the pods to show only 1 pod is running: **oc get pods**.
+    Once the change is made, it will be applied to the pod automatically.
+5. List the pods to show 2 pods are running.
 
-    ```
-    NAME                       READY   STATUS    RESTARTS   AGE
-    example-5fb6876865-76klt   1/1     Running   0          16s
-    example-5fb6876865-qkj4r   1/1     Running   0          8m23s
-    ```
+  ```
+  oc get pods
+  ```
+
+  Sample output:
+  ```
+  NAME                       READY   STATUS    RESTARTS   AGE
+  example-5fb6876865-76klt   1/1     Running   0          16s
+  example-5fb6876865-qkj4r   1/1     Running   0          8m23s
+  ```
 
 #### 6.3.5 Deploy new applications
 
