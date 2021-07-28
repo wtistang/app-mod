@@ -35,11 +35,17 @@ The following prerequisites must be completed prior to beginning this lab:
 
 ### 4.	What is Already Completed
 
-The Workstation VM is pre-configured for you to access and work with the OCP cluster in this lab.
+A six Linux VMs App Mod Lab environment has been provided for this lab. 
+ 
+  ![](images/lab-vms.png)
 
-The login credentials for the Workstation VM are provided in your Reservation Details page (**https://www.ibm.com/demos/my-reservations/**).
-
-The CLI commands used in this lab are listed in the Commands.txt file located at the **/home/ibmdemo/app-mod-labs/dv0200** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+*	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
+*	The Workstation VM is the one you will use to access and work with OCP cluster in this lab.
+  The login credentials for the Workstation VM are:
+  User ID: **ibmdemo**
+  Password: **passw0rd**
+  Note: Use the Password above in the Workstation VM Terminal for sudo in the Lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/dv0300st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 During this lab, you will complete the following tasks:
@@ -52,29 +58,59 @@ During this lab, you will complete the following tasks:
 *	Build and package the application in a Liberty container in Codewind using Application Stacks
 *	Commit and push the application to the GitHub repository
 *	Setu the Tekton Pipeline webhook for the application’s build and deployment
-*	Deploy the application to OpenShift via the Tekton pipeline
+*	Deploy the application to OpenShift via the OpenShift pipeline
 
 
 ### 6.	Execute Lab Tasks
 #### 6.1 Log in to the Workstation VM and get started (skip this step if you are using your own workstation)
-1.  Launch the VM from your local workstation web browser with the VM URL.
- 
-    ![](images/vm-url.png)
+1.  If the VMs are not already started, start them by clicking the play button for the whole group.
 
-2.	Click **Connect** to access the VM.
- 
-    ![](images/vm-connect.png)
+  ![](images/start-vms.png)
 
-3.	Enter the password you obtained from the Reservation Details page and click **Send Password**.
+2.	After the VMs are started, click the Workstation VM icon to access it. 
 
-    ![](images/vm-password.png)
+  ![](images/access-workstation.png)
 
-    The VM desktop is displayed.
+  The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
-    ![](images/vm-desktop.png)
+3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+4. Open a terminal window by clicking its icon from the Desktop toolbar.
 
-    The Workstation Desktop is displayed. You execute all the lab tasks on this VM.
- 
+  ![](images/terminal-icon.png)
+5. If this is your first time to run the lab series in this lab environment, do the following, otherwise if you have already downloaded the lab materials in other labs, you can skip this step.
+  
+  a. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+7. Navigate to **/home/ibmdemo/app-mod-labs/dv0300st** directory and double-click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-dv0300st.png)
+
+  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+
 #### 6.2	Launch Transformation Advisor 
 In this lab, you are going to use Transformation Advisor’s capabilities designed to accelerate the development process by creating the configuration and deployment artifacts for an application.
 Using these artifacts, and Accelerators for Teams, you will learn how to facilitate the use of the enhanced developer productivity tools in IBM Cloud Pak for Applications as the application is deployed to RedHat OpenShift, using the Tekton pipelines.  
@@ -85,17 +121,23 @@ The Transformation Advisor is installed on OCP in IBM Cloud.  In this lab, you u
 
 This task requires to have IBM Cloud Pak for Applications installed on OCP cluster in IBM Cloud. If you have completed the lab0 of this lab series, you can continue, otherwise you need to complete lab0 first.
 
-1. From web browser window, click the IBM Cloud Transformation Advisor bookmark and log in to your IBM Cloud account with your credentials.
+1. From web browser window, click the **IBM Cloud Transformation Advisor** bookmark and log in with the OCP account credentials.
+
+    ![](images/ta-bookmark.png)
  	
-    ![](images/ta-bookmarked.png) 
+2. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+ 
+    ![](images/ocp-console-login-1.png) 
 
-    The Transformation Advisor home page is displayed.
-
+    ![](images/ocp-console-login-2.png) 
+    
+    The Transformation Advisor Home page is displayed.
+ 
     ![](images/ta-home-page.png)
  
 #### 6.4	Upload Application Data into Transformation Advisor
 
-The Transformation Advisor can evaluate any Java based applications and help to package the good candidate application to move to cloud. In Lab AM0100 of this lab series, you have demonstrated how to use the tool to evaluate the on-premises WebSphere application, Mod Resorts, and have determined that it is suitable to move this application to cloud without any code change. Now you need to move forward to create the application migration bundle with the Transformation Advisor. 
+The Transformation Advisor can evaluate any Java based applications and help to package the good candidate application to move to cloud. In lab **AM0100** of this lab series, you have learned how to use the tool to evaluate the on-premises WebSphere application, Mod Resorts, and have determined that it is suitable to move this application to cloud without any code change. Now you need to move forward to create the application migration bundle with the Transformation Advisor. 
 
 1. In the Transformation Advisor page, you first create a new workspace by entering the workspace name as **Evaluation** and then clicking **Next**.
  
@@ -117,7 +159,7 @@ The Transformation Advisor can evaluate any Java based applications and help to 
 
   ![](images/drop-or-add-file.png)
  
-5. Navigate to **/home/ibmdemo/app-mod-labs/dv0200/DataCollections** directory, select **NewDeafaultAppSrv03.zip** file and click **Open**.
+5. Navigate to **/home/ibmdemo/app-mod-labs/dv0300st/DataCollections** directory, select **NewDeafaultAppSrv03.zip** file and click **Open**.
 
   ![](images/ta-new-default-app-zip.png) 
 
@@ -138,17 +180,15 @@ The Transformation Advisor can evaluate any Java based applications and help to 
     The Recommendations page also shows the summary analysis results for all the appllications in the **NewDefaultAppSrv03** environment to be moved to a Liberty on OpenShift environment. 
     
     For each app, you can see these results:
-    *   Complexity level
-    *   Technology match
-    *   Dependencies
+    *   Migration Target
+    *   Complexity
     *   Issues
     *   Estimated development cost in days
 
-    For example, if you want to move the modresorts-1_0_war application to Liberty on Private Cloud, the complexity level is Simple and the Tech match is 100 percent. 
+    For example, if you want to move the modresorts-1_0_war application to Compatibale Liberty runtimes, the complexity level is Simple. 
 
-    A Simple complexity score indicates that the application code does not need to be changed before it can be moved to cloud. The application has no dependency, has 1 minor level issue and the estimated development effort is 0 day.
+    A Simple complexity score indicates that the application code does not need to be changed before it can be moved to cloud. The application has 1 minor level issue and the estimated development effort is 0 day.
 
-    ![](images/ta-modresorts-simple.png)
 
 #### 6.4	View the Migration Bundle
 
@@ -179,26 +219,6 @@ In this section, you view the migration bundle contents for the Mod Resorts appl
     Users are able to choose to download the artifacts as a migration bundle or push the bundle contents into a GitHub repository.
 
     ![](images/ta-migration-bundle-options.png)
-
-    a.	Move the slider for Use Accelerator for Teams Collection to **Don’t use**. 
-
-    ![](images/ta-use-aft-options.png)
-    
-    This change means the Mod Resorts migration bundle will not use the Accelerator for Teams, but will build an image with Docker and deploy via an Operator into a Red Hat OpenShift cluster.
-
-    The project will still be a source project, with the directory structure set up with a starter application and the Liberty configuration for the application.  
-
-    When not using the Accelerator for Teams, the artifacts produced by Transformation Advisor include the configuration for the Liberty server, the build file for the application, the Dockerfile to produce the deployed application image, and the Operator to deploy the applications into a Red Hat OpenShift cluster.
-
-    b.	Click **Binary** to change the **Mod Resorts** migration bundle to build from a binary application project.  
-
-    ![](images/ta-build-type-options.png)
-    
-    Changing the selection for any application to deploy as a binary project will not only change the artifacts created, but the application cannot use Accelerator for Teams, as there is not yet an CP4Apps Application Stack that will build and deploy a binary project from Transformation Advisor.
-
-    The user can choose to upload the binary application and its dependencies for the project or provide Maven coordinates to identify the location of the binary application and its dependencies.
-
-    Once the user has uploaded the binaries or provided the Maven coordinates, the user can choose to download the artifacts as a migration bundle.
 
 #### 6.5	Push the migration bundle into GitHub
 
@@ -276,13 +296,10 @@ This step requires that you have a public GitHub account. If you do not have a G
 
 In this section, you clone your GitHub repository on the local workstation and import the source for the application. 
 
-1.	Open a Terminal window by clicking **Applications**>**Terminal**.
-
-    ![](images/vm-terminal-link.png)
-2.	From the Terminal window, clone the GitHub repository using the following commands:
+1.	From the terminal window, clone the GitHub repository using the following commands:
 
     ```
-    cd /home/ibmdemo
+    cd /home/ibmdemo/app-mod-labs/dv0300st
     git clone https://github.com/<your GitHub ID>/my-repo
     ```
 
@@ -296,10 +313,10 @@ In this section, you clone your GitHub repository on the local workstation and i
 4.	From the Terminal window, extract the source code (saved in the /home/ibmdemo/app-mod-labs/dv0200/modresorts_src.zip file) into the local repository source directories using the following command:
 
     ```
-    unzip /home/ibmdemo/app-mod-labs/dv0200/modresorts_src.zip
+    unzip /home/ibmdemo/app-mod-labs/dv0300st/modresorts_src.zip
     ```
 
-    Note:  answer A when prompted to replace the index.html file.
+    Note:  answer **A** when prompted to replace the index.html file.
 
 #### 6.7	Build and Package the Application  
 

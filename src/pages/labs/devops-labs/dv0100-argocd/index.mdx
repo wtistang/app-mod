@@ -291,21 +291,23 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-link.png) 
 
+5. If you see the **Warning: Potential Security Risk Ahead** message, click **Advanced**>**Accept the Risk and continue**.
+ 
   The ArgoCD page is displayed.
 
   ![](images/argocd-ui-page.png)
 
-5. Login with the username and password with the information you obtained above and click **SIGN IN**.
+6. Login with the username and password with the information you obtained above and click **SIGN IN**.
 
   ![](images/argocd-ui-login.png)
-6. From the ArgoCD Home page, click **Settings**, then click **Projects**.
+7. From the ArgoCD Home page, click **Settings**, then click **Projects**.
 
   ![](images/argocd-settings.png)
-7. Click **New Project**
+8. Click **New Project**
 
   ![](images/argocd-new-project.png)
 
-8. Enter the project Name and Description as: **dv0100st** and click **Create**.
+9. Enter the project Name and Description as: **dv0100st** and click **Create**.
 
   ![](images/argocd-new-project-2.png)
 
@@ -313,22 +315,24 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-project-created.png)
 
-9. Click the project link to access its details.
+10. Click the project link to access its details.
 
   ![](images/argocd-project-link.png)
 
-10. Click the **Edit** on the **RESOURCE REPOSITOIES**
+11. First you need to add information to the **RESOURCE REPOSITOIES**, click **EDIT** next to it.
 
   ![](images/argocd-edit-resource-repos.png)
   
-11. In the **RESOURCE REPOSITOIES** page, click **Add Resource** link.
+12. In the **RESOURCE REPOSITOIES** page, click **ADD SOURCE** link.
 
   ![](images/argocd-add-resource.png)
 
-12. Click **Save** to save the change.
+13. After you clicked the **ADD SOURCE** link, the default source setting (*****) is added to the source list, accept it and click **SAVE** to save the change.
 
   ![](images/argocd-resource-added.png)
-13. Repeat the similar **EDIT** process to add resources to **DESTINATIONS** and **CLUSTER RESOURCE ALLOW LIST**. When you are done, your project settings should look like this:
+14. Go to **DESTINATIONS** section, click **EDIT**, then click **ADD DESTINATION** to add **Server** and **Namespace** to **DESTINATIONS** (using the default ** * ** settings).
+
+15. Go to **CLUSTER RESOURCE ALLOW LIST** section, click **EDIT**, then click **ADD RESOURCE** to add **Kind** and **Group** to **CLUSTER RESOURCE ALLOW LIST** (using the default ** * ** settings). When you are done, your project settings should look like this:
 
   ![](images/argocd-edit-completed.png)
 

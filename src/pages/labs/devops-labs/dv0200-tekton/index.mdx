@@ -151,6 +151,19 @@ During this lab, you complete the following tasks:
     
     Sample output:
     ```
+    total 80
+    -rw-rw-r-- 1 ibmdemo ibmdemo  1074 Jul 23 12:46 app.js
+    drwxrwxr-x 2 ibmdemo ibmdemo  4096 Jul 23 12:46 bin
+    -rw-rw-r-- 1 ibmdemo ibmdemo   398 Jul 23 12:46 Dockerfile
+    -rw-rw-r-- 1 ibmdemo ibmdemo   299 Jul 23 12:46 package.json
+    -rw-rw-r-- 1 ibmdemo ibmdemo 32348 Jul 23 12:46 package-lock.json
+    drwxrwxr-x 3 ibmdemo ibmdemo  4096 Jul 23 12:46 public
+    drwxrwxr-x 2 ibmdemo ibmdemo  4096 Jul 23 12:46 readme-images
+    -rw-rw-r-- 1 ibmdemo ibmdemo 12169 Jul 23 12:46 README.md
+    drwxrwxr-x 2 ibmdemo ibmdemo  4096 Jul 23 12:46 routes
+    drwxrwxr-x 3 ibmdemo ibmdemo  4096 Jul 23 15:24 tekton-pipeline
+    drwxrwxr-x 2 ibmdemo ibmdemo  4096 Jul 23 12:46 views
+
     ```
 
     You find the following key resources: 
@@ -168,6 +181,22 @@ During this lab, you complete the following tasks:
     
     Sample output:
     ```
+    total 56
+    -rw-rw-r-- 1 ibmdemo ibmdemo 1011 Jul 23 12:46 deployment.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  226 Jul 23 12:46 git-resource.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  221 Jul 23 12:46 img-resource.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  738 Jul 23 12:46 oc-deploy.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  582 Jul 23 13:30 pipeline-run.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo 1531 Jul 23 12:46 pipeline.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  259 Jul 23 12:46 pv.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo   64 Jul 23 12:46 service-account.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  204 Jul 23 12:46 service.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  343 Jul 23 12:46 taskRun.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo 1471 Jul 23 12:46 task.yaml
+    drwxrwxr-x 2 ibmdemo ibmdemo 4096 Jul 23 12:46 Templates
+    -rw-rw-r-- 1 ibmdemo ibmdemo  612 Jul 23 14:16 test-deploy.yaml
+    -rw-rw-r-- 1 ibmdemo ibmdemo  912 Jul 23 15:24 token.txt
+
     ```
 
     In the **tekton-lab/tekton-pipeline** directory, you find all the YAML files needed to create the Tekton pipeline resources to build and deploy a simple NodeJS Express application to OpenShift.
@@ -222,7 +251,6 @@ During this lab, you complete the following tasks:
     to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
 
         kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
-
 
     ```
 
@@ -376,10 +404,15 @@ Next, you define two PipelineResources to be used by the Tekton pipeline:
     tekton1-image   40s
     ```
 
-#### 6.7	Create the Build Tekton Task
+#### 6.7	Create Tekton Tasks
+
 You have created the PipelineResources, which define the input and output for the build and created a Service account with the proper privileges and roles, and credentials to run the pipeline, push images to the image registry, and deploy pods to OpenShift. 
 
-In this task, you create a Tekton task to build the Docker image, and push the image to the OpenShift Image Registry
+In this task, you create two Tekton tasks, one to build the Docker image and push it to an image registry, another to deploy the application to the OCP cluster.
+
+##### 6.7.1 Create the Build Tekton Task
+
+a Tekton task to build the Docker image, and push the image to the OpenShift Image Registry
 
 The Tekton task you are ready to create contains two steps: 
 *	build the Docker image from the source GitHub repo
@@ -470,7 +503,7 @@ Buildah is a command-line tool for building Open Container Initiative-compatible
 
     ```
 
-#### 6.8	Create the Deployment Task
+#### 6.7.2	Create the Deployment Task
 To manage the deployment of this simple NodeJs Express application, tasks are needed to specify a Deployment (controller for pods) and a Service definition in OpenShift. 
 
 The **oc-deployment.yaml** file defines a Tekton Task that in turn invokes a command to run the **deployment.yaml** to create the deployment, service and route for the sample application. To enable this action, the task defines with a step using the quay.io/openshift/origin-cli:latest docker image.
@@ -593,6 +626,7 @@ The **oc-deployment.yaml** file defines a Tekton Task that in turn invokes a com
 
 
 3. Run the oc-deploy.yaml to create the Tekton **Deployment** task. Then list the new task
+    
     ```
     oc create -f ./oc-deploy.yaml -n tekton-lab
 	oc get tasks
@@ -606,7 +640,7 @@ The **oc-deployment.yaml** file defines a Tekton Task that in turn invokes a com
     buildah     5m47s
     deploy-cm   3s
     ```
-#### 6.9	Create the Pipeline 
+#### 6.8	Create the Pipeline 
 
 Now that that tasks have been created, they can be incorporated and orchestrated in a Pipeline. In this task, you create the Tekton pipeline which invokes the **build/push** and **deploy** tasks you created.
 
@@ -699,7 +733,7 @@ The pipeline does the following:
     tutorial-pipeline   1s
     ```
 
-#### 6.10	View the pipeline resources created in OCP web console
+#### 6.9	View the pipeline resources created in OCP web console
 
 Up to now, you have created PipelineResources, tasks and pipelines in the OCP cluster.  You can access the OCP web console and view and verify these pipeline resources.
 
@@ -733,7 +767,7 @@ Up to now, you have created PipelineResources, tasks and pipelines in the OCP cl
 
     ![](images/tekton-pipeline-task-list.png)
 
-#### 6.11 Run the Pipeline
+#### 6.10 Run the Pipeline
 
 Tekton uses **PipelineRun** to instantiate a pipeline for execution with specific inputs, outputs, and execution parameters on a cluster. A corresponding TaskRun is created for each Task automatically in the PipelineRun.
 
@@ -833,5 +867,5 @@ In this lab, you learned how to create the Tekton resources to automate CI/CD fo
 *	PipelineRun
 
 You learned how to configure a Service Account with proper authorization and roles to be able to push Docker images to an image registry and authenticate to OpenShift and deploy the application via the OpenShift Pipeline. To learn more about IBM App Mod, DevOPs and Dya 2 Operation solutions, please continue with the rest of the lab series.
-Congratulations! You have successfully completed the lab “Using Tekton Pipelines for CI/CD of Microservices to Red Hat OpenShift Container Platform”.
+Congratulations! You have successfully completed the lab **Using Tekton Pipelines for CI/CD of Microservices to Red Hat OpenShift Container Platform**.
 

@@ -123,7 +123,7 @@ In this lab environment, these operators are alrady installed in the OCP cluster
 1. Open a Firefox web browser window by clicking its icon on the Desktop toolbar.
 
   ![](images/firefox-icon.png) 
-2. From the browser window, click the Could Native Toolkit **Developer Dashboard** bookmark to open it.
+2. From the browser window, click **OpenShift web console** bookmark to open it.
 
   ![](images/ocp-console-bookmark.png) 
   
@@ -306,7 +306,7 @@ Red Hat OpenShift Service Mesh relies on the Envoy sidecars within the applicati
   deployment.apps/productpage-v1 created
   ```
 
-Note: An installation of Red Hat OpenShift Service Mesh differs from upstream Istio community installations in multiple ways. Refer this link comparing Service Mesh and Istio. By default, Istio injects the sidecar if you have labeled the project istio-injection=enabled. Red Hat OpenShift Service Mesh handles this differently and requires you to opt in to having the sidecar automatically injected to a deployment, so you are not required to label the project. This avoids injecting a sidecar if it is not wanted (for example, in build or deploy pods).
+  Note: An installation of Red Hat OpenShift Service Mesh differs from upstream Istio community installations in multiple ways. By default, Istio injects the sidecar if you have labeled the project istio-injection=enabled. Red Hat OpenShift Service Mesh handles this differently and requires you to opt in to having the sidecar automatically injected to a deployment, so you are not required to label the project. This avoids injecting a sidecar if it is not wanted (for example, in build or deploy pods).
 
 8. Verify that the pods are up and running.
 

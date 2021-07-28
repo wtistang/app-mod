@@ -1,0 +1,131 @@
+---
+title: Lab Environment Reservation
+---
+
+## Reserve a Single Environment for Demos or Self-Enablement
+
+![](./images/demo.png)
+
+A Skytap lab environment is provided for the labs/demos in this asset.
+
+Environment reservations are immediate and can be reserved for up to two weeks in duration. 
+
+Use the instructions below to reserve your demo/lab environment. 
+
+### 1.	Make a Reservation for Workshop Lab Environment 
+
+Workshop Lab Environment reservation is available for IBMer's and Business Partners.  You can follow the steps below to reserve your lab environment:
+
+1. Log in to [https://techzone.ibm.com](https://techzone.ibm.com) with your IBM account credentials.
+
+    The **IBM Technology Zone** page is displayed.
+    
+    ![](images/lab-reservation-tech-zone-page.png)
+
+2. Click the **Activation kits** tab to access the **Activation kits** page.
+
+    ![](images/lab-reservation-activation-kits-link.png)
+
+3. Click **App Platform Activation kit** link.
+
+    ![](images/lab-reservation-app-platform-activation-kit-link.png)
+
+4. In the **App Platform Activation** page, click **Environments** tab.
+
+   ![](images/lab-reservtion-environments-link.png)
+
+5. Click the **App Mod, DevOps and Day 2 Operation Workshop Environment** to select the environment.
+
+    ![](images/lab-reservation-lab-link.png)
+
+6. In the **Create a reservation** page, click the **Reserve now** to make the reservation right away.
+
+    ![](images/lab-reservation-reserve-now.png)
+
+    Note:  You can also select **Schedule for later** option.  The **Schedule a workshop** option is used to provision multiple lab environments for your workshop.
+
+7. Enter your selected values for **Purpose**, **Purpose Description**, **End date and time** and **Referred Geography**, then click **Submit**.  Your reservation is made.
+
+    ![](images/lab-reservation-create-a-reservation.png)
+
+8. Your lab environment reservation is made. When the environment is ready, a email notification will be sent to you. You can also click **My reservations** to access it.
+
+    ![](images/lab-reservation-reservation-made.png)
+
+    The email notification will like this:
+
+    ```
+    ....
+    Your IBM Demonstration is now ready.
+    Effective: June 28th, 2021
+    IBM Technology Zone has updated environment reservation duration policies. For more information read the 'Reservation duration policies by infrastructure and purpose' resource on our Onboarding collection. 
+    Desktop Access Information:
+    For full desktop access, connect to https://cloud.skytap.com/vms/3940ac2cb240725d628dfb89081fccf4/desktops
+    Desktop password: rg0i6cam
+
+    Asset name:
+    App Mod, DevOps and Day 2 Operation Workshop Environment
+
+    Environment name:
+    DTE2_2059471_YITAN_2021-07-21 17:30:45_2021-08-04 17:30:00
+
+    Environment ID:
+    109495690
+
+    This Environment will Expire at:
+    2021-08-04 17:30:00 (GMT)​
+     ....
+    ```
+
+8. If you clicked **My reservations**, your reservations page is displayed.  Click the lab vm icon:
+
+    ![](images/lab-reservation-my-url.png)
+
+9. Your lab environment reservation page is displayed, click the copy icon under the **Desktop password** to copy it and then click the lab vm icon to login.
+
+    ![](images/lab-reservation-my-lab.png)
+
+10. Paste the **Desktop password** and click **Submit**. You will be able to access the lab environment page.  From there, you can follow the lab guide to perform lab tasks.
+
+    ![](images/lab-reservation-vm-access.png)
+
+### 2.	Workshop Lab Environment Introduction
+
+
+A six Linux VMs Lab environment has been provided for this workshop. 
+ 
+  ![](images/lab-vms.png)
+
+*	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well). IBM Transformation Advisor and WebSphere Automation have been installed as operators in the cluster.
+*	The Workstation VM is the one you will use to access and work with OCP cluster in this workshop. The workstation is pre-configured with lab artifacts, WebSphere Application Servers, Liberty Collective and developer tools, including:
+    * Docker
+    * VSCode
+    * SDK 8.0.5
+    * WAS 8.5.5
+    * WAS 9.0.5
+    * Liberty Collective 
+    * IBM Cloud CLI 
+    * Node 
+    * IBM Garage for Cloud CLI 
+    * Tekton CLI Cloud 
+    * Native ToolKit 
+    * ArgoCD CLI 
+    * Knative CLI
+    * Hey CLI 
+
+  The login credentials for the Workstation VM are:
+  * User ID: **ibmdemo**
+  * Password: **passw0rd**
+  
+**Note:** The **Workstation** VM is the VM the user will login to and use in the lab.
+
+![](./images/access-workstation.png)
+
+It is recommended to use Chrome or Firefox browser to work with the lab workstation.
+
+**Note:** If the Skytap Cloud environment resources approach capacity limits, you may experience delays in **stating** the environment. If this occurs, you will see **rate limited** messages. Not to worry, the environment will start, but just be delayed while the system is busy. Under certain circumstances, it may take up to **20 minutes** for the environment to start.
+
+Now you are ready to use the specific lab guides to do demos or self-enablement. 
+
+The labs are available from the **Navigation** pane on the left side of the page. 
+
