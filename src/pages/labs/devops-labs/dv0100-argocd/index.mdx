@@ -28,7 +28,6 @@ The objectives of this lab are to help you:
 The following prerequisites must be completed prior to beginning this lab:
 *	Familiarity with basic Linux commands
 *	Have internet access
-* Have a GitHub account
 *	Have a SkyTap App Mod Lab environment ready
 
 ### 4.	What is Already Completed
@@ -48,7 +47,7 @@ A six Linux VMs App Mod Lab environment has been provided for this lab.
 ### 5.	Lab Tasks
 
 During this lab, you complete the following tasks:
-*	push the app code to a GitHub repo
+*	push the app code to a Git repo
 * create an OCP cluster project
 * create a ArgoCD project in ArgoCD UI
 * deploy a sample app to the OCP cluster from ArgoCD UI
@@ -105,25 +104,25 @@ During this lab, you complete the following tasks:
 
   This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
  
-#### 6.2 Push app code to a GitHub repo
-Assuming that your development team has the application code ready.  You need to first push it to your GitHub repo in order to deploy it to the OCP cluster.
+#### 6.2 Push app code to a Git repo
+Assuming that your development team has the application code ready.  You need to first push it to your Git repo in order to deploy it to the OCP cluster.  In this lab, you use **GitLab** as the Git repository.
 
 1. Open a Firefox web browser window by clicking its icon on the Desktop toolbar.
 
   ![](images/firefox-icon.png) 
-2. From the browser window, click the **GitHub** bookmark to open it.
+2. From the browser window, type the **GitLab** as **10.0.0.1:82** and press **Enter**.
 
-  ![](images/github-bookmark.png) 
-3. Login with your GihHub credentials.
-4. Click **New** to create a new GitHub repo.
+  ![](images/argocd-gitlab-url.png) 
+3. Login with **GitLab** credentials as: **root**/**passw0rd**.
+4. Click **New project** to create a new GitLab project.
 
-  ![](images/github-new-repo.png)
-5. Enter the new repo name as: **cloudnative_sample_app_deploy** and click **Create Repository**.
-  ![](images/github-create-myrepo.png)
+  ![](images/gitlab-new-repo.png)
+5. Enter the new project name as: **cloudnative_sample_app_deploy**, set **Visibility Level** as **Public** and click **Create project**.
+  ![](images/gitlab-create-myrepo.png)
 
-  You repo is now created.
+  Your **GitLab** project is now created.
 
-  ![](images/github-myrepo.png)
+  ![](images/gitlab-myrepo.png)
   You will use some of the commands highlighted above to push your application code to the repo.
 6. In the terminal window navigate to the application code directory.
 
@@ -157,15 +156,14 @@ Assuming that your development team has the application code ready.  You need to
   ```
 
   As you can see, there are YAML files representing the deployment, service and route configurations.
-9. Run the git commands to push the application code to your GitHub repo. Note that you have to use your own GitHub repo URL in the command below.
+9. Run the git commands to push the application code to the **GitLab** repo. 
 
   ```
   git init
   git add .
   git commit -m "first commit"
-  git branch -M main
-  git remote add origin https://github.com/wtistang/cloudnative_sample_app_deploy.git
-  git push -u origin main
+  git remote add origin http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git
+  git push -u origin master
   ```
   
   Sample output:
@@ -187,27 +185,26 @@ Assuming that your development team has the application code ready.  You need to
   create mode 100644 openshift/route.yaml
   create mode 100644 openshift/service.yaml
   ```
-  When prompted, enter your GitHub credentials.
+  When prompted, enter **GitLab** credentials: **root**/**passw0rd**.
 
   Sample output:
   ```
-  Username for 'https://github.com': wtistang
-  Password for 'https://wtistang@github.com': 
-  Counting objects: 19, done.
+  Username for 'http://10.0.0.1:82': root
+  Password for 'http://root@10.0.0.1:82': 
+  Counting objects: 18, done.
   Delta compression using up to 12 threads.
   Compressing objects: 100% (17/17), done.
-  Writing objects: 100% (19/19), 3.31 KiB | 1.66 MiB/s, done.
-  Total 19 (delta 2), reused 0 (delta 0)
-  remote: Resolving deltas: 100% (2/2), done.
-  To https://github.com/wtistang/cloudnative_sample_app_deploy.git
-  ...
-  Branch 'main' set up to track remote branch 'main' from 'origin'.
+  Writing objects: 100% (18/18), 3.23 KiB | 3.23 MiB/s, done.
+  Total 18 (delta 2), reused 0 (delta 0)
+  To http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git
+  [new branch]      master -> master
+  Branch 'master' set up to track remote branch 'master' from 'origin'.
   ```
-10. When it is done, refresh your GitHub page, you will see something like this:
+10. When it is done, refresh your **GitLab** page, you see something like this:
 
-  ![](images/github-myrepo-uploaded.png)
+  ![](images/gitlab-myrepo-uploaded.png)
   
-  You have pushed your application code to your GitHub repo.
+  You have pushed your application code to your **GitLab** repo.
 
 #### 6.3 Deploy application in ArgoCD UI
 
@@ -343,11 +340,11 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
   
   ![](images/argocd-new-app.png)
 
-2. Add the following details and click **Create** to finish.  Note: you should replace the GitHub repo URL with your own URL.
+2. Add the following details and click **Create** to finish.  
   * Application Name: **sample**
   * Project: **dv0100st**
   * SYNC POLICY: **Manual**
-  * REPO URL: **https://github.com/wtistang/cloudnative_sample_app_deploy.git**
+  * REPO URL: **http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git**
   * Revision: **HEAD**
   * Path: **openshift**
   * Cluster: **https://kubernetes.default.svc** 
@@ -402,18 +399,18 @@ Access the app to verify if it is correctly deployed.
 3. Delete the line **namespace: default** in the file and click **Save** to save the change.
 
   ![](images/route-yaml-updated.png)
-4. Next you need to push the change to your GitHub repo with commands:
+4. Next you need to push the change to the **GitLab** repo with commands:
 
   ```
   git add .
   git commit -m "change commit"
-  git push -u origin main
+  git push
   ```
 5. Go to your ArgoCD **simple** application and click **SYNC** > **SYNCHRONIZE**.
 
   ![](images/argocd-sync-2.png)
   
-  The ArgoCD will sync the application with your GitHub repo to get the latest changes and update the deployment.
+  The ArgoCD will sync the application with your **GitLab** repo to get the latest changes and update the deployment.
 6. Go back to the terminal window, list the **cloudnativesampleapp-service** route with command.
 
   ```
@@ -474,7 +471,7 @@ Access the app to verify if it is correctly deployed.
   Sample output:
   ```
   NAME    CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                                     PATH   TARGET
-  sample  https://kubernetes.default.svc  dv0100st    dv0100st  Synced  Healthy  <none>      <none>      https://github.com/wtistang/cloudnative_sample_app_deploy.git  openshift  HEAD
+  sample  https://kubernetes.default.svc  dv0100st    dv0100st  Synced  Healthy  <none>      <none>      http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git  openshift  HEAD
   ```
 4. Get application details
 
@@ -489,7 +486,7 @@ Access the app to verify if it is correctly deployed.
   Server:             https://kubernetes.default.svc
   Namespace:          dv0100st
   URL:                https://10.97.240.99/applications/sample
-  Repo:               https://github.com/wtistang/cloudnative_sample_app_deploy.git
+  Repo:               http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git
   Target:             HEAD
   Path:               openshift
   SyncWindow:         Sync Allowed
@@ -511,4 +508,3 @@ Access the app to verify if it is correctly deployed.
 In this lab, you have learned some basic features and functions of ArgoCD and how to use it. To learn more about App Mod and DevOps, please continue with the rest of the lab series.
 
 **Congratulations! You have successfully completed ArgoCD Introduction Lab!**
-
