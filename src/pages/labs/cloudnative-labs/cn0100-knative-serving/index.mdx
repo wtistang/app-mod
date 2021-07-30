@@ -2,14 +2,14 @@
 title: Knative Introduction
 description: 
 ---
-The goal of this session is to provide a hands-on experience on how to work with OpenShift Knative.
+The goal of this session is to provide a hands-on experience on how to work with OpenShift Serverless Serving.
 
-### 1. OpenShift Serverless Introduction
+### 1. OpenShift Serverless Serving Introduction
 OpenShift Serverless is based on Knative, an open-source project started by Google. Specifically, OpenShift Serverless uses the Serving component of Knative. Knative Serving extends Kubernetes using Custom Resource Definitions (CRDs) to support deploying and serving of serverless applications and functions. 
 
 Knative Serving is ideal for running application services inside Kubernetes by providing a more simplified deployment syntax with automated scale-to-zero and scale-out based on HTTP load. The Knative platform will manage the service’s deployments, revisions, networking and scaling. Knative Serving exposes the service via an HTTP URL and has a lot of sane defaults for its configurations. For many practical use cases you might need to tweak the defaults to your needs and might also need to adjust the traffic distribution amongst the service revisions. As the Knative Serving Service has the built in ability to automatically scale down to zero when not in use, it is called as **serverless service**.
 
-In this lab, you learn how to install OpenShift Serverless Operator, deploying a few serverless application, and work with Knative revision, traffic distribution and scaling capabilities. You will see that Knative Serving is easy to get started with and scales to support advanced scenarios.
+In this lab, you learn how to install OpenShift Serverless Operator, deploying a few serverless serving applications, and work with Knative revision, traffic distribution and scaling capabilities. You will see that Knative Serving is easy to get started with and scales to support advanced scenarios.
 
 
 ### 2. Objective
@@ -230,11 +230,11 @@ After you installed the Red Hat OpenShift Serverless operator and created Server
   ```
 
   the Knative CLI is ready to use.
-#### 6.5 Create a Sample Serverless Application
+#### 6.5 Create a Sample Serverless Serving Application
 
 Once you have the Knative CLI installed, you can use it to create Knative applications.
 
-In this task, you are going to create a simple **Greetings** application.
+In this task, you are going to create a simple **Greetings** Knative serving application.
 
 1. First, create a new directory called **greetings** and navigate to it.
 
@@ -314,7 +314,7 @@ In this task, you are going to create a simple **Greetings** application.
 
   ![](images/knative-save-exit-vscode.png)
 
-5. Build the application with command:
+5. Build the service application with command:
 
   ```
   kn func build -r default-route-openshift-image-registry.apps.demo.ibmdte.net/cn0100st
@@ -327,9 +327,9 @@ In this task, you are going to create a simple **Greetings** application.
   Function image built: default-route-openshift-image-registry.apps.demo.ibmdte.net/cn0100st/greetings:latest
   ```
 
-6. Test the application locally.
+6. Test the service application locally.
 
-  a. Launch the application in command line.
+  a. Launch the service application in command line.
   ```
   kn func run
   ```
@@ -341,9 +341,9 @@ In this task, you are going to create a simple **Greetings** application.
   
   c. Stop the service application using **CTRL-C** command.
 
-#### 6.6 Deploy the Sample Serverless Application
+#### 6.6 Deploy the Sample Serverless Serving Application
 
-Next, you are going to deploy this application to the OpenShift cluster. 
+Next, you are going to deploy this service application to the OpenShift cluster. 
 
 1. Issue the **oc login** command to login to the OCP cluster:
 
@@ -713,6 +713,7 @@ By default the **scale-to-zero-grace-period** is **30s**, and the **stable-windo
 By default Knative Serving allows **100** concurrent requests into a pod. This is defined by the **container-concurrency-target-default** setting in the configmap config-autoscaler in the **knative-serving** namespace.
 
 In the next lab task, you make your service handle only 10 concurrent requests. This will cause Knative autoscaler to scale to more pods as soon as you run more than 10 requests in parallel against the revision.
+
 1. From the terminal window, view the content of the **service-10.yaml** file with command:
 
   ```

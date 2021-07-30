@@ -51,6 +51,7 @@ During this lab, you complete the following tasks:
 * create an OCP cluster project
 * create a ArgoCD project in ArgoCD UI
 * deploy a sample app to the OCP cluster from ArgoCD UI
+* implement ArgoCD sync policies
 * work with the ArgoCD from command line
 
 ### 6.	Execute Lab Tasks
@@ -374,7 +375,7 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-view-deployment.png)
 
-##### 6.2.3 Verify and update the deployment
+##### 6.3.5 Verify and update the deployment
 Access the app to verify if it is correctly deployed.
 
 1. Go back to the terminal window, list the **cloudnativesampleapp-service** route with command.
@@ -402,10 +403,13 @@ Access the app to verify if it is correctly deployed.
 4. Next you need to push the change to the **GitLab** repo with commands:
 
   ```
+  cd /home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy
   git add .
   git commit -m "change commit"
   git push
   ```
+  When prompted, enter **GitLab** credentials: **root**/**passw0rd**.
+
 5. Go to your ArgoCD **simple** application and click **SYNC** > **SYNCHRONIZE**.
 
   ![](images/argocd-sync-2.png)
@@ -449,7 +453,89 @@ Access the app to verify if it is correctly deployed.
   ```
 
   You have verified that the deployment is successful.
-#### 6.3 Using the ArgoCD CLI
+
+#### 6.4 Work with ArgoCD Sync policies
+
+As you can see from the previous task, you have to manually start the sync process after the code change. ArgoCD has the ability to automatically sync an application when it detects differences between the desired manifests in Git, and the live state in the cluster. A benefit of automatic sync is that CI/CD pipelines no longer need direct access to the Argo CD API server to perform the deployment. Instead, the pipeline makes a commit and push to the Git repository with the changes to the manifests in the tracking Git repo.
+
+Although ArgoCD automatic sync does not cover the case when an application is out of sync due to an unexpected change in the target cluster, the Self-Healing policy could let ArgoCD automatically forces the desired state from Git into the cluster every time when state deviation is detected.
+
+In this task, you are going to implement the **Automatic Sync** and the **Self-Healing** policies from the ArgoCD UI.
+
+##### 6.4.1 View the deployed application
+
+1. Go back to the OCP web console, navigate to **Workloads**>**Deployments** under project **dv0100st**, click the deployment link.
+  
+  ![](images/argocd-deployment-link.png)
+
+  You see that you have 1 pod running which is defined by the **deployment.yaml** file.
+
+  ![](images/argocd-deployment-details.png)
+
+##### 6.4.2 Update the **deployment.yaml** file
+1. From the **File Manager** window navigate to **/home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy/openshift/** directory and double-click the **deployment.yaml** file to open it for edit.
+
+  ![](images/argocd-deployment-yaml.png)  
+
+2. Change the replica value from **1** to **4**, and save the change.
+
+  ![](images/argocd-deployment-yaml-save.png)  
+
+3. Push the change to the Git repo with commands:
+
+  ```
+  cd /home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy
+  git add .
+  git commit -m "change commit"
+  git push
+  ```
+  When prompted, enter **GitLab** credentials: **root**/**passw0rd**.
+
+##### 6.4.3 Activate ArgoCD **Automatic Sync** policy
+
+1. From the ArgoCD UI, click the **sample** application link
+
+  ![](images/argocd-sample-link.png)
+
+2. Scroll down to the **Sync Policy** section and click **Enable Auto-Sync**.
+
+  ![](images/argocd-sync-policy-auto-sync.png)
+
+3. Click **OK** to enable ArgoCD **Auto-Sync** policy.
+
+  ![](images/argocd-enable-auto-sync.png)
+
+  You see that the sync process gets started, then **4** pods are created.
+
+  ![](images/argocd-4-pods-created.png)
+
+4. Go back to OCP web console to view the deployment, you see now the deployment has **4** replicas.
+
+  ![](images/argocd-4-pods-running.png)
+
+4. Click to change the replica to **2**.
+
+  ![](images/argocd-2-pods-running.png)
+
+  You can see that although you have defined the replica to **4** in the **deployment.yaml** file, it is still can be changed in cluster.  To fix it, you need to implement the ArgoCD **Self-Heal** policy.
+##### 6.4.4 Activate ArgoCD **Self-Heal** policy
+1. From the ArgoCD UI, click the application link
+
+  ![](images/argocd-sample-link.png)
+
+2. Scroll down to the **Sync Policy** section and click **Enable Self-Heal**
+
+  ![](images/argocd-enable-self-heal.png)
+
+3. Click **OK** to enable it, you can see that ArgoCD is enforcing the deployment settings defined in the Git repo and brings back all **4** pods.
+
+  ![](images/argocd-4-pods-set.png)
+
+4. Go back to OCP web console to view the deployment, you see now the deployment is set back to **4** replicas as designed.
+
+5. Try to make any changes the replica again, you can see that system will automatically adjust it back to **4** which is defined in the **deployment.yaml** file.
+ 
+#### 6.5 Using the ArgoCD CLI
 1. Login using the cli.
 
   ```
