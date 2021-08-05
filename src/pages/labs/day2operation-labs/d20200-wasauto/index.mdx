@@ -1,5 +1,5 @@
 ---
-title: Istio Introduction
+title: Strengthen Operational Security with IBM WebSphere Automation
 description: 
 ---
 The goal of this session is to provide a hands-on experience with IBM WebSphere Automation.
@@ -69,7 +69,7 @@ A six Linux VMs App Mod Lab environment has been provided for this lab.
   User ID: **ibmdemo**
   Password: **passw0rd**
   Note: Use the Password above in the Workstation VM Terminal for sudo in the Lab.
-*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/dv0100st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/d20200st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 
@@ -140,45 +140,39 @@ A WebSphere administrator sets up WebSphere Automation by registering and config
 
 For this tutorial, WebSphere Automation is pre-installed on an OCP cluster. You have your individual WebSphere Automation installation. Let's access your environment.
 
-1.From the browser window, click the **WAS Automation** bookmark to launch the **WebSphere Automation** UI.
+1. From the browser window, click the **WAS Automation** bookmark to launch the **WebSphere Automation** UI.
 
-  ![](images/was-auto-bokkmark.png)
+  ![](images/wsa-wsa-bookmark.png)
 
   If necessary, accept all the warnings and certificates. Depending on your browser, you might have to scroll down to permit access.
 
-2.On the login page, select the **OpenShift authentication** as the authentication type.
+2. On the login page, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+ 
+  ![](images/ocp-console-login-1.png) 
 
-  ![](images/openshift-authentication.png)
+  ![](images/ocp-console-login-2.png) 
 
-3.Enter **ocadmin** as username and **ibmocp46** as password. And click **Log In**.
-
-  ![](images/ocp-ui-login.png)
-
-4.The *IBM Automation Welcome page* appears.
+  The **IBM Automation Welcome page** is displayed.
 
   ![](images/welcome-page.png)
 
-5.On the Welcome page, open the **Menu**, click **Operate**, and then click **Application runtimes**.
+5. On the Welcome page, open the **Menu**, click **Operate**, and then click **Application runtimes**.
 
   ![](images/welcome-menu.png)
 
-6.The Application runtimes page appears. There should be no data since no WebSphere servers are registered/configured yet.
+  The Application runtimes page is displayed. There should be no data since no WebSphere servers are registered/configured yet.
 
   ![](images/app-runtime.png)
 
-7.However, before start to register servers to our Dashboard, let's configure your email to received notifications abouts CVEs. Open the **Notification configuration** tab.
+  Next, you are going to register your WebSphere application servers with the **WebSphere Austomation**. In general, before start to register servers, you should configure your email to received notifications abouts CVEs first.
+ 
+6. Open the **Notification configuration** tab.
 
   ![](images/notification-config.png)
 
-8.The Email server configuration is pre-configured for this lab. You only need to add your personal email to receive notifications of new security vulnerabilities. Click **Add email address** (1) and enter *your email* and click **Save** (2).
-
-  ![](images/notification-email.png)
-
-  Great! Your email is configured to receive security notifications. Next section, you start to register our servers to WebSphere Automation.
-
-***
-
-## Getting configuration parameters
+  If your Email server is configed in the cluster, you can add your email here to receive notifications of new security vulnerabilities from **WebSphere Automation**.  Since the Email server is not configired in the lab, you can skip this step.
+  
+### 6.2 Getting configuration parameters
 
 Add each of your WebSphere® Application Server servers and WebSphere Application Server Liberty servers to WebSphere Automation by registering them with the usage metering service.
 
@@ -189,364 +183,322 @@ To register your application servers with the usage metering service in WebSpher
 
 In this section, you will get these configuration parameters. Let's start it!
 
-1.Back to the desktop, open a **terminal** window.
+1. From the terminal window log in to the OCP Cluster using the command below:
+  ```
+  oc login https://api.demo.ibmdte.net:6443
+  ```
 
-  ![](images/open-terminal.png)
+  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
+  
+  Sample output:
+  ```
+  Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
+  Username: ibmadmin
+  Password: 
+  Login successful.
 
-2.Log in as **root**.
-```
-su root
-```
-  Enter the following password when prompted:
-```
-1bm2021rhjb
-```
+  You have access to 66 projects, the list has been suppressed. You can list all projects with ' projects'
 
-3.Now, let's log in to the OCP Cluster using the command below:
-```
-oc login --username=ocadmin --password=ibmocp46 --insecure-skip-tls-verify=true --server=https://api.ocp.ibm.edu:6443
-```
+  Using project "default".
+  ````
+2. Make sure that the project you are working on is **websphere-automation**:
+  ```
+  oc project websphere-automation
+  ```
+ 
+  Sample output:
+  ```
+  Now using project "websphere-automation" on server "https://api.demo.ibmdte.net:6443".
 
-  ![](images/oc-login.png)
+  ```
+5. Use the oc command to get the URL of the usage metering service in WebSphere Automation and save it in a file:
+  ```
+  sudo echo https://$(oc get route cpd -n websphere-automation -o jsonpath='{.spec.host}')/websphereauto/meteringapi > /opt/IBM/WebSphere/metering-url.txt
+  ```
+  if prompted, enter the sudo password as: **passw0rd**.
+6. Het the api-key and save it in a file too.
+  ```
+  sudo oc -n websphere-automation get secret wsa-secure-metering-apis-encrypted-tokens -o jsonpath='{.data.wsa-secure-metering-apis-sa}' | base64 -d > /opt/IBM/WebSphere/api-key.txt; echo >> /opt/IBM/WebSphere/api-key.txt
+  ```
 
-4.Make sure that the project you are working on is websphere-automation:
-```
-oc project websphere-automation
-```
-
-5.Now, let's use the oc command to get the URL of the usage metering service in WebSphere Automation and save it in a file:
-```
-echo https://$(oc get route cpd -n websphere-automation -o jsonpath='{.spec.host}')/websphereauto/meteringapi > /opt/IBM/WebSphere/metering-url.txt
-```
-
-6.Let's get the api-key and save it in a file too.
-```
-oc -n websphere-automation get secret wsa-secure-metering-apis-encrypted-tokens -o jsonpath='{.data.wsa-secure-metering-apis-sa}' | base64 -d > /opt/IBM/WebSphere/api-key.txt; echo >> /opt/IBM/WebSphere/api-key.txt
-```
-
-7.Finally, let's get the Server certificate and save it in a file.
-```
-oc get secret external-tls-secret -n websphere-automation -o jsonpath='{.data.cert\.crt}' | base64 -d > /opt/IBM/WebSphere/cacert.pem
-```
+7. Finally, get the Server certificate and save it in a file.
+  ```
+  sudo oc get secret external-tls-secret -n websphere-automation -o jsonpath='{.data.cert\.crt}' | base64 -d > /opt/IBM/WebSphere/cacert.pem
+  ```
 
   Great! Now you have all the configuration parameters to register your application servers with the usage metering service in WebSphere Automation. Next section, you register your first server in WebSphere Automation.
 
-***
+### 6.4 Configuring Liberty server v20.0.0.9
 
-## Configuring Liberty server v20.0.0.12
+In this section, you configure Liberty Server version 20.0.0.9 to register to WebSphere Automation.
 
-In this section, you configure Liberty Server version 20.0.0.12 to register to WebSphere Automation.
+1. Create a Liberty server version 20.0.0.9, using the command below:
+  
+  ```
+  sudo /opt/IBM/WebSphere/Liberty20009/bin/server create Liberty_20009_server
+  ```
 
-1.Let's create a Liberty server version 20.0.0.12, using the command below:
-```
-/opt/IBM/WebSphere/Liberty200012/bin/server create Liberty_200012_server
-```
+  Sample output:
+  ```
+  Server Liberty_20009_server created.
+  ```
 
-  ![](images/2012-server-created.png)
+2. Configure the server to use TLS/SSL using the provided server_tls.xml file:
+  ```
+  sudo cp -f /home/ibmdemo/app-mod-labs/d20200st/20009_server.xml /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
+  
+  sudo cp -f /home/ibmdemo/app-mod-labs/d20200st/20009_server.env /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.env
+  ```
 
-2.Now you need to configure the server to use TLS/SSL using the provided server_tls.xml file:
-```
-\cp -f /home/ibmuser/Desktop/lab_backup/liberty200012/server_tls.xml /opt/IBM/WebSphere/Liberty200012/usr/servers/Liberty_200012_server/server.xml
-```
+3. Start the Liberty server:
+  ```
+  sudo /opt/IBM/WebSphere/Liberty20009/bin/server start Liberty_20009_server
+  ```
 
-3.Let's start the Liberty server:
-```
-/opt/IBM/WebSphere/Liberty200012/bin/server start Liberty_200012_server
-```
+  Sample output:
+  ```
+  Starting server Liberty_20009_server.
+  Server Liberty_20009_server started with process ID 14600.
+  ```
 
-  ![](images/starting-server-200012.png)
+4. Update the DefaultKeyStore with the server certificate to trust the server for https connection:
+  ```
+  sudo keytool -import -trustcacerts -file /opt/IBM/WebSphere/cacert.pem -keystore /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/resources/security/key.p12 -storetype PKCS12 -storepass th1nkpassword -noprompt
+  ```
 
-4.Now, you need to update the DefaultKeyStore with the server certificate to trust the server for https connection:
-```
-keytool -import -trustcacerts -file /opt/IBM/WebSphere/cacert.pem -keystore /opt/IBM/WebSphere/Liberty200012/usr/servers/Liberty_200012_server/resources/security/key.p12 -storetype PKCS12 -storepass th1nkpassword -noprompt
-```
+  Sample output:
+  ```
+  Certificate was added to keystore
+  ```
 
-  ![](images/certificate-store.png)
+5. Configure the usage metering in the new server. Edit the **server.xml** file using the **gedit** tool.
+  ```
+  sudo gedit /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
+  ```
 
-5.It's time to configure the usage metering in the new server. Edit the **server.xml** file.
-```
-vi /opt/IBM/WebSphere/Liberty200012/usr/servers/Liberty_200012_server/server.xml
-```
+6. Add the **usageMetering-1.0** feature to the existing features in the **&ltfeatureManager&gt** element (as shown in the picture below)
+  ```
+  <feature>usageMetering-1.0</feature>
+  ```
 
-6.Add the **usageMetering-1.0** feature to the existing features in the `<featureManager>` element (check the picture below)
-```
-<feature>usageMetering-1.0</feature>
-```
+  ![](images/wsa-gedit-server-20009.png)
 
-  ![](images/vi-server-200012.png)
+7. Add the **usageMetering** element below:
+  ```
+  <usageMetering url="metering-url" apiKey="api-key" sslRef="meteringSSL"/>
+  ```
 
-7.Add the **usageMetering** element below:
-```
-<usageMetering url="<metering-url>" apiKey="<api-key>" sslRef="defaultSSL"/>
-```
+  ![](images/wsa-usage-metering-20009.png)
 
-  ![](images/usage-metering-200012.png)
+8. Replace the **metering-url** with the output of the following command. Open another terminal window, and run the cat command below:
+  ```
+  cat /opt/IBM/WebSphere/metering-url.txt
+  ```
 
-8.You need to replace the `<metering-url>` with the output of the following command. Open another terminal window, and run the cat command below:
-```
-cat /opt/IBM/WebSphere/metering-url.txt
-```
+  Sample output:
+  ```
+  https://cpd-websphere-automation.apps.demo.ibmdte.net/websphereauto/meteringapi
+  ```
 
-  ![](images/metering-url.png)
+9. Replace **api-key** above with the output of the following cat command. Use the second terminal to run the cat command:
+  ```
+  cat /opt/IBM/WebSphere/api-key.txt
+  ```
 
-9.Replace `<api-key>` above with the output of the following cat command. Use the second terminal to run the cat command:
-```
-cat /opt/IBM/WebSphere/api-key.txt
-```
+  Sample output:
+  ```
+  5N0uwXC/dFUjixj/HHM0epzmpmyg2mxdB7e4HqpRybJrAood6S/K1Nl7cqUX4DsDIiY0z9dUytAZ+rBaPvOMt6/ue0+nGMk0n47kzhwKXl1AlG6/tVVfh0PC2/ODIN4ter5XDhBuzwkkLMY8rGVeJFAQVYQDG/lPKS1E4nuuIc/IZkXC1zr+DB4l1XWL2mPKsJUmtWWbQ6518i3w66+iD/OK1EJDGDYi3kvCv+53HJn4i+aWgsjkqTB4ZDGmpNBLWBmJ0HGfLAP6cMeor2IzOuTjucTZp87BBmI34NdS6B4+BlVrwbLLudeIpZKYV/jI8z+dx7zHy6whHPLxEh9cQzU62jDUBqGF9s1QBDaKqfZWB1TI1RvlH0sTWVqj6hhh1ED5qUNwiW7F6jzcJ08Cik13x8JFUXkAMl4h3Z5uKaPQuQztUSqdJIgaweziqMuEr9tYPXdfQDbfH8GcbUXIQpGI051y0g5ks4WEReWJVY4WA+vYvnonbUchqtxHoJOxTZINq3fU2ykArKJ+lRLtfrlIFfw+R8XYxaaKeW43S+F8b+g+ZIbEHZXYcmzOuLXzk6k0tjUFRzRc9txzvecZCjq7AP2DSHgH6brExc4DU5BPUL4zn2WVn7TYAJwPfS2BrJvroFjhrKFEoTSqth9IJVVFZTwxw6U+iPx9EiFABp9QPTgBVu3K7KR3L+GdskFY9win99a3aoA6fxk6W8pTC+Qeync2lVhBbgMa7qRJPTttCZg6mIJnEfMQDyLWPv/nuPotd6lR7xQLkAIsy3fI+3icQb2wwDrnDDyd1XCN2E2hlVKLvnGGm13046Ul6Um6SuZiwNuHHlH3iOOnBru+bmmRo3PfPNhsveKzDIHnJXkLSJQOdUV0kSevTanfsenJOowYX1cF69kFbyTDg7AKxDzK00w7ujmP+7qwMPZP0gd37T7mkjpO+Jp8fkcJMt2ElYl3Net4Cbdiqz+R7p9VPmN0tzxRxUCea5zkpHC/T/5YLGeR0NqFfOUwCkx14t94y3xJhIzHSOcKqgbMB8+cxtzoowwBOQOCqHZlkVIKwvWmdjzdbw48zhKWMf/Vb4Okk3ZnBI3rslMFvk+kc/8Nqu4PENhKoJ9ZGKIPC+iVb4YBpc9Q/SAtNihpWW3LXdi0MxIThHD3UwPa1KHq1YxwDW2T+AypBgv59tOZPC+R93GJYZhz/3s0vWeel1uy8S465oeDptsgjkuMrSPzK1JS+zFYKxYGOmNMv/74jTVktStwsxAng+qrlZIu8Dxg==
 
-  ![](images/api-key.png)
+  ```
 
-10.**Save** and **Close** the server.xml file.
+  After the changes, your **server.xml** file looks like this:
 
-11.Back to the WebSphere Automation Dashboard on your browser, open the **Servers** view.
+  ![](images/wsa-usage-metering-20009-updated.png)
+
+10. Click **Save** to save the changes and close the **server.xml** file.
+
+11. Run the commands below to restart the server. This forces the Liberty server registration to get activated immediately.
+
+  ```
+  sudo /opt/IBM/WebSphere/Liberty20009/bin/server stop Liberty_20009_server
+
+  sudo /opt/IBM/WebSphere/Liberty20009/bin/server start Liberty_20009_server
+
+  ```
+12. Back to the WebSphere Automation Dashboard on your browser, open the **Servers** view.
 
   ![](images/app_runtimes_servers.png)
 
-12.Confirm that the Liberty server is registered to WebSphere Automation Application runtimes page.
+13. Confirm that the Liberty server is registered to WebSphere Automation Application runtimes page.
 
   ![](images/dashboard-server-1.png)
 
   Maybe your server vulnerability is a little bit different of the picture above. That is a possibility, since new vulnerabilities are constantly discovered.
 
-***
+  If you have the Email server configured with **WebSphere Automation**, a mail notification shoud be sent showing the vulnerability.
 
-## Configuring Liberty server v20.0.0.9
-
-In this section, you configure another Liberty Server to your WebSphere Automation dashboard. The process is the same (using the usage metering service in WebSphere Automation). However, to simplify tha lab we have pre-created the configuration files to make the configuration simpler.
-
-1.First, you need to create the Liberty server version 20.0.0.9, using the command below:
-```
-/opt/IBM/WebSphere/Liberty20009/bin/server create Liberty_20009_server
-```
-
-2.Since you have already configured usageMetering feature for Liberty version 20.0.0.12, we have a provided couple of server.xml files to make the configuration simpler. First copy the tls configuration:
-```
-\cp -f /home/ibmuser/Desktop/lab_backup/liberty20009/server_tls.xml /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
-```
-
-3.Start the Liberty server:
-
-```
-/opt/IBM/WebSphere/Liberty20009/bin/server start Liberty_20009_server
-```
-
-4.Update the DefaultKeyStore with the server certificate to trust the server for https connections:
-
-```
-keytool -import -trustcacerts -file /opt/IBM/WebSphere/cacert.pem -keystore /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/resources/security/key.p12 -storetype PKCS12 -storepass th1nkpassword -noprompt
-```
-
-5.Copy the server.xml that contains the usageMetering feature and properties (url, api-key):
-
-```
-\cp -f /home/ibmuser/Desktop/lab_backup/liberty20009/server_configured.xml /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
-```
-6.Back to the WebSphere Automation dashboard, confirm that the new Liberty server is registered.
-
-   ![](images/dashboard-server2.png)
-
-  The dashboard shows that this server is vulnerable for some CVEs, including the CVE-2020-10693.
-
-    ![](images/dashboard-CVE-2020-10693.png)
-
-7.Check your email. A mail notification was sent indicating the vulnerability. In the email message, there will be a link that would redirect to the console to show more details on the vulnerability. Because of network restrictions in the lab environment, this link will not work.
-
-   ![](images/vulnerability-email.png)
-
-
-***
-
-## Configuring traditional WebSphere (tWAS) v9.0.5.6
-
-In this section, you configure a traditional WebSphere Application Server to your WebSphere Automation dashboard. Here you use the wsadmin script to configure the usage metering service. Let's do it!
-
-1.First, let's start the tWAS 9.0.5.6 server. Back to the terminal window, execute the command below:
-```
-/opt/IBM/WebSphere/AppServer9056/bin/startServer.sh tWAS_9056_server
-```
-
-2.Now, you need to configure usage-metering using the wsadmin script below:
-```
-/opt/IBM/WebSphere/AppServer9056/bin/wsadmin.sh -f /api-usagemetering/scripts/configuretWasUsageMetering.py url=$(cat /opt/IBM/WebSphere/metering-url.txt) apiKey=$(cat /opt/IBM/WebSphere/api-key.txt) trustStorePassword=th1nkpassword
-```
-
-3.Great, you first traditional WAS server is configured. Let's check our WebSphere Automation dashboard. Back to the browser, dashboard, confirm that the tWAS v9.0.5.6 is registered.
-
-  ![](images/dashboard-tWAS1.png)
-
-  You should see that this server is vulnerable to 15 or more CVEs (new vulnerabilities are discovered constantly, so the number of CVEs depends when you run this lab).
-
-4.Check your email. A mail notification was sent showing the vulnerabilitiy.
-
-  ![](images/email-vulnerability2.png)
-
-***
-
-## Configuring traditional WebSphere (tWAS) v9.0.5.7
+### 6.5 Configuring traditional WebSphere (tWAS) v9.0.0.11
 
 In this section, you configure another version of a traditional WebSphere Application Server to your WebSphere Automation dashboard. The steps here are the same of the last section.
 
-1.First, you just need to start the tWAS 9.0.5.7 server. On the terminal window, execute the command below:
-```
-/opt/IBM/WebSphere/AppServer9057/bin/startServer.sh tWAS_9057_server
-```
+1. First, you just need to start the tWAS 9.0.0.11 server. On the terminal window, execute the command below:
+  ```
+  /home/ibmdemo/app-mod-labs/shared/startWASV9.sh
+  ```
 
-2.Again, you need to configure the usage-metering.
-```
-/opt/IBM/WebSphere/AppServer9057/bin/wsadmin.sh -f /api-usagemetering/scripts/configuretWasUsageMetering.py url=$(cat /opt/IBM/WebSphere/metering-url.txt) apiKey=$(cat /opt/IBM/WebSphere/api-key.txt) trustStorePassword=th1nkpassword
-```
+2. Configure the usage-metering.
+  ```
+  sudo /opt/IBM/WebSphere/AppServer_V90/bin/wsadmin.sh -f /home/ibmdemo/app-mod-labs/d20200st/configuretWasUsageMetering.py url=$(cat /opt/IBM/WebSphere/metering-url.txt) apiKey=$(cat /opt/IBM/WebSphere/api-key.txt) trustStorePassword=th1nkpassword
+  ```
+  When prompted, enter the WAS admin credentials as: **wsadmin**/**passw0rd**.
 
-3.Great, you second traditional WAS server is configured. Let's check our WebSphere Automation dashboard. Back to the browser, dashboard, confirm that the tWAS v9.0.5.7 is registered.
+  ![](images/wsa-was-credentials.png)
 
-  ![](images/dashboard-tWAS2.png)
+  Sample output:
+  ```
+  WASX7209I: Connected to process "dmgr" on node workstationCellManager01 using SOAP connector;  The type of process is: DeploymentManager
+  WASX7303I: The following options are passed to the scripting environment and are available as arguments that are stored in the argv variable: "[url=https://cpd-websphere-automation.apps.demo.ibmdte.net/websphereauto/meteringapi, apiKey=5N0uwwknp2kwSyNXiKK3YG1JbIHIAxrshpHs1w5E2+3ItR7k3z27KytsU+4L5G4lsbGCl/17vGlztfDDurKyVGUXJQM4f86XC/dFUjixj/HHM0epzmpmyg2mxdB7e4HqpRybJrAood6S/K1Nl7cqUX4DsDIiY0z9dUytAZ+rBaPvOMt6/ue0+nGMk0n47kzhwKXl1AlG6/tVVfh0PC2/ODIN4ter5XDhBuzwkkLMY8rGVeJFAQVYQDG/lPKS1E4nuuIc/IZkXC1zr+DB4l1XWL2mPKsJUmtWWbQ6518i3w66+iD/OK1EJDGDYi3kvCv+53HJn4i+aWgsjkqTB4ZDGmpNBLWBmJ0HGfLAP6cMeor2IzOuTjucTZp87BBmI34NdS6B4+BlVrwbLLudeIpZKYV/jI8z+dx7zHy6whHPLxEh9cQzU62jDUBqGF9s1QBDaKqfZWB1TI1RvlH0sTWVqj6hhh1ED5qUNwiW7F6jzcJ08Cik13x8JFUXkAMl4h3Z5uKaPQuQztUSqdJIgaweziqMuEr9tYPXdfQDbfH8GcbUXIQpGI051y0g5ks4WEReWJVY4WA+vYvnonbUchqtxHoJOxTZINq3fU2ykArKJ+lRLtfrlIFfw+R8XYxaaKeW43S+F8b+g+ZIbEHZXYcmzOuLXzk6k0tjUFRzRc9txzvecZCjq7AP2DSHgH6brExc4DU5BPUL4zn2WVn7TYAJwPfS2BrJvroFjhrKFEoTSqth9IJVVFZTwxw6U+iPx9EiFABp9QPTgBVu3K7KR3L+GdskFY9win99a3aoA6fxk6W8pTC+Qeync2lVhBbgMa7qRJPTttCZg6mIJnEfMQDyLWPv/nuPotd6lR7xQLkAIsy3fI+3icQb2wwDrnDDyd1XCN2E2hlVKLvnGGm13046Ul6Um6SuZiwNuHHlH3iOOnBru+bmmRo3PfPNhsveKzDIHnJXkLSJQOdUV0kSevTanfsenJOowYX1cF69kFbyTDg7AKxDzK00w7ujmP+7qwMPZP0gd37T7mkjpO+Jp8fkcJMt2ElYl3Net4Cbdiqz+R7p9VPmN0tzxRxUCea5zkpHC/T/5YLGeR0NqFfOUwCkx14t94y3xJhIzHSOcKqgbMB8+cxtzoowwBOQOCqHZlkVIKwvWmdjzdbw48zhKWMf/Vb4Okk3ZnBI3rslMFvk+kc/8Nqu4PENhKoJ9ZGKIPC+iVb4YBpc9Q/SAtNihpWW3LXdi0MxIThHD3UwPa1KHq1YxwDW2T+AypBgv59tOZPC+R93GJYZhz/3s0vWeel1uy8S465oeDptsgjkuMrSPzK1JS+zFYKxYGOmNMv/74jTVktStwsxAng+qrlZIu8Dxg==, trustStorePassword=th1nkpassword]"
+  Input arguments:
+    url: https://cpd-websphere-automation.apps.demo.ibmdte.net/websphereauto/meteringapi
+    apiKey: 5N0uwwknp2kwSyNXiKK3YG1JbIHIAxrshpHs1w5E2+3ItR7k3z27KytsU+4L5G4lsbGCl/17vGlztfDDurKyVGUXJQM4f86XC/dFUjixj/HHM0epzmpmyg2mxdB7e4HqpRybJrAood6S/K1Nl7cqUX4DsDIiY0z9dUytAZ+rBaPvOMt6/ue0+nGMk0n47kzhwKXl1AlG6/tVVfh0PC2/ODIN4ter5XDhBuzwkkLMY8rGVeJFAQVYQDG/lPKS1E4nuuIc/IZkXC1zr+DB4l1XWL2mPKsJUmtWWbQ6518i3w66+iD/OK1EJDGDYi3kvCv+53HJn4i+aWgsjkqTB4ZDGmpNBLWBmJ0HGfLAP6cMeor2IzOuTjucTZp87BBmI34NdS6B4+BlVrwbLLudeIpZKYV/jI8z+dx7zHy6whHPLxEh9cQzU62jDUBqGF9s1QBDaKqfZWB1TI1RvlH0sTWVqj6hhh1ED5qUNwiW7F6jzcJ08Cik13x8JFUXkAMl4h3Z5uKaPQuQztUSqdJIgaweziqMuEr9tYPXdfQDbfH8GcbUXIQpGI051y0g5ks4WEReWJVY4WA+vYvnonbUchqtxHoJOxTZINq3fU2ykArKJ+lRLtfrlIFfw+R8XYxaaKeW43S+F8b+g+ZIbEHZXYcmzOuLXzk6k0tjUFRzRc9txzvecZCjq7AP2DSHgH6brExc4DU5BPUL4zn2WVn7TYAJwPfS2BrJvroFjhrKFEoTSqth9IJVVFZTwxw6U+iPx9EiFABp9QPTgBVu3K7KR3L+GdskFY9win99a3aoA6fxk6W8pTC+Qeync2lVhBbgMa7qRJPTttCZg6mIJnEfMQDyLWPv/nuPotd6lR7xQLkAIsy3fI+3icQb2wwDrnDDyd1XCN2E2hlVKLvnGGm13046Ul6Um6SuZiwNuHHlH3iOOnBru+bmmRo3PfPNhsveKzDIHnJXkLSJQOdUV0kSevTanfsenJOowYX1cF69kFbyTDg7AKxDzK00w7ujmP+7qwMPZP0gd37T7mkjpO+Jp8fkcJMt2ElYl3Net4Cbdiqz+R7p9VPmN0tzxRxUCea5zkpHC/T/5YLGeR0NqFfOUwCkx14t94y3xJhIzHSOcKqgbMB8+cxtzoowwBOQOCqHZlkVIKwvWmdjzdbw48zhKWMf/Vb4Okk3ZnBI3rslMFvk+kc/8Nqu4PENhKoJ9ZGKIPC+iVb4YBpc9Q/SAtNihpWW3LXdi0MxIThHD3UwPa1KHq1YxwDW2T+AypBgv59tOZPC+R93GJYZhz/3s0vWeel1uy8S465oeDptsgjkuMrSPzK1JS+zFYKxYGOmNMv/74jTVktStwsxAng+qrlZIu8Dxg
+    trustStorePassword: ********
+  Creating keystore meteringTrustStore ...
+  Keystore was created: meteringTrustStore(cells/workstationCell01|security.xml#KeyStore_1627915301935)
+  Retrieving signer from port ...
+  Signer was retrieved from host: cpd-websphere-automation.apps.demo.ibmdte.net, port: 443 and store to keystore: meteringTrustStore
+  Creating was-usage-metering.properties file with all specified properties ...
+  Copying keystore meteringTrustStore.p12 and was-usage-metering.properties to all servers ...
+  keystoreFile meteringTrustStore.p12 was created on all servers.
+  was-usage-metering.properties was created on all servers.
+  Syncing config changes to all nodes ...
+  Sync nodes were done!
+  ```
+3. Great, you second traditional WAS server is configured. Let's check our WebSphere Automation dashboard. Back to the browser, dashboard, confirm that the tWAS v9.0.5.7 is registered.
 
-  You should see that this server is vulnerable to CVE-2021-26296. As explained before, maybe your server has more vulnerability than displayed in the picture, because it depends when you execute your lab, since new vulnerabilities are discovered constantly.
+  ![](images/wsa-dashboard-twas.png)
 
-4.Again, check your email. A mail notification was sent showing the vulnerability.
+  You should see that this server is vulnerable to **CVE-2020-27221**. As explained before, maybe your server has more vulnerability than displayed in the picture, because it depends when you execute your lab, since new vulnerabilities are discovered constantly.
 
-  ![](images/email-inbox.png)
+  If you have the Email server configured with **WebSphere Automation**, a mail notification shoud be sent showing the vulnerability.
 
-***
-
-## Update Liberty server v20.0.0.9 to fix the vulnerability
+### 6.6 Update Liberty server v20.0.0.9 to fix the vulnerability
 
 In this section, you will fix one vulnerability in our Liberty Server v20.0.0.9 using two different approaches. First, you fix only updating configuraiton. Later, you apply an iFix to solve the vulnerability. Let's see how to do it.
 
-### Updating configurations
+#### 6.6.1 Updating configurations
 
-Liberty 20.0.0.9 is impacted by CVE-2020-10693. This is because it configures the beanValidation-2.0 feature. See [CVE-2020-10693](https://www.ibm.com/support/pages/node/6348216) for more info.
+Liberty 20.0.0.9 is impacted by **CVE-2020-10693**. This is because it configures the **beanValidation-2.0** feature. See [CVE-2020-10693](https://www.ibm.com/support/pages/node/6348216) for more info.
 
-We should resolve this by applying the iFix. However, for the lab, we can also do a quick test by unconfiguring this feature:
+You should be able to resolve this by applying the iFix. However, for the lab, you can also do a quick test by unconfiguring this feature.
 
-1.Edit the server.xml, using the command below:
-```
-vi /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
-```
+1. Edit the server.xml, using the command below:
+  ```
+  sudo gedit /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
+  ```
 
-2.Comment out the feature:
-```
-<!-- <feature>beanValidation-2.0</feature> -->
-```
+2. Comment out the feature:
+  ```
+  <!-- <feature>beanValidation-2.0</feature> -->
+  ```
 
   ![](images/edit-beanvalidation.png)
 
-3.**Save** and **close** the *server.xml* file.
+3. Click **Save** and **Close** the **server.xml** file.
 
-4.Back to your browser, check that the Liberty 20.0.0.9 server does not show the CVE-2020-10693 vulnerability. The update is picked up automatically.
+4. Back to your browser, check that the Liberty 20.0.0.9 server does not show the **CVE-2020-10693** vulnerability. The update is picked up automatically.
 
   ![](images/no-CVE-2020-10693.png)
 
   Great, you removed the vulnerability by updating the configuration.
 
-### By Applying an IFIX
+  If you have the Email server configured with **WebSphere Automation**, a mail notification shoud be sent showing the vulnerability.
 
-However, instead of remove the beanValidationFeature-2.0, the correct process is to apply the appropriate iFix to get rid of the vulnerability. Let's do it in this part.
+#### 6.6.2 By Applying an IFIX
 
-5.First, let's add back the beanValidation feature:
+However, instead of remove the **beanValidationFeature-2.0**, the correct process is to apply the appropriate iFix to get rid of the vulnerability. Let's do it in this part.
 
-```
-vi /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
-```
+1. First, you need to restore the **beanValidation** feature.
 
-6.Uncomment out the feature:
-```
-<feature>beanValidation-2.0</feature>
-```
+  ```
+  sudo gedit /opt/IBM/WebSphere/Liberty20009/usr/servers/Liberty_20009_server/server.xml
+  ```
+
+2. Uncomment out the feature:
+  ```
+  <feature>beanValidation-2.0</feature>
+  ```
 
   ![](images/uncomment.png)
 
-7.**Save** and **Close** the server.xml file.
+3. Click **Save** and **Close** the **server.xml** file.
 
-8.Back to the browser, make sure the vulnerability shows up again.
+4. Back to the browser, make sure the vulnerability shows up again.
 
   ![](images/cve-back.png)
 
-9.An email will also be sent out.
+5. You need to stop the server, before apply the iFix. Back to the terminal window, run the command below:
+  ```
+  sudo /opt/IBM/WebSphere/Liberty20009/bin/server stop Liberty_20009_server
+  ```
 
-  ![](images/email-again.png)
+6. Now, ypu can apply the iFix.
+  ```
+  /home/ibmdemo/app-mod-labs/d20200st/imcl_ifix_install.sh 20009
+  ```
 
-10.You need to stop the server, before apply the iFix. Back to the terminal window, run the command below:
-```
-/opt/IBM/WebSphere/Liberty20009/bin/server stop Liberty_20009_server
-```
+  Sample output:
+  ```
+  Installed 20.0.0.9-WS-WLP-IFPH29942_20.0.9.20201009_2126 to the /opt/IBM/WebSphere/Liberty20009 directory.
+  ```
 
-11.Now, let's apply the iFix.
-```
-/iFix/PH29942/imcl_ifix_install.sh 20009
-```
+7. Great, you iFix was applied. Now, start the server again:
+  ```
+  sudo /opt/IBM/WebSphere/Liberty20009/bin/server start Liberty_20009_server
+  ```
 
-  ![](images/apply-fix.png)
-
-12.Great, you iFix was applied. Now, start the server again:
-```
-/opt/IBM/WebSphere/Liberty20009/bin/server start Liberty_20009_server
-```
-
-13.Now, in your WebSphere Automation Dashboard you should notice that the CVE was removed:
+  Now in your WebSphere Automation Dashboard you should notice that the CVE was removed:
 
   ![](images/no-CVE-2020-10693.png)
 
-***
+  If you have the Email server configured with **WebSphere Automation**, a mail notification shoud be sent showing the vulnerability.
 
-## Update tWAS server v9.0.5.7 to fix the vulnerability
+### 6.7 Update tWAS server v9.0.0.11 to fix the vulnerability
 
-In this section, you will apply an iFix in tWAS 9.0.5.7 to remove the CVE-2021-26296 vulnerability.
+In this section, you will apply an iFix in tWAS 9.0.0.11 to remove a CVE vulnerability.
 
-1.Notice in the console that tWAS 9.0.5.7 is vulnerable to CVE-2021-26296.
+1. In the WebSphere Automation Dashboard page, click the CVEs link get see all the CVEs.
 
-  ![](images/CVE-2021-26296.png)
+  ![](images/wsa-was-cve-link.png)
 
-  We will fix it by applying the appropriate iFix.
+  You will see the list of these 68 vulnerabilities including **CVS-2020-4450**.  You will apply the appropriate iFix to fix it.
 
-2.First, stop the server, wait until it has stopped:
-```
-/opt/IBM/WebSphere/AppServer9057/bin/stopServer.sh tWAS_9057_server
-```
+  ![](images/wsa-was-cve-list.png)
 
-3.Run the following script to install the iFix:
-```
-/iFix/PH34711/imcl_ifix_install.sh 9057
-```
+2. First, stop the WAS server, wait until it has stopped:
+  ```
+  /home/ibmdemo/app-mod-labs/shared/stopWASV9.sh
+  ```
 
-4.Start the server once the installation has completed:
-```
-/opt/IBM/WebSphere/AppServer9057/bin/startServer.sh tWAS_9057_server
-```
+3. Run the following script to install the iFix:
+  ```
+  /home/ibmdemo/app-mod-labs/d20200st/imcl_ifix_install.sh 9057
+  ```
+  Sample output:
+  ```
+  Installed 9.0.0.11-WS-WASProd-IFPH25074_9.0.11.20200616_1232 to the /opt/IBM/WebSphere/AppServer_V90 directory.
+  ```
+4. Start the server once the installation has completed:
+  ```
+  /home/ibmdemo/app-mod-labs/shared/startWASV9.sh
+  ```
 
-5.Go back to the WebSphere Automation dashboard. Notice that the CVE-2021-26296 was removed from tWAS 9.0.5.7.  Also, you can see on the right under "Applied iFixes" there are 4 applied fixes.
+5. Go back to the WebSphere Automation dashboard. Notice that the **CVE-2020-4450** was removed from tWAS 9.0.0.11.  Also, you can see on the right under "Applied iFixes" there are 2 applied fixes.
 
   ![](images/ifix-applied.png)
 
-***
+  If you have the Email server configured with **WebSphere Automation**, a mail notification shoud be sent showing the vulnerability.
 
-## Update tWAS server v9.0.5.7 to introduce the vulnerability back (optional)
-
-You can remove the iFix that was applied to confirm that the CVE-2021-26296 shows up in the unresolved CVE list
-
-1.Stop the server:
-```
-/opt/IBM/WebSphere/AppServer9057/bin/stopServer.sh tWAS_9057_server
-```
-
-2.Uninstall the iFix:
-```
-/iFix/PH34711/imcl_ifix_uninstall.sh 9057
-```
-
-3.Start the server:
-```
-/opt/IBM/WebSphere/AppServer9057/bin/startServer.sh tWAS_9057_server
-```
-
-4.Go back to the WebSphere Automation Dashboard on your browser. Notice that CVE-2021-26296 is now again in the tWAS 9.0.5.7 server:
-
-  ![](images/CVE-2021-26296.png)
-
-  Check your email. A mail notification was sent showing the vulnerability.
-
-***
-
-## Summary
+### 7. Summary
 
 Congratulations! You have completed the WebSphere Automation lab.
 
