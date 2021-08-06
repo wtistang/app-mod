@@ -39,12 +39,12 @@ A six Linux VMs App Mod Lab environment has been provided for this lab.
   ![](images/lab-vms.png)
 
 *	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
-*	The Workstation VM is the one you will use to access and work with OCP cluster in this lab.
-  The login credentials for the Workstation VM are:
+*	The workstation VM is the one you will use to access and work with OCP cluster in this lab.
+  The login credentials for the workstation VM are:
   User ID: **ibmdemo**
   Password: **passw0rd**
   Note: Use the Password above in the workstation VM terminal for sudo in the Lab.
-*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/am0100st** directory of the Workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/am0100st** directory of the workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 In this lab, you access WebSphere Application Server to review the deployment of the JEE applications. Then you are going to the Transformation Advisor to identify a good candidate application for moving to cloud. To identify which Java EE programming models are on the server, you could run the Transformation Advisor Data Collector tool against the server. The Transformation Advisor creates an inventory of the content and structure of each application and learn about problems that might occur if you move the application to cloud. Finally, you review the analysis reports to determine the complexity of the move-to-cloud efforts and select the migration candidate app.
@@ -56,13 +56,13 @@ Here are the activities involved in this process:
 
 ### 6.	Execute Lab Tasks
 
-#### 6.1	Log in to the Workstation VM and Get Started 
+#### 6.1	Log in to the workstation VM and Get Started 
 1. If the VMs are not already started, start them by clicking the play button for the whole group.
 
   ![](images/start-vms.png)
 
 
-2.	After the VMs are started, click the Workstation VM icon to access it. 
+2.	After the VMs are started, click the workstation VM icon to access it. 
 
   ![](images/access-workstation.png)
 
@@ -112,7 +112,7 @@ In this task, you take a look at the sample applications deployed to the local W
 
 1.	Start WebSphere Application Server
 
-    In the Workstation VM, you have a local WebSphere Application Server which hosts several sample applications. 
+    In the workstation VM, you have a local WebSphere Application Server which hosts several sample applications. 
     To start the WAS server:
     
     a. In the terminal window, issue the command below to start the WAS server.
@@ -163,7 +163,7 @@ The Transformation Advisor is installed in the OCP cluster.  In this lab, you us
 
 #### 6.4	Download Transformation Advisor Data Collector utility
 
-The Transformation Advisor can evaluate any Java based applications. In this lab, you are going to use it to evaluate whether the on-premises WebSphere application, Mod Resorts, is suitable to move to cloud and what the effort might be to get it there. You can use Transformation Advisor Data Collector utility to get the application data from the WebSphere Application Server running on the Workstation VM. The utility can be downloaded from the Transformation Advisor web page.
+The Transformation Advisor can evaluate any Java based applications. In this lab, you are going to use it to evaluate whether the on-premises WebSphere application, Mod Resorts, is suitable to move to cloud and what the effort might be to get it there. You can use Transformation Advisor Data Collector utility to get the application data from the WebSphere Application Server running on the workstation VM. The utility can be downloaded from the Transformation Advisor web page.
 
 1. In the Transformation Advisor page, you first create a new workspace by entering the workspace name as **Evaluation** and then clicking **Next**.
  
