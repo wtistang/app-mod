@@ -1,5 +1,5 @@
 ---
-title: IBM WebSphere Automation
+title: Strengthen Operational Security with IBM WebSphere Automation
 description: Strengthen Operational Security with IBM WebSphere Automation
 ---
 The goal of this session is to provide a hands-on experience with IBM WebSphere Automation.
@@ -129,7 +129,7 @@ During this lab, you complete the following tasks:
 
   ![](images/open-commands-txt-d20200st.png)
 
-  This file contains all commands used in the lab.  When you need to any command in a terminal window in the future tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
+  This file contains all commands used in the lab.  When you need to enter any command in a terminal window in the lab tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
 
 #### 6.2 Receiving vulnerability notifications
 
@@ -139,13 +139,17 @@ A WebSphere administrator sets up WebSphere Automation by registering and config
 
 For this tutorial, WebSphere Automation is pre-installed on an OCP cluster. You have your individual WebSphere Automation installation. Let's access your environment.
 
+1. Open a Firefox web browser window by clicking its icon on the Desktop toolbar.
+
+  ![](images/firefox-icon.png)
+
 1. From the browser window, click the **WAS Automation** bookmark to launch the **WebSphere Automation** UI.
 
   ![](images/wsa-wsa-bookmark.png)
 
   If necessary, accept all the warnings and certificates. Depending on your browser, you might have to scroll down to permit access.
 
-2. On the login page, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+1. On the login page, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
  
   ![](images/ocp-console-login-1.png) 
 
@@ -155,7 +159,7 @@ For this tutorial, WebSphere Automation is pre-installed on an OCP cluster. You 
 
   ![](images/welcome-page.png)
 
-5. On the Welcome page, open the **Menu**, click **Operate**, and then click **Application runtimes**.
+1. On the Welcome page, open the **Menu**, click **Operate**, and then click **Application runtimes**.
 
   ![](images/welcome-menu.png)
 
@@ -165,7 +169,7 @@ For this tutorial, WebSphere Automation is pre-installed on an OCP cluster. You 
 
   Next, you are going to register your WebSphere application servers with the **WebSphere Austomation**. In general, before start to register servers, you should configure your email to received notifications abouts CVEs first.
  
-6. Open the **Notification configuration** tab.
+1. Open the **Notification configuration** tab.
 
   ![](images/notification-config.png)
 
