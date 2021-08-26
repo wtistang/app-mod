@@ -2,10 +2,10 @@
 title: App Modernization with Microservice
 description: 
 ---
-This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming, rehosting and refactoring application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab AM0100ST), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor. In Part 2 of the Application Modernization Journey (Lab AM0200ST), you learn how to re-platform an existing WebSphere application to a Liberty container and to deploy it to a Red Heat OpenShift Container Platform (OCP) cluster. In Part 3 of the Application Modernization Journey (Lab AM0300ST), you use the rehost process to move an existing WebSphere application to a WebSphere Application Server (WAS) container and to deploy it to a OCP cluster. In this lab, you start to refactor a monolithic Java application by moving one of its functions into a microservice and modifying the application to access the microservice via REST. Over time this pattern of moving services from an application to a microservice will allow for the eventual sunset of the initial monolithic application, once all of its function has been deployed as microservices. 
+This lab exercise is a part of the Application Modernization lab series which focus on the evaluation, re-platforming, rehosting and refactoring application modernization approaches and other application modernization related solutions. In Part 1 of the Application Modernization Journey (Lab AM0100), you go through the process to evaluate the existing On-Prem Java applications and to identify the candidate to be moved to the cloud using the IBM Cloud Transformation Advisor. In Part 2 of the Application Modernization Journey (Lab AM0200), you learn how to re-platform an existing WebSphere application to a Liberty container and to deploy it to a Red Heat OpenShift Container Platform (OCP) cluster. In Part 3 of the Application Modernization Journey (Lab AM0300), you use the rehost process to move an existing WebSphere application to a WebSphere Application Server (WAS) container and to deploy it to a OCP cluster. In this lab, you start to refactor a monolithic Java application by moving one of its functions into a microservice and modifying the application to access the microservice via REST. Over time this pattern of moving services from an application to a microservice will allow for the eventual sunset of the initial monolithic application, once all of its function has been deployed as microservices. 
 ### 1. Business Scenario
 
-Your company has a traditional WebSphere Application Server application called PlantsByWebSphere, a monolith web application allowing users to search and order garden products online.  The application is running is a traditional WAS environment.
+Your company has a traditional WebSphere Application Server application called **PlantsByWebSphere**, a monolith web application allowing users to search and order garden products online.  The application is running is a traditional WAS environment.
 
 ![](images/pbw-app-home-page.png)
 
@@ -16,7 +16,6 @@ As a tech leader, you are leading the effort to modernize the monolith applicati
 
 ![](images/modified-pbw-app.png)
 
-For those interested, appendix 1 and appendix 2 contain the Servlet Filter and Image Service code.
 ### 2. Objective
 
 The objectives of this lab are to help you:
@@ -28,78 +27,105 @@ The objectives of this lab are to help you:
 ### 3.	Prerequisites
 
 The following prerequisites must be completed prior to beginning this lab:
-* Familiarity with basic Linux commands
-* Have internet access
-*	Have basic WAS Admin and Java app development knowledge.
-*	Have completed Lab SU0100 of this lab series and have the CP4Apps installed in IBM Red Hat OpenShift Kubernetes Service (OCP) cluster on IBM Cloud.
+*	Familiarity with basic Linux commands
+*	Have internet access
+*	Have a SkyTap App Mod Lab environment ready
 
 ### 4.	What is Already Completed
 
-The workstation VM is pre-configured for you to access and work with the OCP cluster in this lab.
+A six Linux VMs App Mod Lab environment has been provided for this lab. 
+ 
+  ![](images/lab-vms.png)
 
-The login credentials for the workstation VM are provided in your Reservation Details page (**https://www.ibm.com/demos/my-reservations/**).
-
-The CLI commands used in this lab are listed in the Commands.txt file located at the **/home/ibmdemo/app-mod-labs/am0400** directory of the workstation VM for you to copy and paste these commands to the Terminal window during the lab.
+*	The Red Hat OpenShift Container Platform (OCP) v4.6, is installed in 5 VMs, the master1 VM, the master2 VM, the master3 VM, the dns VM and the nfs VM, with 3 master nodes and 3 compute nodes (the master nodes are serving as computer nodes as well).
+*	The workstation VM is the one you will use to access and work with OCP cluster in this lab.
+  The login credentials for the workstation VM are:
+  User ID: **ibmdemo**
+  Password: **passw0rd**
+  Note: Use the Password above in the workstation VM Terminal for sudo in the Lab.
+*	The CLI commands used in this lab are listed in the **Commands.txt** file located at the **/home/ibmdemo/add-mod-labs/am0400st** directory of the workstation VM for you to copy and paste these commands to the Terminal window during the lab.
 
 ### 5.	Lab Tasks
 During this lab, you complete the following tasks:
-*	review the original and modified versions of PlantsByWebSphere application on local WAS server.
+*	review the original and modified versions of **PlantsByWebSphere** application on local WAS server.
 *	deploy the image microservice to a OCP cluster.
 *	test and verify the deployed image microservice.
-*	configure the modified PlantsByWebSphere application to consume the image microservice in WAS console.
-*	test and verify the modified PlantsByWebSphere.
+*	configure the modified **PlantsByWebSphere** application to consume the image microservice in WAS console.
+*	test and verify the modified **PlantsByWebSphere** application.
 
 
 ### 6.	Execute Lab Tasks
 #### 6.1 Log in to the workstation VM and get started 
-1.  Launch the VM from your local workstation web browser with the VM URL.
- 
-    ![](images/vm-url.png)
+1.  If the VMs are not already started, start them by clicking the play button for the whole group.
 
-2.	Click **Connect** to access the VM.
- 
-    ![](images/vm-connect.png)
+  ![](images/start-vms.png)
 
-3.	Enter the password you obtained from the Reservation Details page and click **Send Password**.
 
-    ![](images/vm-password.png)
+1.	After the VMs are started, click the workstation VM icon to access it. 
 
-    The VM desktop is displayed.
+  ![](images/access-workstation.png)
 
-    ![](images/vm-desktop.png)
+  The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
-    The Workstation Desktop is displayed. You execute all the lab tasks on this VM.
+1.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+1. Open a terminal window by clicking its icon from the Desktop toolbar.
+
+  ![](images/terminal-icon.png)
+1. In the terminal window, run the following command to get the lab materials.
+
+  ```
+  /home/ibmdemo/get-lab-materials.sh
+  ```
+
+  Sample output
+
+  ```
+  Cloning into 'app-mod-labs'...
+  warning: redirecting to https://github.com/wtistang/app-mod-labs.git/
+  remote: Enumerating objects: 5693, done.
+  remote: Counting objects: 100% (185/185), done.
+  remote: Compressing objects: 100% (118/118), done.
+  remote: Total 5693 (delta 53), reused 184 (delta 53), pack-reused 5508
+  Receiving objects: 100% (5693/5693), 277.71 MiB | 57.39 MiB/s, done.
+  Resolving deltas: 100% (2250/2250), done.
+  Checking out files: 100% (6120/6120), done.
+  ```
+  
+  The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
+  
+1. Open **File Manager** by clicking its icon on the Desktop toolbar.
+
+  ![](images/file-manager-icon.png)
+
+1. Navigate to **/home/ibmdemo/app-mod-labs/am0400st** directory and click to open **Commands.txt** file in the text editor.
+
+  ![](images/open-commands-txt-am0400st.png)
+
+  This file contains all commands used in the lab.  When you need to enter any command in a terminal window in the lab tasks, you should come back to this file and copy/paste the command from this file, this is because you cannot directly copy and paste from your local workstation to the SkyTap workstation.
 
 #### 6.2 Review the on-premises WebSphere application 
-In this task, you take a look at **Mod Resorts** application deployed to the local WebSphere Application Server (WAS) environment. You are going to move this application to the cloud using Open Liberty Operator later.
 
-1.	Start WebSphere Application Server
+In this task, you take a look at **PlantsByWebSphere** application deployed to the local WebSphere Application Server (WAS) environment. You are going to move this application to the cloud using Open Liberty Operator later.
 
-    In the workstation VM, you have a local WebSphere Application Server V9 which hosts the Mod Resorts application. 
-
-    To start the WAS server:
-
-    a.	Open a terminal window by clicking **Applications**>**Terminal**.
- 
-    ![](images/vm-terminal-link.png)
-
-    b.	In the terminal window, issue the command below to start the WAS server (You can copy and paste the command from the Commands.txt file in the /home/ibmdemo/app-mod-labs/am0200 directory).
+1.	In the terminal window, issue the command below to start the WAS server (You can copy and paste the command from the **Commands.txt** file in the **/home/ibmdemo/app-mod-labs/am0400st** directory).
 
     ```
     /home/ibmdemo/app-mod-labs/shared/startWASV9.sh
     ```
     
+    When prompted, enter the sudo password as: **passw0rd**.
+    
     Within a few minutes the WAS server is ready.
 
-    c.	Access the WAS Admin Console to view the application deployed by clicking **Applications**>**Firefox** to open a browser window.
+1.	Access the WAS Admin Console to view the application deployed by clicking the browser incon from the Desktop toolbar to open a browser window.
  
-    ![](images/vm-browser-link.png)
+    ![](images/firefox-icon.png)
 
-    d.	From the web browser window, type the WebSphere Integrated Solution Console URL as: https://localhost:9044/ibm/console and press **Enter** to launch the WAS V9 console.
+1.	From the web browser window, type the WebSphere Integrated Solution Console URL as: https://localhost:9044/ibm/console and press **Enter** to launch the WAS V9 console.
 
-    e.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**. 
+1.	In the WAS Admin Console login page, enter the User ID and Password as: **wsadmin**/**passw0rd** and click **Login**. 
 
-    f.	On the WAS Console page, click **Applications** -> **Application Types** -> **WebSphere enterprise applications** to view the apps deployed.
+1.	On the WAS Console page, click **Applications** -> **Application Types** -> **WebSphere enterprise applications** to view the apps deployed.
  
     ![](images/was-enterprise-apps-link.png)
 
@@ -107,9 +133,7 @@ In this task, you take a look at **Mod Resorts** application deployed to the loc
     
     ![](images/was-enterprise-apps.png)
 
-2.	View the original **PlantsByWebSphere** application
-
-    a. From the web browser window, click new Tab to open a new browser window with the **PlantsByWebSphere** application URL: http://localhost:9081/PlantsByWebSphere.
+1.	View the original **PlantsByWebSphere** application. From the web browser window, click new Tab to open a new browser window with the **PlantsByWebSphere** application URL: http://localhost:9081/PlantsByWebSphere.
     
     The **PlantsByWebSphere** application home page is displayed.
 
@@ -119,243 +143,458 @@ In this task, you take a look at **Mod Resorts** application deployed to the loc
     
     ![](images/pbw-catalog-page.png)
 
-3. View the modified **PlantsByWebSphere** application.
-
+1. View the modified **PlantsByWebSphere** application.
 
   a.	Go back to WAS console windows and navigate to **Applications** > **Application Types** > **WebSphere enterprise applications** page.
 
-__b.	Stop the original PlantsByWebSphere application by checking the box next to PlantsByWebSphereV90 and clicking Stop.
+  b.	Stop the original PlantsByWebSphere application by checking the box next to PlantsByWebSphereV90 and clicking Stop.
  
-__c.	Start the modified version of the application by checking the box next to PlantsByWebSphereV90V2 and clicking Start.
+  ![](images/was-stop-app.png)
+  c.	Start the modified version of the application by checking the box next to PlantsByWebSphereV90V2 and clicking Start.
  
-__d.	Click the refresh icon next to the Application Status.
+  ![](images/was-start-app.png)
+  d.	Click the refresh icon next to the Application Status.
  
-You see that the modified application is running now
- 
-__e.	Go to the PlantsByWebSphere application window to relaunch it with URL: http://localhost:9081/PlantsByWebSphere.  You see that its home page looks below without any images.  This is because the original image molder is disable and the new image microservice the application is looking for is not available yet.
- 
-Click **WHERE TO?** dropdown menu to see the city list.
-
-    ![](images/mod-resorts-app-where-to.png)
-
-    c. Click **PARIS, FRANCE** from the list, it shows the weather of the city.
-
-    ![](images/mod-resorts-app-paris.png)
-
-    You have reviewed the application.  Next you learn how to re-platform the application in WAS container without any code change and to deploy it to an OpenShift cluster.
-
-    d. Stop the WAS server by issuing the following command in the Terminal window:
-
-    ```
-    /home/ibmdemo/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/stopServer.sh server1
-    ```   
-
-#### 6.3	Build a WAS Base Server Container Image.
-In this task, you are going to build a WAS Base server Docker container image with the Mod Resorts application installed. 
-
-Note: according to Docker's best practices you should create a new WAS Base image which adds a single application and the corresponding configuration. You should avoid configuring the image manually (after it started) via Admin Console or wsadmin unless it is for debugging purposes, because such changes won't be present if you spawn a new container from the image.
-
-There are five key files you needed to build your WAS Base server container image:
-*	Dockerfile – the file defines how the Docker image that has your application and configuration pre-loaded is built.
-*	App runtime – the ear or war file of your application.
-*	app-install.props – the file defines how to install your application in the WAS server.
-*	appConfig.py – the WAS admin script in Jython format configures the WAS server for your application.
-*	PASSWORD – the file contains the WAS server console password use in the WAS container.
-
-1.	Review Dockerfile, app-install.props file, and appConfig.py file.
-
-    a.	Click **Applications**>**Files** to open the File Manager.
-
-    ![](images/vm-files-link.png)
+  ![](images/was-refresh-app.png)
   
-    b.	Navigate to **/home/ibmdemo/app-mod-labs/am0300** directory.
+    You see that the modified application is running now
  
-    c.	Double click the **Dockerfile** to open it in Text editor for reviewing.
- 
-    ![](images/ocp-twas-dockerfile.png)
-    As you can see, the Dockerfile file defines the following activities to create a WAS Base container image:
-    *	Get the base WAS image from Docker Hub
-    *	Add WAS admin console password to the WAS Base image
-    *	Add the WAS server configuration script to the WAS base image
-    *	Add the application installation script to the WAS base image
-    *	Add the application runtime file to the WAS base image
-    *	Run the configuration script to config the WAS server instance inside the container to configure the WAS server and to install the application
-    
-    d.	Go back to File Manager and double click **app-install.props** file to review it. This is the script file you use to install the Mod Resorts application to the WAS server instance. 
-    
-    ![](images/ocp-twas-app-install-props.png)
-    
-    e.	In the File Manager window, double click **appConfig.py** file to review its contents. This is a standard WAS admin script with Jython format for configuring the WAS to run the Mod Resorts application. This is the WAS admin script file you use to convert your application settings, include JDBC and JMS resources, from a WAS ND cell to a WAS Base container. 
- 
-    ![](images/pco-twas-appconfig-py.png)
+  ![](images/was-app-running.png)
 
-2.	Build the WAS Base server container image.
-
-    a. Go back to the Terminal window and navigate to the **/home/ibmdemo/app-mod-labs/am0300** directory with command:
-    
-    ```
-    cd /home/ibmdemo/app-mod-labs/am0300 
-    ```
-    
-    b. Execute the following command to build the WAS Base docker container image with the Dockerfile you just reviewed:	
-
-    ```
-    docker build . -t modresorts-twas:latest
-    ```
-
-    This creates a WAS Base docker image called modresorts-twas:latest.
-
-    c. After the docker container image is created, you can issue the command below to check it:
-
-    ```
-    docker images |grep twas
-    ```
-    
-    You see the docker image is created.
-
-    d. To verify the docker image, you can create and run a local container called modresorts-twas with the command below:
-
-    ```
-    docker run --name modsorts-twas -p 9443:9443 -d modresorts-twas:latest
-    ```
-
-    e. once the container is created, you can test the Moderesorts application by launching it in a web browser window with the URL: **https://localhost:9443/resorts**.
-
-#### 6.4	Push the WAS Container Image to OCP Image Registry
-After the WAS container image is built, you need to push it to an image registry first. In this lab, you are using the OCP Image Registry to host your WAS container image.
-
-1.	From the browser window, click OCP cluster Web Console bookmark to open it with your IBM credentials.
-
-  ![](images/ocp-console-bookmarked.png) 
-2.	In the OpenShift Web Console page, click the **Action** icon next to your username and select **Copy Login** Command to get the OCP login command.
-
-  ![](images/ocp-copy-login-command.png) 
-3.	In the next page, click **Display Token** link.
-
-  ![](images/display-token.png) 
-4.	Copy the OCP login command to the clipboard.
-
-  ![](images/copy-token.png) 
-5.	Go back to the Terminal window, right-click to paste the OCP login command window press Enter to log in to the OCP cluster.
- 
-  ![](images/run-oc-login-command.png) 
-6.	Create a new project (namespace) as **demo**.
-
-  ```
-  oc new-project demo
-  ```
-  You see the message to confirm that the demo project is created.
-
-7.	Get OCP internal image registry URL and cluster URL with commands:
-
-  ```
-  export INTERNAL_REG_HOST=`oc get route default-route --template='{{ .spec.host }}' -n openshift-image-registry`
-  export CLUSTER_URL=`echo $INTERNAL_REG_HOST | sed 's/default-route-openshift-image-registry.//g'`
-  ```
-8.	Log in to the OpenShift Docker registry with the command:
-    
-  ```
-  docker login -u $(oc whoami) -p $(oc whoami -t) $INTERNAL_REG_HOST
-  ```
-
-9. Execute the following command to push your docker image to OpenShift image repository.
-
-  ```
-  docker tag modresorts-twas:latest $INTERNAL_REG_HOST/`oc project -q`/modresorts-twas:latest
-
-  docker push $INTERNAL_REG_HOST/`oc project -q`/modresorts-twas:latest
-
-  ```
-
-  When it is done, your application docker image is pushed to the OCP image registry.
-
-10.	Verify the pushed Docker image in OCP cluster.
-
-    a.	From the OCP Web Console Home page, click **Builds**>**Images Streams**.
+  e.	Go to the **PlantsByWebSphere** application window to relaunch it with URL: http://localhost:9081/PlantsByWebSphere.  
   
-   ![](images/ocp-builds-is.png) 
-   
-    b.	Change project (namespace) from **default** to **demo**.
-   
-   ![](images/ocp-demos-project.png) 
+  You see that its home page looks below without any images.  This is because the original image molder is disable and the new image microservice the application is looking for is not available yet.
 
-    c.	You can see the image you just pushed is listed. Click its link to view its details.
+  ![](images/pbw-app-no-images.png)
  
-   ![](images/ocp-demo-is.png) 
+#### 6.3	Review the WAS configuration needed for the modified application
 
-    In the Image Stream Details Page Overview section, you see the public image repository you used to push the image.  Notice that the public image repository is mapped to an internal image repository which is used to deploy the application.  The internal image repository is: image-registry.openshift-image-registry.svc:5000/demo/modresorts.
+In the refactor process, the **PlantsByWebSphere** application code is modified to add a new Servlet Filter module which consume the image microservice service. 
+
+The source code of Servlet Filter module is as follows:
+```
+package com.ibm.websphere.samples.pbw.war;
+import java.io.IOException;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+//* add the following
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletResponse;
+//* add the following
+import javax.servlet.http.HttpServletResponse ;
+//import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.*;
+/**
+* Servlet Filter implementation class RedirectFilter
+*/
+@WebFilter(filterName="RedirectFilter",
+servletNames={"com.ibm.websphere.samples.pbw.war.ImageServlet", "FacesServlet"},
+urlPatterns="*" )
+public class RedirectFilter implements Filter {
+// Read the Kubernetes service environment variables for the Image Service and
+// construct the Image Service service endpoint
+String httpPre = "http://" ;
+String colon = ":" ;
+String pbwisIp = System.getenv("PBWIS_SERVICE_HOST") ;
+String pbwisPort = System.getenv("PBWIS_SERVICE_PORT") ;
+String pbwisUrl = "/pbwis" ;
+String serviceEndpoint = httpPre+pbwisIp+colon+pbwisPort+pbwisUrl;
+@Override
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+throws IOException, ServletException {
+if(response.isCommitted() || (serviceEndpoint == null)) {
+//can't do anything as the response has already been committed
+chain.doFilter(request, response);
+return;
+}
+HttpServletResponse resp = (HttpServletResponse) response;
+HttpServletRequest req = (HttpServletRequest) request;
+if("ln=images".equals(req.getQueryString())) {
+String path = req.getServletPath();
+if(path.endsWith(".jsf")) {
+String resource = path.substring(path.lastIndexOf('/'), path.lastIndexOf('.'));
+// resp.sendRedirect(serviceEndpoint + "/images/resources" + resource);
+resp.sendRedirect(serviceEndpoint + "/resources/images" + resource);
+return;
+}
+}
+if(req.getServletPath().endsWith("/ImageServlet")) {
+IBM Software
+Lab 06 – Application Modernization with Microservices Page 25
+// resp.sendRedirect(serviceEndpoint + "/images/product/inventory/" +
+req.getParameterMap().get("inventoryID")[0]);
+resp.sendRedirect(serviceEndpoint + "/product/inventory/" +
+req.getParameterMap().get("inventoryID")[0]);
+return;
+}
+chain.doFilter(request, response);
+}
+public void init(FilterConfig fConfig) throws ServletException {
+// TODO Auto‐generated method stub
+}
+public void destroy() {
+// TODO Auto‐generated method stub
+}
+}
+```
+
+The source code of Image Service Implementation is shown below:
+
+```
+// Enables JAX‐RS
+package com.ibm.websphere.samples.pbw.ms.image;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+@ApplicationPath("/product/*")
+public class ImageApplication extends Application
+{
+}
+// ImageService REST endpoint for the monolith to access the image service
+package com.ibm.websphere.samples.pbw.ms.image;
+import java.io.IOException;
+import java.io.OutputStream;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
+@Path("/inventory")
+public class ImageService {
+private EntityManager getEntityManager() {
+try {
+Context ctx = new InitialContext();
+IBM Software
+Page 26 IBM Cloud Private: Application Modernization
+return (EntityManager)ctx.lookup("java:comp/env/images/em");
+} catch (NamingException e) {
+}
+return null;
+}
+@GET
+@Produces({"image/jpeg"})
+@Path("{inventoryID}"
+public Response getMessage(@PathParam("inventoryID") String inventoryID) {
+Inventory inv = getInv(inventoryID);
+if (inv != null) {
+final byte[] retval = inv.getImgbytes();
+StreamingOutput stream = new StreamingOutput() {
+public void write(OutputStream output) throws IOException,
+WebApplicationException {
+output.write(retval);
+}
+};
+return Response.ok(stream).build();
+}
+return Response.status(Response.Status.NOT_FOUND).build();
+}
+private Inventory getInv(String inventoryID) {
+EntityManager em = getEntityManager();
+if (em == null) {
+return null;
+}
+return (Inventory)em.find(Inventory.class, inventoryID);
+}
+}
+```
+
+As you can see from the Servlet Filter source code listed above, the module uses WAS environment variables for the image microservice service **host** and **port**:
+```
+String httpPre = "http://" ;
+String colon = ":" ;
+String pbwisIp = System.getenv("PBWIS_SERVICE_HOST") ;
+String pbwisPort = System.getenv("PBWIS_SERVICE_PORT") ;
+String pbwisUrl = "/pbwis" ;
+String serviceEndpoint = httpPre+pbwisIp+colon+pbwisPort+pbwisUrl;
+```
+
+The **host** and **port** two environment variables are configured in the WAS console.
+
+1.	To view these two WAS environment variables, go to WAS console window and navigate to **Servers** > **Server Types** > **WebSphere application servers**.
+
+  ![](images/was-servers.png)
  
-   ![](images/ocp-demo-is-details.png) 
+1.	Click **server1** link.
+
+  ![](images/was-server1-link.png)
+
+1.	Click **Process definition** link under the **Java and Process Management** section.
+
+  ![](images/was-process-definition.png)
+
+1.	Click **Environment Entries** link under the **Additional Properties** section.
+
+  ![](images/was-environment-entries.png)
+
+  You can see that the two environment variables are added to the list.  You will need to update their values with the image microservice host and port after you deploy the service to OCP cluster which you will do next.
+
+  ![](images/was-pbw-service-values.png)
  
-#### 6.5	Deploy the WAS Container to OCP cluster
-Once the WAS container image is pushed to the OCP cluster image registry, you can deploy the WAS container to the OCP cluster with OpenShift CLI.
-
-1.	View the deployment YAML files. In this lab you are going to use three YAML files to deploy the WAS container, these files are:
-    *	deploy.yaml – create a WAS container in the OpenShift cluster
-    *	service.yaml – create a service for the WAS container
-    *	route.yaml – create a route of the WAS container service
-
-    a.	From the File Manager window, navigate to **/home/ibmdemo/app-mod-labs/am0300/deploy** directory where these three YAML files are located.
  
-    b.	Double-click the **deploy.yaml** file to open it in the text editor. The file contains the basic requirements of the WAS container deployment. The container name is set as modresorts-app-twas and it is deployed to the demo namespace.
- 
-    ![](images/ocp-twas-deploy-yaml.png)
-    
-    c.	 Double-click the service.yaml file to view its contents. The file exposes the Mod Resorts application ports 9080 and 9443.  The port type in the OpenShift cluster is set as CluerIP. 
+#### 6.4	Deploy the image microservice to OCP cluster
 
-    ![](images/ocp-twas-service-yaml.png)
+The image microservice has been created and packaged for you, in this task you need to deploy it to the OCP cluster.
 
-    d.	Double-click the route.yaml file to open it. The file defined the OpenShift route used for the WAS container which enables users to access the Mod Resorts application on a public address.  You need to change the **host**/**name** from **modresorts-app-twas.apps.demo.ibmdte.net** to your OCP cluster host name and **Save** your change. 
+1.	Build the image microservice container image
 
-      Your OCP cluster hostname is stored in the **CLUSTER_URL** ariable and you can get it with commsnd:
-      
-      ```
-      echo $CLUSTER_URL
-      ```
-      
-    ![](images/ocp-twas-route-yaml.png)
+  a.	Go back to the terminal window and navigate to the **/home/ibmdemo/app-mod-labs/am0400st/pbwis** directory with command:
 
-2.	Now you can deploy the WAS container to OCP cluster with these YAML files. From the Terminal window, change to the /home/ibmdemo/app-mod-labs/am0300 directory.
-
-    ```
-    cd /home/ibmdemo/app-mod-labs/am0300
-    ```
-3.	Issue OpenShift CLI command to deploy the WAS container to the OpenShift cluster:
-
-    ```
-    oc apply -f deploy -n demo
-    ``` 
-    this command deploys the three YAML files in the deploy directory and create WAS container pod, service and route in the demo namespace.
-#### 6.6	Verify the Deployment
-
-In this task, you access the OpenShift Web Console to verify the WAS container deployment.
-
-1.	Go back to the OCP Web Console, click **Workloads**>**Pods**, then select **demo** project from the project list.
-
-    ![](images/ocp-workloads-pods-demo.png)
-2.	You see that the WAS container is deployed and is in running status. You can click its name link to go to its overview page where you can see its memory and CPU usage and other detail information.
-
-    ![](images/ocp-twas-demo-pods.png)
-3.	Now from the OCP cluster Web Console navigation panel, click **Networking**>**Services**. You see the WAS container service. Click the service name to view its details.
- 
-    In the Service Details page, you can see the service ports as you defined in the service.yaml file. 
- 
-    ![](images/ocp-twas-demo-services.png)
-4.	Next navigate to **Networking**>**Route** to view the WAS container service route. Click the **Location** URL to launch the Mod Resort application.
- 
-    ![](images/ocp-twas-demo-routes.png)
-5.	The **Mod Resort** application URL is launched in a new web browser window. Type the application context root **/resorts** in the end of the application URL and press **Enter**.
+  ```
+  cd /home/ibmdemo/app-mod-labs/am0400st/pbwis 
+  ```
+  b.	Execute the following command to build the image microservice docker container image with the Dockerfile you just reviewed:	
   
-6.	Click **Advanced**>**Accept Risk and Continue**, the Mod Resorts application home page is displayed.
+  ```
+  docker build . -t default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis:latest
+  ```
+  
+  Sample output:
+  
+  ```
+  ......
+  Starting server defaultServer.
+  Server defaultServer started with process ID 106.
+  ......
+  Removing intermediate container 4548b89939d5
+  ---> c18d4bfc55c6
+  Successfully built c18d4bfc55c6
+  Successfully tagged default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis:latest
+  ```
+  This will create a image microservice docker image called **default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis:latest**.
+  
+  Where 
+    *	default-route-openshift-image-registry.apps.demo.ibmdte.net is the OCP cluster image registry Push URL
+    *	am0400st is the OCP cluster namespace
+    *	pbwis:latest is the image name
 
-7.	Click **WHERE TO?** to view city list.
+  c.	After the docker container image is created, you can issue the command below to check it:
+  
+  ```
+  docker images |grep pbwis
+  ```
+  Sample output:
+  ```
+  default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis   latest                    c18d4bfc55c6        2 minutes ago       440MB
+  default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis   <none>                    7eeba2a363a8        13 months ago       440MB
+  ```
+  You see the docker image **default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis:latest** is created.
+  
+  After the image is built, you need to push it to an image registry first. In this lab, you are using the OCP cluster Image Registry to host your image microservice container image.
+1.	Push the image to the OCP cluster Image Registry.
 
-8.	Click **LAS VEGAS, USA** from the list, the weather of the city is displayed.
+  a.	Issue the command below to login to the OCP cluster.
+  
+  ```
+  oc login -u ibmadmin -p engageibm https://api.demo.ibmdte.net:6443
+  ```
+  Sample output:
+  ```
+  Login successful.
+
+  You have access to 68 projects, the list has been suppressed. You can list all projects with ' projects'
+
+  Using project "default".
+  ```
+  b.	Create a new OpenShift project (namespace) called **am0400st** to host the image.
+  
+  ```
+  oc new-project am0400st
+  ```
+  Sample output:
+  ```
+  Now using project "am0400st" on server "https://api.demo.ibmdte.net:6443".
+
+  You can add applications to this project with the 'new-app' command. For example, try:
+
+      oc new-app rails-postgresql-example
+
+  to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+      kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+  ```
+  c.	Execute the following commands to login to the OpenShift image repository and to push your docker image it.
+  
+  ```
+  docker login -u $(oc whoami)  -p $(oc whoami -t) default-route-openshift-image-registry.apps.demo.ibmdte.net
+  
+  docker push default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis:latest
+  ```
+  
+  Sample output:
+  ```
+  WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+  WARNING! Your password will be stored unencrypted in /home/ibmdemo/.docker/config.json.
+  Configure a credential helper to remove this warning. See
+  https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+  Login Succeeded
+  ......
+  The push refers to repository [default-route-openshift-image-registry.apps.demo.ibmdte.net/am0400st/pbwis]
+  46baa379c323: Pushed 
+  21bb0685d205: Pushed 
+  77880769aa5f: Pushed 
+  3eb66bf2096d: Pushed 
+  0d545f717af3: Pushed 
+  edae1801c681: Pushed 
+  ba47bea7e48c: Pushed 
+  2f711586fa28: Pushed 
+  dd37a93f7bfd: Pushed 
+  ac29e970eb23: Pushed 
+  2adc7ff74115: Pushed 
+  419e305cdda6: Pushed 
+  b26061f6a892: Pushed 
+  d14729e6ca5b: Pushed 
+  6f4acc6ac0c0: Pushed 
+  latest: digest: sha256:6a763a71886f3a771d444eb8ee843bfcf7cb369bed74d46a9d9c87ed2c54f729 size: 3466
+
+  ```
+  
+  When it is done, your docker image is pushed to OpenShift image repository.
+
+1.	Verify the pushed Docker image in OCP cluster.
+
+  a.	From the browser window, open a new tan and click the OCP web console bookmark to open it.
+ 
+    ![](images/ocp-console-bookmark.png)
+
+  b. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
+ 
+    ![](images/ocp-console-login-1.png) 
+
+    ![](images/ocp-console-login-2.png) 
+  
+  The OCP web console Home page is displayed.
+
+  c.	From the OCP web console Home page, click **Builds**>**Images Streams**, and change project (namespace) to **am0400st**.
+  
+    ![](images/ocp-builds-image-streams-am0400st.png)
+
+  d.	You can see the image you just pushed is listed. Click its link to view its details.
+ 
+    ![](images/ocp-image-streams-pbwis.png)
+
+    In the Image Stream Details page **Overview** section, you will see the public image repository you used to push the image.  Notice that the public image repository is mapped to an internal image repository which will be used to deploy the application.  The internal image repository is: **image-registry.openshift-image-registry.svc:5000/am0400st/pbwis**.
+ 
+    ![](images/ocp-pbwis-details.png)
+
+1.	Setup Db2 secret in OCP cluster.
+
+  The image microservice uses the same Db2 database as the modified **PlantsByWebSphere** application, the database is running in a Docker container in the workstation VM. Now the image microservice is deployed to the OCP cluster, you need to create a database secret which contains all database connecting info in the OCP cluster for the image microservice to access the database. To do it, execute the following commands to create the Db2 secret in OCP cluster **am0400st** namespace:
+
+  ```
+  oc -n am0400st delete secret db2-secret > /dev/null 2>&1
+  
+  oc -n am0400st create secret generic db2-secret --from-literal=JDBC_ID=db2inst1 --from-literal=JDBC_PASSWORD=engageibm --from-literal=JDBC_HOST=10.0.0.1 --from-literal=JDBC_PORT=50000 --from-literal=JDBC_DB=PBW
+  ```
+
+1.	Deploy the image microservice to the OCP cluster.
+
+  a.	From the terminal window, change to the **/home/ibmdemo/app-mod-labs/am0400st** directory.
+  ```
+  cd /home/ibmdemo/app-mod-labs/am0400st/pbwis/operator
+  ```
+  
+  b.	Issue OpenShift CLI command to deploy the WAS container to the OpenShift cluster:
+  ```
+  oc apply -f application/ -n am0400st
+  ```
+  this command will deploy the three YAML files in the applications directory and create the image microservice container pod, service and route in the **am0400st** namespace.
+
+#### 6.5	Verify the deployment
+
+In this task, you access the OCP web console to verify the image microservice container deployment.
+
+1.	Go back to the OpenShift web console, click **Workloads**>**Pods**, then select **am0400st** project from the project list.
+
+  ![](images/ocp-workloads-pods-am0400st.png)
+
+1.	You will see that the image microservice container is deployed and is in running status. You can click its name link to go to its overview page where you can see its memory and CPU usage and other detail information.
+
+  ![](images/ocp-pbwis-pod.png) 
+
+1.	Now from the OpenShift web console navigation panel, click **Networking**>**Services**. You will see the image microservice container service. Click the service name to view its details.
+
+  ![](images/ocp-pbwis-service.png) 
+
+1.	Next navigate to **Networking**>**Route** to view the image microservice container service route. Click the **Location** URL to launch the image microservice application.
+
+  ![](images/ocp-pbwis-route.png) 
+  
+  The image microservice application is launched in a new web browser window. You will see the Liberty welcome page.
+
+  ![](images/ocp-pbwis-liberty-home-page.png)
+1.	Write down the image microservice host name from the URL: **pbwis-am0400st.apps.demo.ibmdte.net**. This is the value you are going to use to configure the modified **PlantsByWebSphere** application.
+1.	Add **/pbwis/resources/images/seeds_promo.gif** to the end of the URL in the browser and press **Enter** to test accessing static image. 
+
+  The static image is displayed.
+
+  ![](images/pbwis-seeds-image.png) 
+1.	Next replace **/pbwis/resources/images/seeds_promo.gif** in the URL with **/pbwis/product/inventory/V0006** to test accessing a catalog image from the database.
+
+  The catalog image is displayed.
+
+  ![](images/pbwis-real-image.png) 
+ 
+#### 6.6	Update the WAS configuration
+
+Now the image microservice application is deployed and running, you need to go to WAS console to update the WAS configuration with the image microservice **host** and **port** info.
+
+1.	Go back to the WAS console and follow the same steps presented section 6.3 to access the **Application servers** > **server1** > **Process definition** > **Environment Entries**. 
+
+1.	Click the **PBWIS_SERVICE_HOST** link.
+
+  ![](images/pbwis-service-host-link.png)  
+1.	Update its value to **pbwis-am0400st.apps.demo.ibmdte.net** and click **Apply**.
+
+  ![](images/pbwis-service-host-value.png)   
+1.	Click **Save** to save the change.
+
+  ![](images/was-save.png)   
+1.	Repeat the same process to change the value of **PBWIS_SERVICE _PORT** to **80**.
+
+1.	After clicking **Apply**, click **Review**.
+ 
+  ![](images/was-review.png) 
+
+1.	Check the **Synchronize changes with Nodes** box and click **Save**.
+  
+  ![](images/was-sync-save.png) 
+
+1.	Click **OK**.
+
+  ![](images/was-ok.png)  
+1.	Restart **server1** by going to the Application servers section, checking the box next to **server1** and clicking **Stop**.  After the **server1** is stopped, repeat the same step to start it by checking the box and clicking **Start**.
+
+  ![](images/was-server1-stop-start.png)
+  
+  You have done with the WAS configuration update.
+
+#### 6.7	Verify the refactor solution
+
+After the WAS configuration is updated, you are ready to test and verify the implementation of the image microservice.
+
+1.	In the WAS console go to WebSphere enterprise applications section, stop the **PlantsByWebSphereV90** application and start the **PlantsByWebSphereV90V2 application** as you did before.
+
+  ![](images/was-app-running.png)  
+2.	Go back to the **PlantsBySphere** application browser window and refresh the page. The application home page is displayed with all images loaded and a new Image Service subtitle added.
+
+  ![](images/pbwis-app-running.png)  
+3.	Navigate around to verify that the application is working as before.
+
 
 ### 7.	Summary
 
-In this lab, you learned the App Modernization rehosting process. You learned how to move an existing traditional WAS application to WAS Base container and how to deploy it to an OpenShift cluster without any code change. 
-IBM Cloud Pak for Applications, built on the Red Hat OpenShift Container Platform, provides a long-term solution to help you transition between public, private, and hybrid clouds, and to create new business applications. As a key component of IBM Cloud Pak for Applications, traditional WebSphere application Server can still run in containers, and reap the benefits of consistency and reliability that containers provide.
+In this lab, you learned the Application Modernization refactor process. You learned how to an existing traditional WAS application can be broken into a microservice running in a container in OCP cluster while the rest of the application can still run in the traditional WAS environment. To learn more about Application Modernization solutions, please continue with the rest of the lab series.
 
-**Congratulations! You have successfully completed App Modernization using WAS Base Container on OCP Lab!**
+**Congratulations! You have successfully completed Application Modernization with Microservices Lab!**
 

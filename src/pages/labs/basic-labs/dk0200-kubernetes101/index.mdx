@@ -140,7 +140,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
 
 #### 6.3 Work with Kubernetes Commands
 
-##### 6.3.1 List Kubernetes Nodes
+#### 6.3.1 List Kubernetes Nodes
 
 1.	List all the nodes in the OCP cluster with the command **kubectl get nodes**.
 
@@ -297,17 +297,53 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
 3.	Scroll down to review the output above. You see that this node is running the Linux OS and is a master/worker node. Next, see the information about the operation of node itself.  Following that is the status of the node which indicates that it has sufficient disk and memory, and it is in Ready state. The information about capacity displays next. Next the kernel and OS information for the node. (which is followed by a list of running pods and their resource consumption) 
 
-##### 6.3.2	Check running pods
-1.	Run the command **kubectl get pods -n default**. This command lists all pods in the **default** OCP Project (namespace). The **-n** switch is for Project name.  When the switch is not defined, like kubectl get pods, the current Project scope is used.
+#### 6.3.2	Check running pods
+1.	Run the command **kubectl get pods -n ibm-common-services**. This command lists all pods in the **ibm-common-services** OCP project (namespace). The **-n** switch is for project name.  When the switch is not defined, like kubectl get pods, the current Project scope is used.
  
   ```
-  kubectl get pods -n default
+  kubectl get pods -n ibm-common-services 
+
   ```
   
   Sample output:
   ```
   NAME                READY   STATUS      RESTARTS   AGE
-  ibm-toolkit-h9z8n   0/1     Completed   0          3d
+  auth-idp-5ffd54bc68-zkb2c                               4/4     Running     0          7d5h
+  auth-pap-74f4bb95cf-gkzqh                               2/2     Running     0          7d5h
+  auth-pdp-6b5769946c-vqhgf                               2/2     Running     0          7d5h
+  cert-manager-cainjector-6b54bfb59-l9bpf                 1/1     Running     0          7d5h
+  cert-manager-controller-56dfcdf75c-nqdgp                1/1     Running     0          7d5h
+  cert-manager-webhook-8499bfc899-wf8pg                   1/1     Running     0          7d5h
+  common-web-ui-fffd7c86d-hpw6p                           1/1     Running     0          7d5h
+  configmap-watcher-fcf8fcd47-9qsqb                       1/1     Running     0          7d5h
+  default-http-backend-5b6bf9dc6c-gkmvt                   1/1     Running     0          7d5h
+  iam-policy-controller-99c97bf-cgxtp                     1/1     Running     0          7d5h
+  ibm-cert-manager-operator-56dd475684-rjl6m              1/1     Running     0          7d5h
+  ibm-common-service-operator-5b96b8796d-6nfnf            1/1     Running     2          7d5h
+  ibm-common-service-webhook-699b6cf98b-lqzz5             1/1     Running     0          7d5h
+  ibm-commonui-operator-69cb7945fb-zbcb6                  1/1     Running     0          7d5h
+  ibm-events-operator-v3.10.0-cd4f5d8cf-l75dt             1/1     Running     0          7d5h
+  ibm-iam-operator-7bbb48554d-mgdff                       1/1     Running     0          7d5h
+  ibm-ingress-nginx-operator-5868479bd4-gx7mq             1/1     Running     0          7d5h
+  ibm-licensing-operator-59c545fddd-8xsqm                 1/1     Running     0          7d5h
+  ibm-licensing-service-instance-548dc9fb9b-gr74d         1/1     Running     0          7d5h
+  ibm-management-ingress-operator-6bb45d577c-5s5sp        1/1     Running     1          7d5h
+  ibm-mongodb-operator-55dd5c6445-gwlsx                   1/1     Running     0          7d5h
+  ibm-namespace-scope-operator-745d97898-4gtpc            1/1     Running     0          7d5h
+  ibm-platform-api-operator-6ff7dfc79d-2tsp7              1/1     Running     0          7d5h
+  ibm-zen-operator-69575786c8-5xz9k                       1/1     Running     0          7d5h
+  icp-mongodb-0                                           2/2     Running     0          7d5h
+  icp-mongodb-1                                           2/2     Running     0          7d5h
+  icp-mongodb-2                                           2/2     Running     0          7d5h
+  management-ingress-86f68cd5cd-pqtfj                     1/1     Running     0          7d5h
+  meta-api-deploy-6444c66c8b-pbng8                        1/1     Running     0          7d5h
+  nginx-ingress-controller-7f5568d4bb-q84zg               1/1     Running     0          7d5h
+  oidcclient-watcher-c48b975f5-nnml8                      1/1     Running     0          7d5h
+  operand-deployment-lifecycle-manager-7c47dfd7ff-n9mzv   1/1     Running     0          7d5h
+  platform-api-56b8645d65-5wmrm                           2/2     Running     0          7d5h
+  secret-watcher-6dd8b59679-sb8dd                         1/1     Running     0          7d5h
+  secretshare-59d66464c8-kpkh2                            1/1     Running     0          7d5h
+  setup-job-mh6pz                                         0/1     Completed   0          5m22s
   ```
 2.	Run the commands **kubectl get pods --all-namespaces** to get the list of running pods in all namespaces. 
  
@@ -361,7 +397,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
 
 #### 6.4	Deploy a Application to the Kubernetes Cluster
 
-##### 6.4.1 Create a pod
+#### 6.4.1 Create a pod
 1.	Build the Docker Image.
   
   Note: if you have completed lab **dk0100st** in this environment, you can skip this task.
@@ -518,7 +554,7 @@ The Kubernetes command-line tool, **kubectl**, has been installed in the worksta
   ```
   Notice that the pod is created, it is deployed to the **master2** node in this example, but it could be deployed on any of the nodes in the cluster. 
   
-##### 6.4.2	Create a Service
+#### 6.4.2	Create a Service
 
 The application is deployed to OCP cluster, it is isolated in the IP address assigned to a pod on a host, and there was no connection between outside world and the application residing in the pod.
 Next, you create a service to route the traffic to the application running inside a pod.
@@ -575,7 +611,7 @@ The service should be able to find the pod where application is running. It does
 
   Since you have an environment with multiple nodes, the proxy server would be running on all nodes, so you just use any of the hosts, in this case **master1** node, to reach to the proper host pod. 
  	
-##### 6.4.3	Create a Route
+#### 6.4.3	Create a Route
 
 The service you created exposes the application with a unique IP address and port, allows internal communication to expose the application. There was no connection between outside world and the application residing in the pod.
 
