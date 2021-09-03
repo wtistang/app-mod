@@ -373,7 +373,7 @@ An Ingress Gateway resource can be created to allow external requests through th
 
 Istio's tracing and metrics features are designed to provide broad and granular insight into the health of all services. Istio's role as a service mesh makes it the ideal data source for observability information, particularly in a microservices environment. As requests pass through multiple services, identifying performance bottlenecks becomes increasingly difficult using traditional debugging techniques. Distributed tracing provides a holistic view of requests transiting through multiple services, allowing for immediate identification of latency issues. With Istio, distributed tracing comes by default. This will expose latency, retry, and failure information for each hop in a request.
 
-##### 6.4.1 Visualize Metrics with Grafana
+####      6.4.1 Visualize Metrics with Grafana
 
 Grafana allows you to query, visualize, alert on and understand your metrics no matter where they are stored.
 
@@ -426,7 +426,7 @@ Grafana allows you to query, visualize, alert on and understand your metrics no 
   
   This Grafana dashboard provides metrics for each workload. Explore the other dashboards provided as well.
 
-##### 6.4.2 Observe your Service mesh with Kiali
+#### 6.4.2 Observe your Service mesh with Kiali
 
 Kiali is an open-source project that installs as an add-on on top of Istio to visualize your service mesh. Kiali provides deeper insight into how your microservices interact with one another, and provides features such as circuit breakers and request rates for your services.
 
@@ -461,7 +461,9 @@ Pilot translates high-level rules into low-level configurations and distributes 
 
 #### 6.5.1 A/B testing with Istio
 
-A/B testing is a method of performing identical tests against two separate service versions in order to determine which performs better. To prevent Istio from performing the default routing behavior between the original and modernized service, define the following rules:
+A/B testing is a method of performing identical tests against two separate service versions in order to determine which performs better to test new features. A/B testing is NOT blue-green deployments which is about releasing new version safely to production and rolling back predictably.
+
+To prevent Istio from performing the default routing behavior between the original and modernized service, define the following rules:
 
 1. Run the following command to create default destination rules for the Bookinfo services,
 
@@ -495,7 +497,6 @@ A/B testing is a method of performing identical tests against two separate servi
   Note: The VirtualService defines a rule that captures all HTTP traffic coming in to reviews service, and routes 100% of the traffic to pods of the service with label "version: v1". A subset or version of a route destination is identified with a reference to a named service subset which must be declared in a corresponding DestinationRule.
 
 3. View the **BookInfo** application in browser window using the app URL: **http://istio-ingressgateway-istio-system.apps.demo.ibmdte.net/productpage** and you should only get the v1 of the **BookInfo** application - No stars for ratings.
-
 
 4. To enable the Istio service mesh for A/B testing against the new service version, modify the original VirtualService rule to send only Firefox traffic to v2. You may change the user-agent to any other installed browser on your machine
 

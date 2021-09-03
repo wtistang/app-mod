@@ -190,17 +190,19 @@ After you installed the Red Hat OpenShift Serverless operator and created Server
 
   ![](images/knative-cli-link.png) 
 
-2. Scroll down to **kn - OpenShift Serverless Command Line Interface (CLI)** section and click **Download for Linux for x86_64** link.
+1. Scroll down to **kn - OpenShift Serverless Command Line Interface (CLI)** section and click **Download for Linux for x86_64** link.
 
   ![](images/knative-cli-link.png) 
 
-3. Click **Save File** option and click **OK**.
+1. If you see the **Warning: Potential Security Risk Ahead** message, click **Advanced**>**Accept the Risk and continue**.
+     
+1. Click **Save File** option and click **OK**.
 
   ![](images/knative-cli-save-file.png) 
 
   The Knative CLI package is saved to **/home/ibmdemo/Downloads** directory.
 
-4. Run the commands below to unpack the Knative CLI and set it up.
+1. Run the commands below to unpack the Knative CLI and set it up.
 
   ```
   cd /home/ibmdemo/Downloads
@@ -209,7 +211,7 @@ After you installed the Red Hat OpenShift Serverless operator and created Server
   ```
   If prompted, enter the **sudo** password as: **passw0rd**. 
 
-5. To verify the Knative CLI installation, issue the following command:
+1. To verify the Knative CLI installation, issue the following command:
 
   ```
   kn version
@@ -348,7 +350,7 @@ Next, you are going to deploy this service application to the OpenShift cluster.
 1. Issue the **oc login** command to login to the OCP cluster:
 
   ```
-  oc login https://api.demo.ibmdte.net:6443
+  oc login -u ibmadmin -p engageibm https://api.demo.ibmdte.net:6443
   ```
 
   when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.

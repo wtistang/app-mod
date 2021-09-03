@@ -7,7 +7,7 @@ The goal of this session is to provide a hands-on experience with ArgoCD.
 ### 1. ArgoCD Introduction
 Continuous Integration, Delivery, and Deployment are important DevOps practices. These processes are valuable and ensures that the software is up to date timely.
 * Continuous Integration is an automation process which allows developers to integrate their work into a repository. When a developer pushes his work into the source code repository, it ensures that the software continues to work properly. It helps to enable collaborative development across the teams and also helps to identify the integration bugs sooner.
-* Continuous Delivery comes after Continuous Integration. It prepares the code for release. It automates the steps that are needed to deploy a build.
+* Continuous Delivery comes after Continuous Integration. It prepares the code for release. A manual step is required to actually deploy the application.
 * Continuous Deployment is the final step which succeeds Continuous Delivery. It automatically deploys the code whenever a code change is done. Entire process of deployment is automated.
 
 GitOps in short is a set of practices to use Git pull requests to manage infrastructure and application configurations. Git repository in GitOps is considered the only source of truth and contains the entire state of the system so that the trail of changes to the system state are visible and auditable.
@@ -61,17 +61,17 @@ During this lab, you complete the following tasks:
 
   ![](images/start-vms.png)
 
-2.	After the VMs are started, click the workstation VM icon to access it. 
+1.	After the VMs are started, click the workstation VM icon to access it. 
 
   ![](images/access-workstation.png)
 
   The Workstation Linux Desktop is displayed. You execute all the lab tasks on this workstation VM.
 
-3.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
-4. Open a terminal window by clicking its icon from the Desktop toolbar.
+1.	If requested to log in to the Workstation OS, use credentials: **ibmdemo**/**passw0rd**
+1. Open a terminal window by clicking its icon from the Desktop toolbar.
 
   ![](images/terminal-icon.png)
-5. If this is your first time to run the lab series in this lab environment, do the following, otherwise if you have already downloaded the lab materials in other labs, you can skip this step.
+1. If this is your first time to run the lab series in this lab environment, do the following, otherwise if you have already downloaded the lab materials in other labs, you can skip this step.
   
   a. In the terminal window, run the following command to get the lab materials.
 
@@ -95,11 +95,11 @@ During this lab, you complete the following tasks:
   
   The lab materials is downloaded to the **/home/ibmdemo/app-mod-labs** directory.
   
-6. Open **File Manager** by clicking its icon on the Desktop toolbar.
+1. Open **File Manager** by clicking its icon on the Desktop toolbar.
 
   ![](images/file-manager-icon.png)
 
-7. Navigate to **/home/ibmdemo/app-mod-labs/dv0100st** directory and double-click to open **Commands.txt** file in the text editor.
+1. Navigate to **/home/ibmdemo/app-mod-labs/dv0100st** directory and double-click to open **Commands.txt** file in the text editor.
 
   ![](images/open-commands-txt-dv0100st.png)
 
@@ -111,26 +111,28 @@ Assuming that your development team has the application code ready.  You need to
 1. Open a Firefox web browser window by clicking its icon on the Desktop toolbar.
 
   ![](images/firefox-icon.png) 
-2. From the browser window, type the **GitLab** as **10.0.0.1:82** and press **Enter**.
+1. From the browser window, click the **GitLab** bookmark to launch it.
 
-  ![](images/argocd-gitlab-url.png) 
-3. Login with **GitLab** credentials as: **root**/**passw0rd**.
-4. Click **New project** to create a new GitLab project.
+  ![](images/argocd-gitlab-bookmark.png) 
+1. Login with **GitLab** credentials as: **root**/**passw0rd**.
+1. Click **New project** to create a new GitLab project.
 
   ![](images/gitlab-new-repo.png)
-5. Enter the new project name as: **cloudnative_sample_app_deploy**, set **Visibility Level** as **Public** and click **Create project**.
+1. Enter the new project name as: **cloudnative_sample_app_deploy**, set **Visibility Level** as **Public** and click **Create project**.
   ![](images/gitlab-create-myrepo.png)
 
+  >Note:  Please make sure that you selected the **Public** option as showing above!
+  
   Your **GitLab** project is now created.
 
   ![](images/gitlab-myrepo.png)
   You will use some of the commands highlighted above to push your application code to the repo.
-6. In the terminal window navigate to the application code directory.
+1. In the terminal window navigate to the application code directory.
 
   ```
   cd /home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy
   ```
-7. View the contents in this directory.
+1. View the contents in this directory.
 
   ```
   ls -l
@@ -143,7 +145,7 @@ Assuming that your development team has the application code ready.  You need to
   drwx------ 2 ibmdemo ibmdemo 4096 Jul 14 10:33 openshift
   -rw-rw-r-- 1 ibmdemo ibmdemo   83 Aug 21  2020 README.md
   ```
-8.  The deployment artifacts for OCP cluster in under the **openshift** directory.  View its contents.
+1.  The deployment artifacts for OCP cluster in under the **openshift** directory.  View its contents.
 
   ```
   ls -l openshift/
@@ -157,7 +159,7 @@ Assuming that your development team has the application code ready.  You need to
   ```
 
   As you can see, there are YAML files representing the deployment, service and route configurations.
-9. Run the git commands to push the application code to the **GitLab** repo. 
+1. Run the git commands to push the application code to the **GitLab** repo. 
 
   ```
   git init
@@ -166,7 +168,8 @@ Assuming that your development team has the application code ready.  You need to
   git remote add origin http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git
   git push -u origin master
   ```
-  
+  When prompted, enter the gitlab credentials as: **root**/**passw0rd**.
+
   Sample output:
   ```
   [master (root-commit) 6fd8905] first commit
@@ -201,7 +204,7 @@ Assuming that your development team has the application code ready.  You need to
   [new branch]      master -> master
   Branch 'master' set up to track remote branch 'master' from 'origin'.
   ```
-10. When it is done, refresh your **GitLab** page, you see something like this:
+1. When it is done, refresh your **GitLab** page, you see something like this:
 
   ![](images/gitlab-myrepo-uploaded.png)
   
@@ -209,103 +212,72 @@ Assuming that your development team has the application code ready.  You need to
 
 #### 6.3 Deploy application in ArgoCD UI
 
-##### 6.3.1 Create a new project in OCP Cluster
+#### 6.3.1 Create a new project in OCP Cluster
 You are going to create a new project in OCP Cluster so you can deploy the application to the project.
 
 1. From the termncal window, issue the **oc login** command to login to the OCP cluster:
 
   ```
-  oc login https://api.demo.ibmdte.net:6443
+  oc login -u ibmadmin -p engageibm https://api.demo.ibmdte.net:6443
   ```
-
-  when prompted, enter the login credentials as: **ibmadmin**/**engageibm**.
-  
   Sample output:
   ```
-  Authentication required for https://api.demo.ibmdte.net:6443 (openshift)
-  Username: ibmadmin
-  Password: 
   Login successful.
 
-  You have access to 66 projects, the list has been suppressed. You can list all projects with ' projects'
+  You have access to 68 projects, the list has been suppressed. You can list all projects with ' projects'
 
   Using project "default".
-  ``` 
-2. Create a new project **dv0100st** in OCP Cluster with command:
+
+1. Create a new project **dv0100st** in OCP Cluster with command:
 
   ```
   oc new-project dv0100st
   ```
-##### 6.3.2 Get ArgoCD login information from the OCP cluster
+#### 6.3.2 Get ArgoCD login information from the OCP cluster
 ArgoCD can be install to the OpenShift Container Platform (OCP) cluster with ArgoCD operator or from the command line.  
 
-In this lab environment, the ArgoCD is installed to the OCP cluster using IBM Cloud Native Toolkit. The Cloud-Native Toolkit is an open-source collection of assets that enable application development and support teams to deliver business value quickly using Red Hat OpenShift or IBM Cloud-managed Kubernetes. This guide provides information to help Developers, Administrators, and Site Reliability Engineers use the Toolkit to support delivering business applications through the entire Software Development Life Cycle (SDLC). Click the link to learn more about the [Cloud Native Toolkit](https://cloudnativetoolkit.dev).
+In this lab environment, the ArgoCD is installed to the OCP cluster **argocd** namespace using ArgoCD operator.
 
-To access the ArgoCD, you need to get its server and login credentials information from the OCP Cluster.
+To access the ArgoCD, you need to get its server and login credentials information from the OCP Cluster. The default ArgoCd username is **admin**.
 
-1. Get ArgoCD username info:
-
+1. Get ArgoCD password info:
   ```
-  export ARGOCD_USER=$(oc get secret argocd-access -n tools -o jsonpath='{.data.ARGOCD_USER}' | base64 -d)
-  echo $ARGOCD_USER
-  ```
-2. Get ArgoCD password info:
-  ```
-  export ARGOCD_PASSWORD=$(oc get secret argocd-access -n tools -o jsonpath='{.data.ARGOCD_PASSWORD}' | base64 -d)
+  export ARGOCD_PASSWORD=$(oc get secret example-argocd-cluster -n argocd -o jsonpath='{.data.admin\.password}' | base64 -d)
   echo $ARGOCD_PASSWORD
   ```
-3. Get AroCD server info:
+1. Get AroCD server info:
   
   ```
-  export ARGOCD_URL=$(oc get secret argocd-access -n tools -o jsonpath='{.data.ARGOCD_URL}' | base64 -d)
-  export ARGOCD_SERVER=$(echo $ARGOCD_URL|sed -E 's/^\s*.*:\/\///g')
+  export ARGOCD_SERVER=$(oc get route example-argocd-server -n argocd -o jsonpath='{.spec.host}')
   echo $ARGOCD_SERVER
   ```
-4. Write down the ArgoCD username, password and server information.  You will use them to login to the ArgoCD server from the ArgoCD UI and from the commandline.
+1. Write down the ArgoCD username, password and server information.  You will use them to login to the ArgoCD server from the ArgoCD UI and from the commandline.
 
-##### 6.3.3 Create a ArgoCD project in ArgoCD UI
+#### 6.3.3 Create a ArgoCD project in ArgoCD UI
 
 The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd resource which is a parent of the Argocd application. The default ArgiCD project is **default**. In this lab, you are going to create to new ArgoCD project **dk0100st** to host the ArgoCD application.
 
-1. From the browser window, click the Could Native Toolkit **Developer Dashboard** bookmark to open it.
+1. From the browser window, click the **ArgoCD** bookmark to open it.
 
-  ![](images/toolkit-bookmark.png) 
+  ![](images/argocd-bookmark.png) 
   
-2. Click **Open with OpenShift** to continue.
-
-  ![](images/login-with-ocp.png)
-
-3. If prompted to log in to Red Hat OpenShift Container Platform, click **htpasswd** field. Then log in with **ibmadmin**/**engageibm** as the username and password.
- 
-  ![](images/ocp-console-login-1.png) 
-
-  ![](images/ocp-console-login-2.png) 
-
-  The IBM Cloud Native Toolkit Developer Dashboard page is displayed. 
-  
-  ![](images/toolkit-page.png)
-
-4. Click the ArgoCD link to access the ArgoCD UI
-
-  ![](images/argocd-link.png) 
-
-5. If you see the **Warning: Potential Security Risk Ahead** message, click **Advanced**>**Accept the Risk and continue**.
+1. If you see the **Warning: Potential Security Risk Ahead** message, click **Advanced**>**Accept the Risk and continue**.
  
   The ArgoCD page is displayed.
 
   ![](images/argocd-ui-page.png)
 
-6. Login with the username and password with the information you obtained above and click **SIGN IN**.
+1. Login with the username and password with the information you obtained above and click **SIGN IN**.
 
   ![](images/argocd-ui-login.png)
-7. From the ArgoCD Home page, click **Settings**, then click **Projects**.
+1. From the ArgoCD Home page, click **Settings**, then click **Projects**.
 
   ![](images/argocd-settings.png)
-8. Click **New Project**
+1. Click **New Project**
 
   ![](images/argocd-new-project.png)
 
-9. Enter the project Name and Description as: **dv0100st** and click **Create**.
+1. Enter the project Name and Description as: **dv0100st** and click **Create**.
 
   ![](images/argocd-new-project-2.png)
 
@@ -313,35 +285,35 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-project-created.png)
 
-10. Click the project link to access its details.
+1. Click the project link to access its details.
 
   ![](images/argocd-project-link.png)
 
-11. First you need to add information to the **RESOURCE REPOSITOIES**, click **EDIT** next to it.
+1. First you need to add information to the **RESOURCE REPOSITOIES**, click **EDIT** next to it.
 
   ![](images/argocd-edit-resource-repos.png)
   
-12. In the **RESOURCE REPOSITOIES** page, click **ADD SOURCE** link.
+1. In the **RESOURCE REPOSITOIES** page, click **ADD SOURCE** link.
 
   ![](images/argocd-add-resource.png)
 
-13. After you clicked the **ADD SOURCE** link, the default source setting (*****) is added to the source list, accept it and click **SAVE** to save the change.
+1. After you clicked the **ADD SOURCE** link, the default source setting (*****) is added to the source list, accept it and click **SAVE** to save the change.
 
   ![](images/argocd-resource-added.png)
-14. Go to **DESTINATIONS** section, click **EDIT**, then click **ADD DESTINATION** to add **Server** and **Namespace** to **DESTINATIONS** (using the default ** * ** settings).
+1. Go to **DESTINATIONS** section, click **EDIT**, then click **ADD DESTINATION** to add **Server** and **Namespace** to **DESTINATIONS** (using the default ** * ** settings).
 
-15. Go to **CLUSTER RESOURCE ALLOW LIST** section, click **EDIT**, then click **ADD RESOURCE** to add **Kind** and **Group** to **CLUSTER RESOURCE ALLOW LIST** (using the default ** * ** settings). When you are done, your project settings should look like this:
+1. Go to **CLUSTER RESOURCE ALLOW LIST** section, click **EDIT**, then click **ADD RESOURCE** to add **Kind** and **Group** to **CLUSTER RESOURCE ALLOW LIST** (using the default ** * ** settings). When you are done, your project settings should look like this:
 
   ![](images/argocd-edit-completed.png)
 
-##### 6.3.4 Deploy app through ArgoCD UI
+#### 6.3.4 Deploy app through ArgoCD UI
 1. From the ArgoCD UI, click the **Manage** icon on the navigation bar, then click **NEW APP** to create a new deployment.
 
   ![](images/argocd-manage-icon.png)
   
   ![](images/argocd-new-app.png)
 
-2. Add the following details and click **Create** to finish.  
+1. Add the following details and click **Create** to finish.  
   * Application Name: **sample**
   * Project: **dv0100st**
   * SYNC POLICY: **Manual**
@@ -351,6 +323,8 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
   * Cluster: **https://kubernetes.default.svc** 
   * Namespace: **dv0100st**
 
+  >Note: Mkae sure that you are adding the port **82** to your Repo URL as showin above!
+
   ![](images/argocd-create.png)
 
   The destination namespace is the OCP cluster project you created before.
@@ -359,7 +333,7 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
    ![](images/argocd-created.png)
 
-8. To sync the application, click **SYNC** and then click **SYNCHRONIZE**.
+1. To sync the application, click **SYNC** and then click **SYNCHRONIZE**.
 
   ![](images/argocd-sync.png)
 
@@ -367,15 +341,15 @@ The ArgoCD project is not a kubernetes or ocp project/namespace, it is an Argocd
 
   ![](images/argocd-processing.png)
 
-9. Once the app is deployed, click on it to see the details.
+1. Once the app is deployed, click on it to see the details.
 
   ![](images/argocd-app-ready.png)
 
-10. In the **APPLICATION DETAILS** page, click each deployment block to view its detail information.
+1. In the **APPLICATION DETAILS** page, click each deployment block to view its detail information.
 
   ![](images/argocd-view-deployment.png)
 
-##### 6.3.5 Verify and update the deployment
+#### 6.3.5 Verify and update the deployment
 Access the app to verify if it is correctly deployed.
 
 1. Go back to the terminal window, list the **cloudnativesampleapp-service** route with command.
@@ -390,17 +364,17 @@ Access the app to verify if it is correctly deployed.
   ```
   You get the message indicating that there is no route available in the project, that means the route configuration is not right.  This needs to be fixed.
 
-2. Click the **File Manager** icon on the Desktop toolbar, navigate to **/home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy/openshift/** directory and double-click the **route.yaml** file to open it for edit.
+1. Click the **File Manager** icon on the Desktop toolbar, navigate to **/home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy/openshift/** directory and double-click the **route.yaml** file to open it for edit.
 
   ![](images/open-route-yaml.png)
   
   ![](images/route-yaml-asis.png)
 
   As you can see from the YAML file, it is hard-coded to use namespace **default**, that is why no route was created in the **dv0100st** project. This can be fixed.
-3. Delete the line **namespace: default** in the file and click **Save** to save the change.
+1. Delete the line **namespace: default** in the file and click **Save** to save the change.
 
   ![](images/route-yaml-updated.png)
-4. Next you need to push the change to the **GitLab** repo with commands:
+1. Next you need to push the change to the **GitLab** repo with commands:
 
   ```
   cd /home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy
@@ -410,12 +384,27 @@ Access the app to verify if it is correctly deployed.
   ```
   When prompted, enter **GitLab** credentials: **root**/**passw0rd**.
 
-5. Go to your ArgoCD **simple** application and click **SYNC** > **SYNCHRONIZE**.
+1. Go to your ArgoCD **simple** application and click **SYNC** > **SYNCHRONIZE**.
 
   ![](images/argocd-sync-2.png)
   
-  The ArgoCD will sync the application with your **GitLab** repo to get the latest changes and update the deployment.
-6. Go back to the terminal window, list the **cloudnativesampleapp-service** route with command.
+  The ArgoCD will sync the application with your **GitLab** repo to get the latest changes and update the deployment. But you see the **OutOfSync** from **HEAD**, this is because by default (and as a safety mechanism), ArgoCD sync will not delete resources when ArgoCD detects the resource is no longer defined in Git repo, in this case the old route resource.
+
+1. Clike the filter icon to expland it.
+
+  ![](images/argocd-filter.png)
+
+  You can see both the new and old routes are listed.
+  
+  ![](images/argocd-two-routers.png)
+ 
+1. To remove the old resource which is no longer defined in Git repo, click **SYNC**, check the **PRUNE** box then click **SYNCHRONIZE**.
+
+  ![](images/argocd-prune.png)
+
+  You see the **HEAD** is now Synced.
+
+1. Go back to the terminal window, list the **cloudnativesampleapp-service** route with command.
 
   ```
   oc get route -n dv0100st
@@ -427,7 +416,7 @@ Access the app to verify if it is correctly deployed.
   cloudnative-sample   cloudnative-sample-default.apps.demo.ibmdte.net          cloudnativesampleapp-service   9080                 None
   ```
 
-7. Set an environment variable **APP_URL** using the **HOST/PORT**.
+1. Set an environment variable **APP_URL** using the **HOST/PORT**.
 
   ```
   export APP_URL="http://$(oc get route cloudnative-sample -o jsonpath='{.status.ingress[0].host}')"
@@ -440,7 +429,7 @@ Access the app to verify if it is correctly deployed.
   http://cloudnative-sample-default.apps.demo.ibmdte.net
   ```
   
-8. Access the app URL using curl:
+1. Access the app URL using curl:
 
   ```
   curl "$APP_URL/greeting?name=Carlos"
@@ -462,7 +451,7 @@ Although ArgoCD automatic sync does not cover the case when an application is ou
 
 In this task, you are going to implement the **Automatic Sync** and the **Self-Healing** policies from the ArgoCD UI.
 
-##### 6.4.1 View the deployed application
+#### 6.4.1 View the deployed application
 
 1. Go back to the OCP web console, navigate to **Workloads**>**Deployments** under project **dv0100st**, click the deployment link.
   
@@ -472,16 +461,17 @@ In this task, you are going to implement the **Automatic Sync** and the **Self-H
 
   ![](images/argocd-deployment-details.png)
 
-##### 6.4.2 Update the **deployment.yaml** file
+#### 6.4.2 Update the **deployment.yaml** file
+
 1. From the **File Manager** window navigate to **/home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy/openshift/** directory and double-click the **deployment.yaml** file to open it for edit.
 
   ![](images/argocd-deployment-yaml.png)  
 
-2. Change the replica value from **1** to **4**, and save the change.
+1. Change the replica value from **1** to **4**, and save the change.
 
   ![](images/argocd-deployment-yaml-save.png)  
 
-3. Push the change to the Git repo with commands:
+1. Push the change to the Git repo with commands:
 
   ```
   cd /home/ibmdemo/app-mod-labs/dv0100st/cloudnative_sample_app_deploy
@@ -491,17 +481,17 @@ In this task, you are going to implement the **Automatic Sync** and the **Self-H
   ```
   When prompted, enter **GitLab** credentials: **root**/**passw0rd**.
 
-##### 6.4.3 Activate ArgoCD **Automatic Sync** policy
+#### 6.4.3 Activate ArgoCD **Automatic Sync** policy
 
 1. From the ArgoCD UI, click the **sample** application link
 
   ![](images/argocd-sample-link.png)
 
-2. Scroll down to the **Sync Policy** section and click **Enable Auto-Sync**.
+1. Scroll down to the **Sync Policy** section and click **Enable Auto-Sync**.
 
   ![](images/argocd-sync-policy-auto-sync.png)
 
-3. Click **OK** to enable ArgoCD **Auto-Sync** policy.
+1. Click **OK** to enable ArgoCD **Auto-Sync** policy.
 
   ![](images/argocd-enable-auto-sync.png)
 
@@ -509,46 +499,47 @@ In this task, you are going to implement the **Automatic Sync** and the **Self-H
 
   ![](images/argocd-4-pods-created.png)
 
-4. Go back to OCP web console to view the deployment, you see now the deployment has **4** replicas.
+1. Go back to OCP web console to view the deployment, you see now the deployment has **4** replicas.
 
   ![](images/argocd-4-pods-running.png)
 
-4. Click to change the replica to **2**.
+1. Click to change the replica to **2**.
 
   ![](images/argocd-2-pods-running.png)
 
   You can see that although you have defined the replica to **4** in the **deployment.yaml** file, it is still can be changed in cluster.  To fix it, you need to implement the ArgoCD **Self-Heal** policy.
-##### 6.4.4 Activate ArgoCD **Self-Heal** policy
+#### 6.4.4 Activate ArgoCD **Self-Heal** policy
+
 1. From the ArgoCD UI, click the application link
 
   ![](images/argocd-sample-link.png)
 
-2. Scroll down to the **Sync Policy** section and click **Enable Self-Heal**
+1. Scroll down to the **Sync Policy** section and click **Enable Self-Heal**
 
   ![](images/argocd-enable-self-heal.png)
 
-3. Click **OK** to enable it, you can see that ArgoCD is enforcing the deployment settings defined in the Git repo and brings back all **4** pods.
+1. Click **OK** to enable it, you can see that ArgoCD is enforcing the deployment settings defined in the Git repo and brings back all **4** pods.
 
   ![](images/argocd-4-pods-set.png)
 
-4. Go back to OCP web console to view the deployment, you see now the deployment is set back to **4** replicas as designed.
+1. Go back to OCP web console to view the deployment, you see now the deployment is set back to **4** replicas as designed.
 
-5. Try to make any changes the replica again, you can see that system will automatically adjust it back to **4** which is defined in the **deployment.yaml** file.
+1. Try to make any changes the replica again, you can see that system will automatically adjust it back to **4** which is defined in the **deployment.yaml** file.
  
 #### 6.5 Using the ArgoCD CLI
 1. Login using the cli.
 
   ```
-  argocd login --username $ARGOCD_USER --password $ARGOCD_PASSWORD $ARGOCD_SERVER
+  argocd login --username admin --password $ARGOCD_PASSWORD $ARGOCD_SERVER
   ```
-2. when you see the message like this, type **y** and press **ENTER** to continue.
+1. when you see the message like this, type **y** and press **ENTER** to continue.
 
   ```
   WARNING: server certificate had error: x509: cannot validate certificate for 10.97.240.99 because it doesn't contain any IP SANs. Proceed insecurely (y/n)? y
 
   'admin' logged in successfully
   ```
-3. List the applications
+1. List the applications
 
   ```
   argocd app list
@@ -559,7 +550,7 @@ In this task, you are going to implement the **Automatic Sync** and the **Self-H
   NAME    CLUSTER                         NAMESPACE  PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                                     PATH   TARGET
   sample  https://kubernetes.default.svc  dv0100st    dv0100st  Synced  Healthy  <none>      <none>      http://10.0.0.1:82/root/cloudnative_sample_app_deploy.git  openshift  HEAD
   ```
-4. Get application details
+1. Get application details
 
   ```
   argocd app get sample
@@ -578,7 +569,7 @@ In this task, you are going to implement the **Automatic Sync** and the **Self-H
   SyncWindow:         Sync Allowed
   ```
 
-5. Show application deployment history
+1. Show application deployment history
 
   ```
   argocd app history sample
